@@ -38,7 +38,7 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 
 ### From .xpi
 
-Download the latest `.xpi` file from [Releases](https://github.com/christophdb/seafile-thunderbird/releases) and install it via **Add-ons & Themes → gear icon → Install Add-on From File**.
+Install the `.xpi` file via **Add-ons & Themes → gear icon → Install Add-on From File**.
 
 ### From source (development)
 
