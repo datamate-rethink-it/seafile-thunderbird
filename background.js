@@ -254,7 +254,23 @@ browser.cloudFile.onAccountDeleted.addListener(async (accountId) => {
   await browser.storage.local.remove(`${accountId}_files`);
 });
 
-// --- Message Handler for Management Page ---
+// --- Message Handler for Management Page and Save-Attachments Popup ---
+
+/**
+ * Find the first configured CloudFile account.
+ * @returns {Promise<Object|null>} Account config or null
+ */
+async function getFirstConfiguredAccount() {
+  const accounts = await browser.cloudFile.getAllAccounts();
+  for (const account of accounts) {
+    const stored = await browser.storage.local.get(account.id);
+    const config = stored[account.id];
+    if (config && config.apiToken && config.repoId) {
+      return { accountId: account.id, ...config };
+    }
+  }
+  return null;
+}
 
 browser.runtime.onMessage.addListener(async (message) => {
   switch (message.action) {
@@ -267,6 +283,59 @@ browser.runtime.onMessage.addListener(async (message) => {
     case "listRepos": {
       const repos = await seafile.listRepos(message.serverUrl, message.apiToken);
       return repos;
+    }
+    case "getDisplayedMessage": {
+      const messageList = await browser.messageDisplay.getDisplayedMessages(message.tabId);
+      if (!messageList || messageList.messages.length === 0) {
+        return { error: "No message displayed." };
+      }
+      return { messageId: messageList.messages[0].id };
+    }
+    case "listAttachments": {
+      const attachments = await browser.messages.listAttachments(message.messageId);
+      return attachments.filter(a => a.contentType !== "text/x-moz-deleted");
+    }
+    case "uploadAttachment": {
+      const config = await getFirstConfiguredAccount();
+      if (!config) {
+        return { error: "No Seafile account configured." };
+      }
+      const file = await browser.messages.getAttachmentFile(
+        message.messageId, message.partName
+      );
+      const repoId = message.repoId || config.repoId;
+      const targetDir = message.targetDir || config.uploadPath;
+      // Ensure target directory exists
+      const exists = await seafile.dirExists(
+        config.serverUrl, config.apiToken, repoId, targetDir
+      );
+      if (!exists) {
+        await seafile.createDir(
+          config.serverUrl, config.apiToken, repoId, targetDir
+        );
+      }
+      const uploadLink = await seafile.getUploadLink(
+        config.serverUrl, config.apiToken, repoId, targetDir
+      );
+      await seafile.uploadFile(
+        uploadLink, config.apiToken, file, message.fileName, targetDir
+      );
+      return { success: true };
+    }
+    case "getAccountConfig": {
+      const config = await getFirstConfiguredAccount();
+      return config || { error: "No Seafile account configured." };
+    }
+    case "listDir": {
+      const config = await getFirstConfiguredAccount();
+      if (!config) {
+        return { error: "No Seafile account configured." };
+      }
+      const repoId = message.repoId || config.repoId;
+      const entries = await seafile.listDir(
+        config.serverUrl, config.apiToken, repoId, message.path || "/"
+      );
+      return entries.filter(e => e.type === "dir");
     }
     default:
       return { error: `Unknown action: ${message.action}` };

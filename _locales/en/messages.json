@@ -23,6 +23,12 @@
   "connect": {
     "message": "Connect"
   },
+  "connecting": {
+    "message": "Connecting..."
+  },
+  "connected": {
+    "message": "Connected"
+  },
   "uploadSettings": {
     "message": "Upload Settings"
   },
@@ -32,8 +38,26 @@
   "selectLibrary": {
     "message": "-- Select a library --"
   },
+  "encryptedHint": {
+    "message": "Encrypted libraries are not supported."
+  },
   "uploadFolder": {
     "message": "Upload Folder"
+  },
+  "saveAttachmentSettings": {
+    "message": "Save Attachment Defaults"
+  },
+  "saveTargetLibrary": {
+    "message": "Default Library"
+  },
+  "sameAsUpload": {
+    "message": "-- Same as upload library --"
+  },
+  "saveFolder": {
+    "message": "Default Folder"
+  },
+  "saveFolderHint": {
+    "message": "Default folder when saving received attachments"
   },
   "shareLinkOptions": {
     "message": "Share Link Options"
@@ -50,7 +74,37 @@
   "shareExpireDaysHint": {
     "message": "0 = no expiration"
   },
+  "tabSharing": {
+    "message": "Sharing"
+  },
+  "tabSaving": {
+    "message": "Saving"
+  },
   "save": {
     "message": "Save"
+  },
+  "saveToSeafile": {
+    "message": "Save to Seafile"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "noAttachments": {
+    "message": "No attachments found."
+  },
+  "notConfigured": {
+    "message": "No Seafile account configured. Please set up a Seafile account in Settings → Composition → Attachments."
+  },
+  "selectAll": {
+    "message": "Select all"
+  },
+  "targetFolder": {
+    "message": "Target folder:"
+  },
+  "saveSuccess": {
+    "message": "All files saved to Seafile!"
+  },
+  "savePartialError": {
+    "message": "Some files failed to upload."
   }
 }

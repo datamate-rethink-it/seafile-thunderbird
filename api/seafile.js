@@ -228,6 +228,27 @@ class SeafileAPI {
    * @param {string} path
    * @returns {Promise<boolean>}
    */
+  /**
+   * List directory contents (subdirectories only, for folder navigation).
+   * @param {string} server
+   * @param {string} token
+   * @param {string} repoId
+   * @param {string} path - Directory path
+   * @returns {Promise<Array>} Array of dir entries with name, type, etc.
+   */
+  async listDir(server, token, repoId, path = "/") {
+    const resp = await fetch(
+      `${server}/api2/repos/${repoId}/dir/?p=${encodeURIComponent(path)}`,
+      {
+        headers: { Authorization: `Token ${token}` },
+      }
+    );
+    if (!resp.ok) {
+      throw new Error(`Failed to list directory (${resp.status})`);
+    }
+    return await resp.json();
+  }
+
   async dirExists(server, token, repoId, path) {
     const resp = await fetch(
       `${server}/api2/repos/${repoId}/dir/?p=${encodeURIComponent(path)}`,

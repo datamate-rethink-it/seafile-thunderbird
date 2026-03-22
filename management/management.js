@@ -23,13 +23,21 @@ const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const connectBtn = document.getElementById("connectBtn");
 const connectStatus = document.getElementById("connectStatus");
-const librarySection = document.getElementById("librarySection");
+const settingsTabs = document.getElementById("settingsTabs");
 const repoSelect = document.getElementById("repoSelect");
-const uploadPathInput = document.getElementById("uploadPath");
+const uploadPathEl = document.getElementById("uploadPath");
+const uploadFolderList = document.getElementById("uploadFolderList");
+const saveRepoSelect = document.getElementById("saveRepoSelect");
+const savePathEl = document.getElementById("savePath");
+const saveFolderList = document.getElementById("saveFolderList");
 const sharePasswordInput = document.getElementById("sharePassword");
 const shareExpireDaysInput = document.getElementById("shareExpireDays");
 const saveBtn = document.getElementById("saveBtn");
 const saveStatus = document.getElementById("saveStatus");
+
+// Current folder picker state
+let uploadCurrentPath = "/";
+let saveCurrentPath = "/";
 
 /**
  * Send a message to the background script and return the response.
@@ -51,6 +59,97 @@ function showStatus(element, message, isError) {
 }
 
 /**
+ * Mark the connect button as successfully connected.
+ */
+function markConnected() {
+  connectBtn.textContent = "\u2714 " + (browser.i18n.getMessage("connected") || "Connected");
+  connectBtn.disabled = true;
+  connectStatus.className = "status";
+}
+
+/**
+ * Load folder contents into a folder picker.
+ * @param {string} repoId - Library ID
+ * @param {string} path - Directory path
+ * @param {HTMLElement} pathEl - Element showing current path
+ * @param {HTMLElement} listEl - UL element for folder list
+ * @param {Function} onNavigate - Called with new path when navigating
+ */
+async function loadFolderPicker(repoId, path, pathEl, listEl, onNavigate) {
+  if (!repoId) return;
+
+  pathEl.textContent = path;
+  listEl.innerHTML = "";
+
+  try {
+    const dirs = await sendMessage("listDir", { path, repoId });
+
+    if (path !== "/") {
+      const parentLi = document.createElement("li");
+      const parentPath = path.substring(0, path.lastIndexOf("/")) || "/";
+      parentLi.innerHTML = `\u2B06 ..`;
+      parentLi.addEventListener("click", () => onNavigate(parentPath));
+      listEl.appendChild(parentLi);
+    }
+
+    for (const dir of dirs) {
+      const li = document.createElement("li");
+      const dirPath = path === "/" ? `/${dir.name}` : `${path}/${dir.name}`;
+      li.innerHTML = `\uD83D\uDCC1 ${dir.name}`;
+      li.addEventListener("click", () => onNavigate(dirPath));
+      listEl.appendChild(li);
+    }
+  } catch (e) {
+    console.error("Failed to list directory:", e);
+  }
+}
+
+/**
+ * Navigate the upload folder picker.
+ */
+function navigateUploadFolder(path) {
+  uploadCurrentPath = path;
+  const repoId = repoSelect.value;
+  loadFolderPicker(repoId, path, uploadPathEl, uploadFolderList, navigateUploadFolder);
+}
+
+/**
+ * Navigate the save folder picker.
+ */
+function navigateSaveFolder(path) {
+  saveCurrentPath = path;
+  const repoId = saveRepoSelect.value || repoSelect.value;
+  loadFolderPicker(repoId, path, savePathEl, saveFolderList, navigateSaveFolder);
+}
+
+/**
+ * Re-enable connect button when credentials change.
+ */
+for (const input of [serverUrlInput, usernameInput, passwordInput]) {
+  input.addEventListener("input", () => {
+    connectBtn.textContent = browser.i18n.getMessage("connect") || "Connect";
+    connectBtn.disabled = false;
+    connectStatus.className = "status";
+  });
+}
+
+/**
+ * Reload upload folder picker when library changes.
+ */
+repoSelect.addEventListener("change", () => {
+  uploadCurrentPath = "/";
+  navigateUploadFolder("/");
+});
+
+/**
+ * Reload save folder picker when library changes.
+ */
+saveRepoSelect.addEventListener("change", () => {
+  saveCurrentPath = "/";
+  navigateSaveFolder("/");
+});
+
+/**
  * Load saved configuration for this account.
  */
 async function loadConfig() {
@@ -60,7 +159,9 @@ async function loadConfig() {
 
   serverUrlInput.value = config.serverUrl || "";
   usernameInput.value = config.username || "";
-  uploadPathInput.value = config.uploadPath || "/Thunderbird-Attachments";
+  if (config.password) {
+    passwordInput.placeholder = "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022";
+  }
   sharePasswordInput.value = config.sharePassword || "";
   shareExpireDaysInput.value = config.shareExpireDays || 0;
 
@@ -68,13 +169,22 @@ async function loadConfig() {
     // Already connected - try to load repos
     try {
       await loadRepos(config);
-      librarySection.classList.add("visible");
-      showStatus(connectStatus, "Connected", false);
+      settingsTabs.classList.add("visible");
+      markConnected();
 
-      // Pre-select saved repo
+      // Pre-select saved repos
       if (config.repoId) {
         repoSelect.value = config.repoId;
       }
+      if (config.saveRepoId) {
+        saveRepoSelect.value = config.saveRepoId;
+      }
+
+      // Load folder pickers with saved paths
+      uploadCurrentPath = config.uploadPath || "/";
+      saveCurrentPath = config.savePath || "/";
+      navigateUploadFolder(uploadCurrentPath);
+      navigateSaveFolder(saveCurrentPath);
     } catch (e) {
       // Token might be expired
       showStatus(connectStatus, "Session expired. Please reconnect.", true);
@@ -83,7 +193,7 @@ async function loadConfig() {
 }
 
 /**
- * Populate the library dropdown.
+ * Populate the library dropdowns.
  */
 async function loadRepos(config) {
   const repos = await sendMessage("listRepos", {
@@ -95,13 +205,36 @@ async function loadRepos(config) {
   while (repoSelect.options.length > 1) {
     repoSelect.remove(1);
   }
-
-  for (const repo of repos) {
-    const option = document.createElement("option");
-    option.value = repo.repo_id || repo.id;
-    option.textContent = repo.repo_name || repo.name;
-    repoSelect.appendChild(option);
+  while (saveRepoSelect.options.length > 1) {
+    saveRepoSelect.remove(1);
   }
+
+  const unencrypted = repos.filter(r => !r.encrypted);
+  for (const repo of unencrypted) {
+    const id = repo.repo_id || repo.id;
+    const name = repo.repo_name || repo.name;
+
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = name;
+    repoSelect.appendChild(option);
+
+    const saveOption = document.createElement("option");
+    saveOption.value = id;
+    saveOption.textContent = name;
+    saveRepoSelect.appendChild(saveOption);
+  }
+}
+
+/**
+ * Submit connection on Enter key in any connection field.
+ */
+for (const input of [serverUrlInput, usernameInput, passwordInput]) {
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !connectBtn.disabled) {
+      connectBtn.click();
+    }
+  });
 }
 
 /**
@@ -118,6 +251,7 @@ connectBtn.addEventListener("click", async () => {
   }
 
   connectBtn.disabled = true;
+  connectBtn.textContent = browser.i18n.getMessage("connecting") || "Connecting...";
   connectStatus.className = "status";
 
   try {
@@ -130,11 +264,17 @@ connectBtn.addEventListener("click", async () => {
 
     // Load libraries
     await loadRepos(config);
-    librarySection.classList.add("visible");
-    showStatus(connectStatus, "Connected successfully!", false);
+    settingsTabs.classList.add("visible");
+    markConnected();
+
+    // Initialize folder pickers for the first selected library
+    if (repoSelect.value) {
+      navigateUploadFolder("/");
+      navigateSaveFolder("/");
+    }
   } catch (e) {
     showStatus(connectStatus, `Connection failed: ${e.message}`, true);
-  } finally {
+    connectBtn.textContent = browser.i18n.getMessage("connect") || "Connect";
     connectBtn.disabled = false;
   }
 });
@@ -145,9 +285,11 @@ connectBtn.addEventListener("click", async () => {
 saveBtn.addEventListener("click", async () => {
   const repoId = repoSelect.value;
   const repoName = repoSelect.options[repoSelect.selectedIndex]?.textContent || "";
-  const uploadPath = uploadPathInput.value.trim() || "/Thunderbird-Attachments";
+  const uploadPath = uploadCurrentPath;
+  const saveRepoId = saveRepoSelect.value || "";
+  const savePath = saveCurrentPath;
   const sharePassword = sharePasswordInput.value.trim();
-  const shareExpireDays = parseInt(shareExpireDaysInput.value, 10) || 0;
+  const shareExpireDays = Math.max(0, parseInt(shareExpireDaysInput.value, 10) || 0);
 
   if (!repoId) {
     showStatus(saveStatus, "Please select a library.", true);
@@ -163,6 +305,8 @@ saveBtn.addEventListener("click", async () => {
     config.repoId = repoId;
     config.repoName = repoName;
     config.uploadPath = uploadPath;
+    config.saveRepoId = saveRepoId;
+    config.savePath = savePath;
     config.sharePassword = sharePassword;
     config.shareExpireDays = shareExpireDays;
     await browser.storage.local.set({ [accountId]: config });
@@ -177,6 +321,22 @@ saveBtn.addEventListener("click", async () => {
     saveBtn.disabled = false;
   }
 });
+
+// Sanitize expiration input - only allow digits
+shareExpireDaysInput.addEventListener("input", () => {
+  shareExpireDaysInput.value = shareExpireDaysInput.value.replace(/[^0-9]/g, "");
+});
+
+// Tab switching
+for (const tab of document.querySelectorAll(".tab")) {
+  tab.addEventListener("click", () => {
+    document.querySelector(".tab.active").classList.remove("active");
+    document.querySelector(".tab-content.active").classList.remove("active");
+    tab.classList.add("active");
+    document.getElementById(`tab-${tab.dataset.tab}`).classList.add("active");
+    saveStatus.className = "status";
+  });
+}
 
 // Initialize page
 applyI18n();

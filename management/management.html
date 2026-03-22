@@ -10,7 +10,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 13px;
       margin: 0;
-      padding: 16px;
+      padding: 0;
       color: #333;
       background: transparent;
     }
@@ -25,6 +25,7 @@
     input[type="text"],
     input[type="password"],
     input[type="url"],
+    input[type="number"],
     select {
       width: 100%;
       padding: 6px 8px;
@@ -78,20 +79,6 @@
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
-    .section {
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #eee;
-    }
-    .section:last-child {
-      border-bottom: none;
-    }
-    .library-section {
-      display: none;
-    }
-    .library-section.visible {
-      display: block;
-    }
     h3 {
       margin: 0 0 12px 0;
       font-size: 14px;
@@ -102,11 +89,90 @@
       font-size: 11px;
       color: #888;
     }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ccc;
+      margin: 0;
+      padding: 0 16px;
+    }
+    .tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-bottom: none;
+      margin-bottom: -1px;
+      border-radius: 4px 4px 0 0;
+      font-size: 13px;
+      color: #555;
+    }
+    .tab:hover {
+      color: #333;
+      background: #f5f5f5;
+    }
+    .tab.active {
+      background: white;
+      border-color: #ccc;
+      color: #333;
+      font-weight: 600;
+    }
+    .tab-content {
+      display: none;
+      padding: 16px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .settings-tabs {
+      display: none;
+    }
+    .settings-tabs.visible {
+      display: block;
+    }
+    .folder-picker {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .folder-picker .current-path {
+      font-size: 12px;
+      color: #555;
+      background: #f5f5f5;
+      padding: 5px 8px;
+      border-bottom: 1px solid #eee;
+      word-break: break-all;
+    }
+    .folder-picker .folder-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .folder-picker .folder-list:empty::after {
+      content: attr(data-empty);
+      display: block;
+      padding: 8px;
+      color: #aaa;
+      font-size: 12px;
+    }
+    .folder-picker .folder-list li {
+      padding: 4px 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .folder-picker .folder-list li:hover {
+      background: #f0f4ff;
+    }
   </style>
 </head>
 <body>
-  <div class="section">
-    <h3 data-i18n="serverConnection">Server Connection</h3>
+  <!-- Connection (always visible) -->
+  <div style="padding: 16px 16px 0 16px;">
     <div class="form-group">
       <label for="serverUrl" data-i18n="serverUrl">Server URL</label>
       <input type="url" id="serverUrl" placeholder="https://cloud.seafile.com">
@@ -123,31 +189,62 @@
     <div id="connectStatus" class="status"></div>
   </div>
 
-  <div class="section library-section" id="librarySection">
-    <h3 data-i18n="uploadSettings">Upload Settings</h3>
-    <div class="form-group">
-      <label for="repoSelect" data-i18n="targetLibrary">Target Library</label>
-      <select id="repoSelect">
-        <option value="" data-i18n="selectLibrary">-- Select a library --</option>
-      </select>
+  <!-- Tabs (visible after connect) -->
+  <div class="settings-tabs" id="settingsTabs">
+    <div class="tabs" style="margin-top: 12px;">
+      <div class="tab active" data-tab="sharing" data-i18n="tabSharing">Sharing</div>
+      <div class="tab" data-tab="saving" data-i18n="tabSaving">Saving</div>
     </div>
-    <div class="form-group">
-      <label for="uploadPath" data-i18n="uploadFolder">Upload Folder</label>
-      <input type="text" id="uploadPath" value="/Thunderbird-Attachments">
+
+    <!-- Tab: Sharing -->
+    <div class="tab-content active" id="tab-sharing">
+      <div class="form-group">
+        <label for="repoSelect" data-i18n="targetLibrary">Target Library</label>
+        <select id="repoSelect">
+          <option value="" data-i18n="selectLibrary">-- Select a library --</option>
+        </select>
+        <span class="hint" data-i18n="encryptedHint">Encrypted libraries are not supported.</span>
+      </div>
+      <div class="form-group">
+        <label data-i18n="uploadFolder">Upload Folder</label>
+        <div class="folder-picker" id="uploadFolderPicker">
+          <div class="current-path" id="uploadPath">/</div>
+          <ul class="folder-list" id="uploadFolderList" data-empty="No subfolders"></ul>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="sharePassword" data-i18n="sharePassword">Password Protection</label>
+        <input type="text" id="sharePassword" placeholder="">
+        <span class="hint" data-i18n="sharePasswordHint">Leave empty for no password</span>
+      </div>
+      <div class="form-group">
+        <label for="shareExpireDays" data-i18n="shareExpireDays">Expiration (days)</label>
+        <input type="number" id="shareExpireDays" min="0" placeholder="0">
+        <span class="hint" data-i18n="shareExpireDaysHint">0 = no expiration</span>
+      </div>
     </div>
-    <h3 data-i18n="shareLinkOptions">Share Link Options</h3>
-    <div class="form-group">
-      <label for="sharePassword" data-i18n="sharePassword">Password Protection</label>
-      <input type="text" id="sharePassword" placeholder="">
-      <span class="hint" data-i18n="sharePasswordHint">Leave empty for no password</span>
+
+    <!-- Tab: Saving -->
+    <div class="tab-content" id="tab-saving">
+      <div class="form-group">
+        <label for="saveRepoSelect" data-i18n="saveTargetLibrary">Default Library</label>
+        <select id="saveRepoSelect">
+          <option value="" data-i18n="sameAsUpload">-- Same as upload library --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label data-i18n="saveFolder">Default Folder</label>
+        <div class="folder-picker" id="saveFolderPicker">
+          <div class="current-path" id="savePath">/</div>
+          <ul class="folder-list" id="saveFolderList" data-empty="No subfolders"></ul>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="shareExpireDays" data-i18n="shareExpireDays">Expiration (days)</label>
-      <input type="number" id="shareExpireDays" min="0" placeholder="0">
-      <span class="hint" data-i18n="shareExpireDaysHint">0 = no expiration</span>
+
+    <div style="padding: 0 16px 16px 16px;">
+      <button id="saveBtn" class="primary" data-i18n="save">Save</button>
+      <div id="saveStatus" class="status"></div>
     </div>
-    <button id="saveBtn" class="primary" data-i18n="save">Save</button>
-    <div id="saveStatus" class="status"></div>
   </div>
 
   <script src="management.js"></script>

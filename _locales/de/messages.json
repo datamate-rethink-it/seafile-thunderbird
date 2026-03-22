@@ -23,6 +23,12 @@
   "connect": {
     "message": "Verbinden"
   },
+  "connecting": {
+    "message": "Verbinde..."
+  },
+  "connected": {
+    "message": "Verbunden"
+  },
   "uploadSettings": {
     "message": "Upload-Einstellungen"
   },
@@ -32,8 +38,26 @@
   "selectLibrary": {
     "message": "-- Bibliothek auswählen --"
   },
+  "encryptedHint": {
+    "message": "Verschlüsselte Bibliotheken werden nicht unterstützt."
+  },
   "uploadFolder": {
     "message": "Upload-Ordner"
+  },
+  "saveAttachmentSettings": {
+    "message": "Anhänge-Speichern-Standardwerte"
+  },
+  "saveTargetLibrary": {
+    "message": "Standard-Bibliothek"
+  },
+  "sameAsUpload": {
+    "message": "-- Gleich wie Upload-Bibliothek --"
+  },
+  "saveFolder": {
+    "message": "Standard-Ordner"
+  },
+  "saveFolderHint": {
+    "message": "Standard-Ordner beim Speichern empfangener Anhänge"
   },
   "shareLinkOptions": {
     "message": "Freigabelink-Optionen"
@@ -50,7 +74,37 @@
   "shareExpireDaysHint": {
     "message": "0 = kein Ablaufdatum"
   },
+  "tabSharing": {
+    "message": "Teilen"
+  },
+  "tabSaving": {
+    "message": "Speichern"
+  },
   "save": {
     "message": "Speichern"
+  },
+  "saveToSeafile": {
+    "message": "In Seafile speichern"
+  },
+  "loading": {
+    "message": "Laden..."
+  },
+  "noAttachments": {
+    "message": "Keine Anhänge gefunden."
+  },
+  "notConfigured": {
+    "message": "Kein Seafile-Konto eingerichtet. Bitte unter Einstellungen → Verfassen → Anhänge konfigurieren."
+  },
+  "selectAll": {
+    "message": "Alle auswählen"
+  },
+  "targetFolder": {
+    "message": "Zielordner:"
+  },
+  "saveSuccess": {
+    "message": "Alle Dateien in Seafile gespeichert!"
+  },
+  "savePartialError": {
+    "message": "Einige Dateien konnten nicht hochgeladen werden."
   }
 }
