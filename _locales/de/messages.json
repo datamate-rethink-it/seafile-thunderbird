@@ -1,0 +1,56 @@
+{
+  "extensionName": {
+    "message": "Seafile für Thunderbird"
+  },
+  "extensionDescription": {
+    "message": "Große E-Mail-Anhänge als Seafile-Download-Links teilen"
+  },
+  "serviceName": {
+    "message": "Seafile"
+  },
+  "serverConnection": {
+    "message": "Serververbindung"
+  },
+  "serverUrl": {
+    "message": "Server-URL"
+  },
+  "username": {
+    "message": "Benutzername / E-Mail"
+  },
+  "password": {
+    "message": "Passwort"
+  },
+  "connect": {
+    "message": "Verbinden"
+  },
+  "uploadSettings": {
+    "message": "Upload-Einstellungen"
+  },
+  "targetLibrary": {
+    "message": "Zielbibliothek"
+  },
+  "selectLibrary": {
+    "message": "-- Bibliothek auswählen --"
+  },
+  "uploadFolder": {
+    "message": "Upload-Ordner"
+  },
+  "shareLinkOptions": {
+    "message": "Freigabelink-Optionen"
+  },
+  "sharePassword": {
+    "message": "Passwortschutz"
+  },
+  "sharePasswordHint": {
+    "message": "Leer lassen für keinen Passwortschutz"
+  },
+  "shareExpireDays": {
+    "message": "Ablauf (Tage)"
+  },
+  "shareExpireDaysHint": {
+    "message": "0 = kein Ablaufdatum"
+  },
+  "save": {
+    "message": "Speichern"
+  }
+}
