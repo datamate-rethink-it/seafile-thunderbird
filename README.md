@@ -150,6 +150,10 @@ CLIENT_SSO_VIA_LOCAL_BROWSER = True
 
 This allows desktop clients and this extension to authenticate via the system browser. The setting is supported by Seafile Server 7.1+ and works with any SSO method (SAML, OAuth, Keycloak, Shibboleth, etc.).
 
+## Privacy
+
+This extension does not collect or share any data with third parties. All data is stored locally and communicated exclusively with your configured Seafile server. See [PRIVACY.md](PRIVACY.md) for details.
+
 ## Roadmap
 
 - [ ] Publish on [addons.thunderbird.net](https://addons.thunderbird.net)
