@@ -6,23 +6,37 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 
 ## Screenshots
 
-### Settings
+![Insert Seafile Link — Browse files](docs/screenshots/insert-link-browse.png)
+*Browse your Seafile libraries and insert share links directly into emails.*
 
-| Connection | Connected | Share Attachments | Save Attachments |
-|---|---|---|---|
-| ![Connection](docs/screenshots/connection.png) | ![Connected](docs/screenshots/connection-connected.png) | ![Share settings](docs/screenshots/share-settings.png) | ![Save settings](docs/screenshots/save-settings.png) |
+![Insert Seafile Link — Link options](docs/screenshots/insert-link-detail.png)
+*Set password and expiration per link before inserting.*
 
-### Insert Seafile Link
+![Inserted link with password and expiry](docs/screenshots/insert-link-box.png)
+*The inserted link matches the CloudFile template style with file name, size, password, and Seafile logo.*
 
-| Browse files | Link options | Inserted link (with password & expiry) |
-|---|---|---|
-| ![Browse](docs/screenshots/insert-link-browse.png) | ![Detail](docs/screenshots/insert-link-detail.png) | ![Insert link box](docs/screenshots/insert-link-box.png) |
+![CloudFile template](docs/screenshots/cloudfile-box.png)
+*Attachments uploaded via Thunderbird's built-in Filelink also use the Seafile provider.*
 
-### CloudFile & Save Attachments
+![Save attachments to Seafile](docs/screenshots/save-attachments.png)
+*Save received email attachments directly to your Seafile server.*
 
-| CloudFile template (outgoing) | Save attachments (incoming) |
-|---|---|
-| ![CloudFile box](docs/screenshots/cloudfile-box.png) | ![Save attachments](docs/screenshots/save-attachments.png) |
+<details>
+<summary>Settings screenshots</summary>
+
+![Connection — Login](docs/screenshots/connection.png)
+*Connect with username/password (with optional 2FA) or via SSO.*
+
+![Connection — Connected](docs/screenshots/connection-connected.png)
+*Connected state shows server, user, and authentication method.*
+
+![Share Attachments settings](docs/screenshots/share-settings.png)
+*Configure target library, upload folder, password protection, and expiration.*
+
+![Save Attachments settings](docs/screenshots/save-settings.png)
+*Set default library and folder for saving received attachments.*
+
+</details>
 
 ## Features
 
