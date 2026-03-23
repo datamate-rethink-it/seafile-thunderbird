@@ -4,7 +4,7 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 
 ## Features
 
-### Sharing (outgoing)
+### Share attachments (outgoing)
 
 - **CloudFile integration** — Thunderbird automatically offers to upload attachments exceeding the size threshold (default: 5 MB)
 - **Share link creation** — each uploaded file gets a Seafile download link inserted into the email
@@ -13,19 +13,25 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 - **File rename support** — renaming an attachment after upload renames the file on Seafile and updates the share link
 - **Upload abort** — cancel in-progress uploads from Thunderbird's UI
 - **Clean deletion** — removing a cloud attachment deletes both the share link and the file on Seafile
+- **Reuse uploads** — previously uploaded files can be reinserted directly from the Filelink menu
+- **Existing link handling** — if a share link already exists for a file, it is automatically replaced
 
 ### Insert Seafile links (compose)
 
-- **Browse & insert** — browse your Seafile libraries and insert share links for existing files directly into emails
-- **File type icons** — color-coded SVG icons for common file types (PDF, images, spreadsheets, etc.)
-- **Link options** — set password and expiration per link, or use defaults from settings
+- **Browse & insert** — browse your Seafile libraries and folders directly in the compose window
+- **File selection** — click a file to select it, then configure link options before inserting
+- **File type icons** — color-coded SVG icons for common file types (PDF, images, spreadsheets, archives, audio, video, code, etc.)
+- **Password & expiration** — set password and expiration per link, or use defaults from settings
+- **Password generator** — generate secure 12-character passwords with one click
+- **Show password in email** — choose to display the password in the email or show a "sent separately" hint (configurable per link, default in settings)
 - **Existing link detection** — reuse existing share links or delete and recreate
 - **Rich email template** — inserted links match the CloudFile template style (file name, size, link URL, Seafile logo)
+- **Cursor position insert** — links are inserted at the cursor position without modifying existing email content
 
-### Saving (incoming)
+### Save attachments (incoming)
 
 - **Save attachments to Seafile** — click the Seafile button in the message header to save received attachments
-- **Library & folder selection** — choose target library and navigate folders before saving
+- **Library & folder selection** — choose target library and navigate folders with a collapsible folder picker
 - **Batch saving** — select multiple attachments at once, with synced "Select all" checkbox
 - **Per-file status** — visual SVG feedback for each file during upload
 - **Duplicate handling** — configurable: rename automatically (default) or overwrite existing files
@@ -35,16 +41,18 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 - **Username & password** — standard Seafile login
 - **Two-factor authentication (2FA)** — optional TOTP code field for accounts with 2FA enabled
 - **Single Sign-On (SSO)** — login via browser using SAML, OAuth, Keycloak, or any SSO method configured on the server (requires `CLIENT_SSO_VIA_LOCAL_BROWSER = True` in seahub_settings.py)
-
-### General
-
 - **Auto re-authentication** — expired API tokens are refreshed automatically (username/password login)
-- **Collapsible folder picker** — browse and select folders visually (click to expand, click outside to close)
-- **Auto-save settings** — all configuration changes are saved immediately
-- **Disconnect** — clearly shows connection status and auth method, one-click disconnect
-- **Encrypted library filtering** — encrypted libraries are excluded automatically
+- **Connection status** — clearly shows server, username, and authentication method (SSO or password)
+- **Disconnect** — one-click disconnect with automatic cleanup
+
+### Settings & UI
+
 - **Tabbed settings** — Connection, Share Attachments, Save Attachments
+- **Auto-save** — all configuration changes are saved immediately with visual feedback (green checkmark)
+- **Collapsible folder picker** — browse and select folders visually (click to expand, click outside to close)
 - **Library refresh** — library list refreshes automatically when switching tabs
+- **Encrypted library filtering** — encrypted libraries are excluded automatically
+- **Error notifications** — system notifications when actions fail (e.g. unconfigured account)
 - **Localization** — English, German, French, Chinese, Spanish, Russian, Portuguese (BR)
 
 ## Requirements
