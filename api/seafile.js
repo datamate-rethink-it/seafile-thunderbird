@@ -8,12 +8,17 @@ class SeafileAPI {
    * @param {string} server - Seafile server URL (e.g. "https://cloud.seafile.com")
    * @param {string} username
    * @param {string} password
+   * @param {string} [otp] - Optional 2FA/TOTP code
    * @returns {Promise<string>} API token
    */
-  async getToken(server, username, password) {
+  async getToken(server, username, password, otp) {
+    const headers = { "Content-Type": "application/x-www-form-urlencoded" };
+    if (otp) {
+      headers["X-SEAFILE-OTP"] = otp;
+    }
     const resp = await fetch(`${server}/api2/auth-token/`, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      headers,
       body: new URLSearchParams({ username, password }),
     });
     if (!resp.ok) {

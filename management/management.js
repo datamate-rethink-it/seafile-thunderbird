@@ -21,6 +21,7 @@ function applyI18n() {
 const serverUrlInput = document.getElementById("serverUrl");
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
+const otpInput = document.getElementById("otp");
 const connectBtn = document.getElementById("connectBtn");
 const connectStatus = document.getElementById("connectStatus");
 const settingsTabs = document.getElementById("settingsTabs");
@@ -125,7 +126,7 @@ function navigateSaveFolder(path) {
 /**
  * Re-enable connect button when credentials change.
  */
-for (const input of [serverUrlInput, usernameInput, passwordInput]) {
+for (const input of [serverUrlInput, usernameInput, passwordInput, otpInput]) {
   input.addEventListener("input", () => {
     connectBtn.textContent = browser.i18n.getMessage("connect") || "Connect";
     connectBtn.disabled = false;
@@ -229,7 +230,7 @@ async function loadRepos(config) {
 /**
  * Submit connection on Enter key in any connection field.
  */
-for (const input of [serverUrlInput, usernameInput, passwordInput]) {
+for (const input of [serverUrlInput, usernameInput, passwordInput, otpInput]) {
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !connectBtn.disabled) {
       connectBtn.click();
@@ -244,6 +245,7 @@ connectBtn.addEventListener("click", async () => {
   const serverUrl = serverUrlInput.value.trim().replace(/\/+$/, "");
   const username = usernameInput.value.trim();
   const password = passwordInput.value;
+  const otp = otpInput.value.trim();
 
   if (!serverUrl || !username || !password) {
     showStatus(connectStatus, "Please fill in all fields.", true);
@@ -255,7 +257,7 @@ connectBtn.addEventListener("click", async () => {
   connectStatus.className = "status";
 
   try {
-    const result = await sendMessage("getToken", { serverUrl, username, password });
+    const result = await sendMessage("getToken", { serverUrl, username, password, otp });
     const apiToken = result.token;
 
     // Save credentials

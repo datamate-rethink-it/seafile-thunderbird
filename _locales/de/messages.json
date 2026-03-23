@@ -20,6 +20,12 @@
   "password": {
     "message": "Passwort"
   },
+  "otpLabel": {
+    "message": "2FA-Code"
+  },
+  "otpHint": {
+    "message": "Nur erforderlich, wenn Zwei-Faktor-Authentifizierung aktiviert ist."
+  },
   "connect": {
     "message": "Verbinden"
   },
@@ -106,5 +112,11 @@
   },
   "savePartialError": {
     "message": "Einige Dateien konnten nicht hochgeladen werden."
+  },
+  "errorNotConnected": {
+    "message": "Seafile-Konto nicht verbunden. Bitte unter Einstellungen → Verfassen → Anhänge konfigurieren."
+  },
+  "errorNotConfigured": {
+    "message": "Seafile-Konto nicht vollständig konfiguriert. Bitte eine Bibliothek unter Einstellungen → Verfassen → Anhänge auswählen."
   }
 }

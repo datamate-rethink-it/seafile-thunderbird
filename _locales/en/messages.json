@@ -20,6 +20,12 @@
   "password": {
     "message": "Password"
   },
+  "otpLabel": {
+    "message": "2FA Code"
+  },
+  "otpHint": {
+    "message": "Only required if two-factor authentication is enabled."
+  },
   "connect": {
     "message": "Connect"
   },
@@ -106,5 +112,11 @@
   },
   "savePartialError": {
     "message": "Some files failed to upload."
+  },
+  "errorNotConnected": {
+    "message": "Seafile account not connected. Please set up your connection in Settings → Composition → Attachments."
+  },
+  "errorNotConfigured": {
+    "message": "Seafile account not fully configured. Please select a library in Settings → Composition → Attachments."
   }
 }

@@ -185,6 +185,11 @@
       <label for="password" data-i18n="password">Password</label>
       <input type="password" id="password">
     </div>
+    <div class="form-group">
+      <label for="otp" data-i18n="otpLabel">2FA Code</label>
+      <input type="text" id="otp" inputmode="numeric" autocomplete="one-time-code" placeholder="123456">
+      <span class="hint" data-i18n="otpHint">Only required if two-factor authentication is enabled.</span>
+    </div>
     <button id="connectBtn" class="primary" data-i18n="connect">Connect</button>
     <div id="connectStatus" class="status"></div>
   </div>

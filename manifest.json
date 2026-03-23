@@ -23,7 +23,7 @@
   "background": {
     "scripts": ["api/seafile.js", "background.js"]
   },
-  "permissions": ["storage", "messagesRead"],
+  "permissions": ["storage", "messagesRead", "notifications"],
   "host_permissions": ["<all_urls>"],
   "message_display_action": {
     "default_popup": "save-attachments/popup.html",

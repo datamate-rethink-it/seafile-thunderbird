@@ -9,6 +9,18 @@ const seafile = new SeafileAPI();
 const activeUploads = new Map();
 
 /**
+ * Show a system notification to the user.
+ * @param {string} message
+ */
+function showNotification(message) {
+  browser.notifications.create({
+    type: "basic",
+    title: "Seafile",
+    message,
+  });
+}
+
+/**
  * Get the account configuration from storage.
  * @param {string} accountId
  * @returns {Promise<Object>}
@@ -16,8 +28,11 @@ const activeUploads = new Map();
 async function getAccountConfig(accountId) {
   const stored = await browser.storage.local.get(accountId);
   const config = stored[accountId];
-  if (!config) {
-    throw new Error("Account not configured. Please set up your Seafile connection.");
+  if (!config || !config.apiToken) {
+    throw new Error(browser.i18n.getMessage("errorNotConnected") || "Seafile account not connected. Please set up your connection in Settings → Composition → Attachments.");
+  }
+  if (!config.repoId) {
+    throw new Error(browser.i18n.getMessage("errorNotConfigured") || "Seafile account not fully configured. Please select a library in Settings → Composition → Attachments.");
   }
   return config;
 }
@@ -32,10 +47,17 @@ async function reAuthenticate(accountId, config) {
   if (!config.username || !config.password) {
     throw new Error("Cannot re-authenticate: no stored credentials.");
   }
-  const newToken = await seafile.getToken(config.serverUrl, config.username, config.password);
-  config.apiToken = newToken;
-  await browser.storage.local.set({ [accountId]: config });
-  return newToken;
+  try {
+    const newToken = await seafile.getToken(config.serverUrl, config.username, config.password);
+    config.apiToken = newToken;
+    await browser.storage.local.set({ [accountId]: config });
+    return newToken;
+  } catch (e) {
+    if (e.message && e.message.includes("OTP")) {
+      throw new Error("Session expired. Please reconnect in the Seafile account settings (2FA code required).");
+    }
+    throw e;
+  }
 }
 
 /**
@@ -164,7 +186,8 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab) => {
     if (abortController.signal.aborted) {
       return { aborted: true };
     }
-    return { error: e.message };
+    showNotification(e.message);
+    return { error: true };
   } finally {
     activeUploads.delete(fileInfo.id);
   }
@@ -276,7 +299,7 @@ browser.runtime.onMessage.addListener(async (message) => {
   switch (message.action) {
     case "getToken": {
       const token = await seafile.getToken(
-        message.serverUrl, message.username, message.password
+        message.serverUrl, message.username, message.password, message.otp
       );
       return { token };
     }
@@ -323,8 +346,7 @@ browser.runtime.onMessage.addListener(async (message) => {
       return { success: true };
     }
     case "getAccountConfig": {
-      const config = await getFirstConfiguredAccount();
-      return config || { error: "No Seafile account configured." };
+      return await getFirstConfiguredAccount();
     }
     case "listDir": {
       const config = await getFirstConfiguredAccount();
