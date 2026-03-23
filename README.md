@@ -15,14 +15,14 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 ![Inserted link with password and expiry](docs/screenshots/insert-link-box.png)
 *The inserted link matches the CloudFile template style with file name, size, password, and Seafile logo.*
 
-![CloudFile template](docs/screenshots/cloudfile-box.png)
-*Attachments uploaded via Thunderbird's built-in Filelink also use the Seafile provider.*
-
 ![Save attachments to Seafile](docs/screenshots/save-attachments.png)
 *Save received email attachments directly to your Seafile server.*
 
 <details>
-<summary>Settings screenshots</summary>
+<summary>More screenshots</summary>
+
+![CloudFile template](docs/screenshots/cloudfile-box.png)
+*Attachments uploaded via Thunderbird's built-in Filelink also use the Seafile provider.*
 
 ![Connection — Login](docs/screenshots/connection.png)
 *Connect with username/password (with optional 2FA) or via SSO.*
