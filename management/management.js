@@ -119,8 +119,18 @@ async function refreshRepos() {
     const prevRepo = repoSelect.value;
     const prevSaveRepo = saveRepoSelect.value;
     await loadRepos(config);
+
+    // Restore selections
     if (prevRepo) repoSelect.value = prevRepo;
     if (prevSaveRepo) saveRepoSelect.value = prevSaveRepo;
+
+    // Reload folder pickers with current paths
+    if (repoSelect.value) {
+      navigateUploadFolder(uploadCurrentPath);
+    }
+    if (saveRepoSelect.value || repoSelect.value) {
+      navigateSaveFolder(saveCurrentPath);
+    }
   } catch (e) {
     console.error("Failed to refresh libraries:", e);
   }
