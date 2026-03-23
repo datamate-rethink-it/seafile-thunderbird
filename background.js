@@ -442,22 +442,24 @@ browser.runtime.onMessage.addListener(async (message) => {
         const logoSvg = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIxMCAxIDU2IDUyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xMy44MDYsMjIuMTYxYzAsLTAuOTIgMC43NDYsLTEuNjU4IDEuNjY3LC0xLjY1OGMwLjQzOSwwIDAuODI5LDAuMTc0IDEuMTI4LDAuNDQ4Yy0wLjAwOCwtMC4xNDkgLTAuMDE3LC0wLjI5IC0wLjAxNywtMC40MzljMCwtMy4wNzYgMi40ODcsLTUuNTY0IDUuNTY0LC01LjU2NGMwLjc5NiwwIDEuNTUsMC4xNjYgMi4yMzksMC40NzNjLTAuMDA4LC0wLjE1OCAtMC4wMTcsLTAuMzE1IC0wLjAxNywtMC40NjRjMCwtNC42MSAzLjczMSwtOC4zNDEgOC4zNDEsLTguMzQxYzQuNTc3LDAgOC4yOTEsMy42OSA4LjM0MSw4LjI1OGMtMS41MDksMS4zMjcgLTIuNzExLDMuMDAxIC0zLjQ4Miw0Ljg5MmMtMS40OTIsLTAuOTI5IC0zLjI1LC0xLjQ4NCAtNS4xMzIsLTEuNDg0Yy0zLjg4LDAtNy4yMywyLjIwNiAtOC43OTcsNS41MzlsLTUuOTQ2LDBsLTIuMjIyLDBjLTAuOTIxLC0wLjAxOCAtMS42NjcsLTAuNzM5IC0xLjY2NywtMS42NlptNDMuOTIsLTQuOTgzYy0yLjA2NSwtMi4wNjUgLTQuOTA5LC0zLjM0MSAtOC4wNTksLTMuMzQxYy01Ljc0NiwwIC0xMC41MDUsNC4yNTQgLTExLjI4NSw5Ljc5MmMtMS40MTgsLTEuODkgLTMuNjgxLC0zLjExOCAtNi4yMjcsLTMuMTE4Yy00LjMwMywwIC03Ljc4NiwzLjQ5MSAtNy43ODYsNy43ODZjMCwxLjI1MiAwLjI5OCwyLjQyOSAwLjgyMSwzLjQ4MmMtMi43MDMsMC41NDcgLTQuNzEsMi42NDUgLTQuNzEsNS4xNDFjMCwyLjkxOSAyLjczNiw1LjI4MiA2LjExOSw1LjI4MmMxLjQ5MiwwIDIuODYxLC0wLjQ2NCAzLjkyMiwtMS4yMzVsMTIuNTEyLC0xMi4zMDVjMS4zODUsLTEuMjY5IDMuMjI1LC0yLjA0IDUuMjQ4LC0yLjA0YzQuMjI5LDAgNy42NywzLjM3NSA3Ljc4Niw3LjU3OGMwLDAgMCwtMC4wMDggLTAuMDA4LC0wLjAwOGMwLjA2NiwxLjI0NCAtMC41OCwyLjQ5NiAtMS43NzQsMy4xODRjLTEuNjY3LDAuOTYyIC0zLjc1NiwwLjQ0OCAtNC42NjgsLTEuMTM2Yy0wLjkyLC0xLjU5MiAtMC4zMTUsLTMuNjU3IDEuMzUyLC00LjYxOGMwLjM5LC0wLjIyNCAwLjc5NiwtMC4zNjUgMS4yMTEsLTAuNDM5Yy0wLjM1NywtMC4wNzUgLTAuNzMsLTAuMTA4IC0xLjExMSwtMC4xMDhjLTMuMDY4LDAgLTUuNTY0LDIuNDg3IC01LjU2NCw1LjU2NGMwLDMuMDc2IDIuNDg3LDUuNTY0IDUuNTY0LDUuNTY0YzAuMTMzLDAgMC4yNzQsLTAuMDA4IDAuNDA2LC0wLjAxN2wtMC4wMDgsLTAuMDE3bDAuMTU4LC0wLjAxN2wxMC45MiwwbDAsMC4wNDFjMy4zNDEsLTAuMTQ5IDYuNSwtMy4yMjUgNi41LC02Ljk3M2MwLC0zLjgzOSAtMy4yODMsLTYuOTczIC03LjEyMiwtNi45NzNjLTAuMDA4LDAgLTAuMDA4LDAgLTAuMDE3LDBjLTAuNjIyLDEuMTExIC0xLjM3NiwxLjc1OCAtMi4yMywyLjQ1NGMwLjg5NSwtMS42MzMgMS40MSwtMy40OTEgMS40MSwtNS40ODFjLTAuMDE5LC0zLjE0MSAtMS4yOTYsLTUuOTc3IC0zLjM2LC04LjA0MloiIHN0eWxlPSJmaWxsOnVybCgjX0xpbmVhcjEpO2ZpbGwtcnVsZTpub256ZXJvOyIvPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iX0xpbmVhcjEiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgyLjE3OTE2ZS0xNSwzNS41ODg0LC0zNS41ODg0LDIuMTc5MTZlLTE1LDQxLjQyMiw2LjYyMDE1KSI+PHN0b3Agb2Zmc2V0PSIwIiBzdHlsZT0ic3RvcC1jb2xvcjojZmFkOTU2O3N0b3Atb3BhY2l0eToxIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdHlsZT0ic3RvcC1jb2xvcjojZmZhMTBmO3N0b3Atb3BhY2l0eToxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PC9zdmc+`;
 
         const linkHtml = `
-<div style="padding:15px 0;">
-  <div style="background:#f0f6ff;border-radius:8px;padding:12px 16px;margin-bottom:4px;">
+<div style="padding:15px;background:#dae3f0;border-radius:4px;font-family:sans-serif;">
+  <div style="font-size:13px;color:#333;margin-bottom:8px;">I've linked a file to this email:</div>
+  <div style="background:#fff;border:1px solid #c8cfd6;border-radius:4px;padding:10px 12px;">
     <table style="width:100%;border-collapse:collapse;"><tr>
-      <td style="width:32px;vertical-align:top;padding-right:10px;">
-        <span style="font-size:24px;">&#128206;</span>
+      <td style="width:28px;vertical-align:top;padding-right:8px;">
+        <span style="font-size:20px;color:#7b8a99;">&#128206;</span>
       </td>
-      <td style="vertical-align:top;font-family:sans-serif;font-size:13px;color:#333;">
-        <a href="${link}" style="color:#4a90d9;font-size:14px;font-weight:600;text-decoration:none;">${fileName}</a><br>
-        <span style="color:#666;font-size:12px;">${metaLines}</span>
+      <td style="vertical-align:top;font-size:12px;color:#555;">
+        <a href="${link}" style="color:#0060df;font-size:13px;text-decoration:underline;">${fileName}</a><br>
+        ${metaLines}
       </td>
       <td style="width:50px;vertical-align:middle;text-align:center;">
-        <img src="${logoSvg}" alt="Seafile" width="32" height="32" style="display:block;margin:0 auto 2px auto;">
-        <div style="font-size:10px;color:#999;">Seafile</div>
+        <img src="${logoSvg}" alt="Seafile" width="28" height="28" style="display:block;margin:0 auto 2px auto;">
+        <div style="font-size:9px;color:#888;">Seafile</div>
       </td>
     </tr></table>
   </div>
+  <div style="font-size:11px;color:#555;margin-top:6px;">Learn more about <a href="https://www.seafile.com" style="color:#0060df;">Seafile</a>.</div>
 </div>`;
 
         let body = details.body;

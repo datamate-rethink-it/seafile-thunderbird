@@ -531,15 +531,20 @@ savePathEl.addEventListener("click", () => {
   toggleFolderPicker(saveFolderPicker);
   if (wasOpen) autoSave(saveFolderPicker);
 });
-document.addEventListener("mousedown", (e) => {
-  if (!uploadFolderPicker.contains(e.target) && uploadFolderPicker.classList.contains("open")) {
+function closeOpenPickers(e) {
+  if (uploadFolderPicker.classList.contains("open") && !uploadFolderPicker.contains(e.target)) {
     uploadFolderPicker.classList.remove("open");
     autoSave(uploadFolderPicker);
   }
-  if (!saveFolderPicker.contains(e.target) && saveFolderPicker.classList.contains("open")) {
+  if (saveFolderPicker.classList.contains("open") && !saveFolderPicker.contains(e.target)) {
     saveFolderPicker.classList.remove("open");
     autoSave(saveFolderPicker);
   }
+}
+document.addEventListener("mousedown", closeOpenPickers);
+document.addEventListener("focusin", closeOpenPickers);
+window.addEventListener("blur", () => {
+  closeOpenPickers({ target: document.body });
 });
 
 // Initialize page
