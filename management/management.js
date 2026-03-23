@@ -39,6 +39,7 @@ const saveFolderList = document.getElementById("saveFolderList");
 const sharePasswordInput = document.getElementById("sharePassword");
 const shareExpireDaysInput = document.getElementById("shareExpireDays");
 const skipLinkOptionsInput = document.getElementById("skipLinkOptions");
+const saveReplaceExistingInput = document.getElementById("saveReplaceExisting");
 const ssoBtn = document.getElementById("ssoBtn");
 const ssoStatus = document.getElementById("ssoStatus");
 const uploadFolderPicker = document.getElementById("uploadFolderPicker");
@@ -89,6 +90,30 @@ function switchTab(tabName) {
   document.querySelector(".tab-content.active").classList.remove("active");
   tab.classList.add("active");
   document.getElementById(`tab-${tabName}`).classList.add("active");
+
+  // Refresh libraries when switching to a settings tab
+  if (tabName === "sharing" || tabName === "saving") {
+    refreshRepos();
+  }
+}
+
+/**
+ * Refresh the library dropdowns, preserving current selections.
+ */
+async function refreshRepos() {
+  try {
+    const stored = await browser.storage.local.get(accountId);
+    const config = stored[accountId];
+    if (!config || !config.apiToken) return;
+
+    const prevRepo = repoSelect.value;
+    const prevSaveRepo = saveRepoSelect.value;
+    await loadRepos(config);
+    if (prevRepo) repoSelect.value = prevRepo;
+    if (prevSaveRepo) saveRepoSelect.value = prevSaveRepo;
+  } catch (e) {
+    console.error("Failed to refresh libraries:", e);
+  }
 }
 
 /**
@@ -201,6 +226,7 @@ async function loadConfig() {
   sharePasswordInput.value = config.sharePassword || "";
   shareExpireDaysInput.value = config.shareExpireDays || 0;
   skipLinkOptionsInput.checked = !!config.skipLinkOptions;
+  saveReplaceExistingInput.checked = !!config.saveReplaceExisting;
 
   if (config.apiToken) {
     // Already connected - try to load repos
@@ -209,9 +235,10 @@ async function loadConfig() {
       enableSettingsTabs();
       markConnected(config);
 
-      // Pre-select saved repos
+      // Pre-select saved repos and mark configured
       if (config.repoId) {
         repoSelect.value = config.repoId;
+        await browser.cloudFile.updateAccount(accountId, { configured: true });
       }
       if (config.saveRepoId) {
         saveRepoSelect.value = config.saveRepoId;
@@ -424,6 +451,7 @@ function autoSave(sourceEl) {
       config.sharePassword = sharePasswordInput.value.trim();
       config.shareExpireDays = Math.max(0, parseInt(shareExpireDaysInput.value, 10) || 0);
       config.skipLinkOptions = skipLinkOptionsInput.checked;
+      config.saveReplaceExisting = saveReplaceExistingInput.checked;
       await browser.storage.local.set({ [accountId]: config });
 
       if (config.repoId) {
@@ -456,6 +484,7 @@ shareExpireDaysInput.addEventListener("input", () => {
   autoSave(shareExpireDaysInput);
 });
 skipLinkOptionsInput.addEventListener("change", () => autoSave(skipLinkOptionsInput.parentElement));
+saveReplaceExistingInput.addEventListener("change", () => autoSave(saveReplaceExistingInput.parentElement));
 
 // Disconnect handler
 disconnectBtn.addEventListener("click", async () => {
@@ -501,6 +530,16 @@ savePathEl.addEventListener("click", () => {
   const wasOpen = saveFolderPicker.classList.contains("open");
   toggleFolderPicker(saveFolderPicker);
   if (wasOpen) autoSave(saveFolderPicker);
+});
+document.addEventListener("mousedown", (e) => {
+  if (!uploadFolderPicker.contains(e.target) && uploadFolderPicker.classList.contains("open")) {
+    uploadFolderPicker.classList.remove("open");
+    autoSave(uploadFolderPicker);
+  }
+  if (!saveFolderPicker.contains(e.target) && saveFolderPicker.classList.contains("open")) {
+    saveFolderPicker.classList.remove("open");
+    autoSave(saveFolderPicker);
+  }
 });
 
 // Initialize page

@@ -61,6 +61,14 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+    button.danger {
+      background: #dc3545;
+      color: white;
+      border-color: #c82333;
+    }
+    button.danger:hover {
+      background: #c82333;
+    }
     .save-check {
       display: inline-flex;
       align-items: center;
@@ -274,7 +282,7 @@
         <div id="connectedUser" style="font-size:13px;color:#333;padding:4px 0;"></div>
       </div>
       <div id="connectedMethod" style="font-size:11px;color:#888;margin-bottom:12px;"></div>
-      <button id="disconnectBtn" data-i18n="disconnect">Disconnect</button>
+      <button id="disconnectBtn" class="danger" data-i18n="disconnect">Disconnect</button>
     </div>
 
     <!-- Login form -->
@@ -354,6 +362,12 @@
         <div class="current-path" id="savePath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
         <ul class="folder-list" id="saveFolderList" data-empty="No subfolders"></ul>
       </div>
+    </div>
+    <div class="form-group" style="margin-top: 16px;">
+      <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer;">
+        <input type="checkbox" id="saveReplaceExisting">
+        <span data-i18n="saveReplaceExisting">Replace existing files with the same name</span>
+      </label>
     </div>
   </div>
 

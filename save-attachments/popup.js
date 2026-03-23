@@ -71,8 +71,18 @@ function renderAttachments() {
       <span class="att-size">${formatSize(att.size)}</span>
       <span class="att-status" data-part-status="${att.partName}"></span>
     `;
+    li.querySelector(".att-checkbox").addEventListener("change", syncSelectAll);
     attachmentListEl.appendChild(li);
   }
+}
+
+/**
+ * Sync the "Select all" checkbox with individual checkboxes.
+ */
+function syncSelectAll() {
+  const checkboxes = attachmentListEl.querySelectorAll(".att-checkbox:not(:disabled)");
+  const allChecked = [...checkboxes].every(cb => cb.checked);
+  selectAllEl.checked = allChecked;
 }
 
 /**
@@ -105,7 +115,7 @@ async function loadRepos() {
  */
 async function navigateToFolder(path) {
   currentPath = path;
-  currentPathEl.textContent = path;
+  currentPathEl.querySelector(".path-text").textContent = path;
 
   folderListEl.innerHTML = "";
   try {
@@ -138,6 +148,17 @@ async function navigateToFolder(path) {
 repoSelectEl.addEventListener("change", () => {
   currentRepoId = repoSelectEl.value;
   navigateToFolder("/");
+});
+
+// Folder picker toggle + close on outside click
+const folderPicker = document.getElementById("folderPicker");
+currentPathEl.addEventListener("click", () => {
+  folderPicker.classList.toggle("open");
+});
+document.addEventListener("mousedown", (e) => {
+  if (!folderPicker.contains(e.target)) {
+    folderPicker.classList.remove("open");
+  }
 });
 
 /**

@@ -174,7 +174,10 @@
     "message": "Zielordner:"
   },
   "saveSuccess": {
-    "message": "Alle Dateien in Seafile gespeichert!"
+    "message": "Alle ausgewählten Dateien in Seafile gespeichert!"
+  },
+  "saveReplaceExisting": {
+    "message": "Vorhandene Dateien mit gleichem Namen überschreiben"
   },
   "savePartialError": {
     "message": "Einige Dateien konnten nicht hochgeladen werden."

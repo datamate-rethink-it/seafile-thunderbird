@@ -174,7 +174,10 @@
     "message": "Target folder:"
   },
   "saveSuccess": {
-    "message": "All files saved to Seafile!"
+    "message": "All selected files saved to Seafile!"
+  },
+  "saveReplaceExisting": {
+    "message": "Replace existing files with the same name"
   },
   "savePartialError": {
     "message": "Some files failed to upload."

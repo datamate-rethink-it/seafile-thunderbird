@@ -124,11 +124,11 @@ class SeafileAPI {
    * @param {AbortSignal} [signal] - Optional abort signal
    * @returns {Promise<Object>} Upload result with name, id, size
    */
-  async uploadFile(uploadLink, token, file, fileName, parentDir, signal) {
+  async uploadFile(uploadLink, token, file, fileName, parentDir, signal, replace = true) {
     const formData = new FormData();
     formData.append("file", file, fileName);
     formData.append("parent_dir", parentDir);
-    formData.append("replace", "1");
+    formData.append("replace", replace ? "1" : "0");
 
     const url = uploadLink.endsWith("?ret-json=1")
       ? uploadLink

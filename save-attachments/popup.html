@@ -97,26 +97,65 @@
     .folder-breadcrumb span {
       color: #888;
     }
-    .folder-list {
+    .folder-picker {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .folder-picker .current-path {
+      font-size: 12px;
+      color: #555;
+      background: #f5f5f5;
+      padding: 5px 8px;
+      word-break: break-all;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .folder-picker .current-path:hover {
+      background: #eee;
+    }
+    .folder-picker .current-path .toggle-arrow {
+      font-size: 10px;
+      color: #999;
+      transition: transform 0.15s;
+    }
+    .folder-picker.open .current-path {
+      border-bottom: 1px solid #eee;
+    }
+    .folder-picker.open .current-path .toggle-arrow {
+      transform: rotate(180deg);
+    }
+    .folder-picker .folder-list {
       list-style: none;
       padding: 0;
       margin: 0;
       max-height: 120px;
       overflow-y: auto;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    .folder-list:empty {
       display: none;
     }
-    .folder-list li {
-      padding: 5px 8px;
+    .folder-picker.open .folder-list {
+      display: block;
+    }
+    .folder-picker .folder-list:empty::after {
+      content: attr(data-empty);
+      display: block;
+      padding: 8px;
+      color: #aaa;
+      font-size: 12px;
+    }
+    .folder-picker .folder-list li {
+      padding: 4px 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
+      font-size: 12px;
     }
-    .folder-list li:hover {
+    .folder-picker .folder-list li:hover {
       background: #f0f4ff;
     }
     .folder-icon {
@@ -126,15 +165,6 @@
     }
     .folder-icon svg {
       display: block;
-    }
-    .current-path {
-      font-size: 12px;
-      color: #555;
-      background: #f5f5f5;
-      padding: 4px 8px;
-      border-radius: 4px;
-      margin-bottom: 8px;
-      word-break: break-all;
     }
     button.primary {
       padding: 6px 16px;
@@ -207,8 +237,10 @@
         <select id="repoSelect"></select>
       </div>
       <label data-i18n="targetFolder">Folder:</label>
-      <div class="current-path" id="currentPath">/</div>
-      <ul class="folder-list" id="folderList"></ul>
+      <div class="folder-picker" id="folderPicker">
+        <div class="current-path" id="currentPath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
+        <ul class="folder-list" id="folderList" data-empty="No subfolders"></ul>
+      </div>
     </div>
 
     <button id="saveBtn" class="primary" data-i18n="saveToSeafile">Save to Seafile</button>

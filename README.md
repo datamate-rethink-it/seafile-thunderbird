@@ -26,8 +26,9 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 
 - **Save attachments to Seafile** — click the Seafile button in the message header to save received attachments
 - **Library & folder selection** — choose target library and navigate folders before saving
-- **Batch saving** — select multiple attachments at once
-- **Per-file status** — visual feedback for each file during upload
+- **Batch saving** — select multiple attachments at once, with synced "Select all" checkbox
+- **Per-file status** — visual SVG feedback for each file during upload
+- **Duplicate handling** — configurable: rename automatically (default) or overwrite existing files
 
 ### Authentication
 
@@ -38,11 +39,12 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 ### General
 
 - **Auto re-authentication** — expired API tokens are refreshed automatically (username/password login)
-- **Collapsible folder picker** — browse and select folders visually (click to expand, click to confirm)
+- **Collapsible folder picker** — browse and select folders visually (click to expand, click outside to close)
 - **Auto-save settings** — all configuration changes are saved immediately
 - **Disconnect** — clearly shows connection status and auth method, one-click disconnect
 - **Encrypted library filtering** — encrypted libraries are excluded automatically
 - **Tabbed settings** — Connection, Share Attachments, Save Attachments
+- **Library refresh** — library list refreshes automatically when switching tabs
 - **Localization** — English and German
 
 ## Requirements

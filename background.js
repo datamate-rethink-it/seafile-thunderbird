@@ -365,8 +365,9 @@ browser.runtime.onMessage.addListener(async (message) => {
       const uploadLink = await seafile.getUploadLink(
         config.serverUrl, config.apiToken, repoId, targetDir
       );
+      const replace = !!config.saveReplaceExisting;
       await seafile.uploadFile(
-        uploadLink, config.apiToken, file, message.fileName, targetDir
+        uploadLink, config.apiToken, file, message.fileName, targetDir, null, replace
       );
       return { success: true };
     }
@@ -451,9 +452,9 @@ browser.runtime.onMessage.addListener(async (message) => {
         <a href="${link}" style="color:#4a90d9;font-size:14px;font-weight:600;text-decoration:none;">${fileName}</a><br>
         <span style="color:#666;font-size:12px;">${metaLines}</span>
       </td>
-      <td style="width:60px;vertical-align:top;text-align:right;">
-        <img src="${logoSvg}" alt="Seafile" width="36" height="36" style="display:inline-block;">
-        <div style="font-size:10px;color:#999;text-align:center;">Seafile</div>
+      <td style="width:50px;vertical-align:middle;text-align:center;">
+        <img src="${logoSvg}" alt="Seafile" width="32" height="32" style="display:block;margin:0 auto 2px auto;">
+        <div style="font-size:10px;color:#999;">Seafile</div>
       </td>
     </tr></table>
   </div>
