@@ -29,6 +29,27 @@
   "connect": {
     "message": "Connect"
   },
+  "or": {
+    "message": "or"
+  },
+  "ssoLogin": {
+    "message": "Login via SSO"
+  },
+  "ssoEnterUrl": {
+    "message": "Please enter the server URL first."
+  },
+  "ssoUnavailable": {
+    "message": "SSO via local browser is not enabled on this server. The admin needs to set CLIENT_SSO_VIA_LOCAL_BROWSER = True in seahub_settings.py."
+  },
+  "ssoWaiting": {
+    "message": "Waiting for authentication in browser..."
+  },
+  "ssoTimeout": {
+    "message": "SSO login timed out. Please try again."
+  },
+  "ssoError": {
+    "message": "SSO login failed. Please try again."
+  },
   "connecting": {
     "message": "Connecting..."
   },

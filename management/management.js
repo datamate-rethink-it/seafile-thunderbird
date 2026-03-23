@@ -33,12 +33,15 @@ const savePathEl = document.getElementById("savePath");
 const saveFolderList = document.getElementById("saveFolderList");
 const sharePasswordInput = document.getElementById("sharePassword");
 const shareExpireDaysInput = document.getElementById("shareExpireDays");
+const ssoBtn = document.getElementById("ssoBtn");
+const ssoStatus = document.getElementById("ssoStatus");
 const saveBtn = document.getElementById("saveBtn");
 const saveStatus = document.getElementById("saveStatus");
 
 // Current folder picker state
 let uploadCurrentPath = "/";
 let saveCurrentPath = "/";
+let ssoPollingInterval = null;
 
 /**
  * Send a message to the background script and return the response.
@@ -239,6 +242,22 @@ for (const input of [serverUrlInput, usernameInput, passwordInput, otpInput]) {
 }
 
 /**
+ * After successful authentication, load repos and show settings.
+ * @param {Object} config - Account config with serverUrl, apiToken, etc.
+ */
+async function onConnected(config) {
+  await browser.storage.local.set({ [accountId]: config });
+  await loadRepos(config);
+  settingsTabs.classList.add("visible");
+  markConnected();
+  ssoBtn.disabled = true;
+  if (repoSelect.value) {
+    navigateUploadFolder("/");
+    navigateSaveFolder("/");
+  }
+}
+
+/**
  * Handle "Connect" button click.
  */
 connectBtn.addEventListener("click", async () => {
@@ -258,26 +277,74 @@ connectBtn.addEventListener("click", async () => {
 
   try {
     const result = await sendMessage("getToken", { serverUrl, username, password, otp });
-    const apiToken = result.token;
-
-    // Save credentials
-    const config = { serverUrl, username, password, apiToken };
-    await browser.storage.local.set({ [accountId]: config });
-
-    // Load libraries
-    await loadRepos(config);
-    settingsTabs.classList.add("visible");
-    markConnected();
-
-    // Initialize folder pickers for the first selected library
-    if (repoSelect.value) {
-      navigateUploadFolder("/");
-      navigateSaveFolder("/");
-    }
+    const config = { serverUrl, username, password, apiToken: result.token };
+    await onConnected(config);
   } catch (e) {
     showStatus(connectStatus, `Connection failed: ${e.message}`, true);
     connectBtn.textContent = browser.i18n.getMessage("connect") || "Connect";
     connectBtn.disabled = false;
+  }
+});
+
+/**
+ * Handle "Login via SSO" button click.
+ */
+ssoBtn.addEventListener("click", async () => {
+  const serverUrl = serverUrlInput.value.trim().replace(/\/+$/, "");
+  if (!serverUrl) {
+    showStatus(ssoStatus, browser.i18n.getMessage("ssoEnterUrl") || "Please enter the server URL first.", true);
+    return;
+  }
+
+  ssoBtn.disabled = true;
+  ssoStatus.className = "status";
+
+  try {
+    const result = await sendMessage("startSSO", { serverUrl });
+
+    if (result.ssoUnavailable) {
+      showStatus(ssoStatus, browser.i18n.getMessage("ssoUnavailable") || "SSO via local browser is not enabled on this server. The admin needs to set CLIENT_SSO_VIA_LOCAL_BROWSER = True in seahub_settings.py.", false);
+      ssoStatus.className = "status info";
+      ssoBtn.disabled = false;
+      return;
+    }
+
+    // Start polling
+    showStatus(ssoStatus, browser.i18n.getMessage("ssoWaiting") || "Waiting for authentication in browser...", false);
+    ssoStatus.className = "status info";
+
+    let elapsed = 0;
+    ssoPollingInterval = setInterval(async () => {
+      elapsed += 3;
+      if (elapsed > 300) {
+        clearInterval(ssoPollingInterval);
+        ssoPollingInterval = null;
+        showStatus(ssoStatus, browser.i18n.getMessage("ssoTimeout") || "SSO login timed out. Please try again.", true);
+        ssoBtn.disabled = false;
+        return;
+      }
+      try {
+        const status = await sendMessage("checkSSOStatus", { serverUrl, ssoToken: result.ssoToken });
+        if (status.status === "success" && status.apiToken) {
+          clearInterval(ssoPollingInterval);
+          ssoPollingInterval = null;
+          const config = { serverUrl, username: status.username, apiToken: status.apiToken, authMethod: "sso" };
+          await onConnected(config);
+          ssoStatus.className = "status";
+        } else if (status.status === "error") {
+          clearInterval(ssoPollingInterval);
+          ssoPollingInterval = null;
+          showStatus(ssoStatus, browser.i18n.getMessage("ssoError") || "SSO login failed. Please try again.", true);
+          ssoBtn.disabled = false;
+        }
+      } catch (e) {
+        // Polling error - continue trying
+        console.error("SSO poll error:", e);
+      }
+    }, 3000);
+  } catch (e) {
+    showStatus(ssoStatus, `SSO failed: ${e.message}`, true);
+    ssoBtn.disabled = false;
   }
 });
 

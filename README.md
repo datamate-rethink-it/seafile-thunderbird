@@ -21,9 +21,15 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 - **Batch saving** — select multiple attachments at once
 - **Per-file status** — visual feedback for each file during upload
 
+### Authentication
+
+- **Username & password** — standard Seafile login
+- **Two-factor authentication (2FA)** — optional TOTP code field for accounts with 2FA enabled
+- **Single Sign-On (SSO)** — login via browser using SAML, OAuth, Keycloak, or any SSO method configured on the server (requires `CLIENT_SSO_VIA_LOCAL_BROWSER = True` in seahub_settings.py)
+
 ### General
 
-- **Auto re-authentication** — expired API tokens are refreshed automatically
+- **Auto re-authentication** — expired API tokens are refreshed automatically (username/password login)
 - **Folder picker** — browse and select folders visually in settings (no manual path entry)
 - **Encrypted library filtering** — encrypted libraries are excluded automatically
 - **Tabbed settings** — separate Sharing and Saving configuration
@@ -53,11 +59,12 @@ Install the `.xpi` file via **Add-ons & Themes → gear icon → Install Add-on 
 After installation, go to **Settings → Composition → Attachments** and click **Add Seafile**.
 
 1. Enter your **Seafile server URL** (e.g. `https://cloud.seafile.com`)
-2. Enter your **username/email** and **password**
-3. Click **Connect** (or press Enter)
-4. **Sharing tab**: Select target library and upload folder, optionally set password and link expiration
-5. **Saving tab**: Select default library and folder for saving received attachments
-6. Click **Save**
+2. Log in using one of two methods:
+   - **Username/password**: Enter credentials and optionally a **2FA code**, then click **Connect**
+   - **SSO**: Click **Login via SSO** — a browser window opens for authentication. If SSO is not enabled on the server, a hint with the required server configuration is shown.
+3. **Sharing tab**: Select target library and upload folder, optionally set password and link expiration
+4. **Saving tab**: Select default library and folder for saving received attachments
+5. Click **Save**
 
 ## Usage
 
@@ -104,6 +111,16 @@ The local Seafile instance will be available at `http://127.0.0.1:8080`.
 │   └── docker-compose.yml     # Local Seafile for development
 └── LICENSE                    # Apache 2.0
 ```
+
+## SSO Configuration
+
+To use SSO login, the Seafile server admin must enable client SSO in `seahub_settings.py`:
+
+```python
+CLIENT_SSO_VIA_LOCAL_BROWSER = True
+```
+
+This allows desktop clients and this extension to authenticate via the system browser. The setting is supported by Seafile Server 7.1+ and works with any SSO method (SAML, OAuth, Keycloak, Shibboleth, etc.).
 
 ## Roadmap
 

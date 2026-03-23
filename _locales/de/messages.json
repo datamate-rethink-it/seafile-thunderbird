@@ -29,6 +29,27 @@
   "connect": {
     "message": "Verbinden"
   },
+  "or": {
+    "message": "oder"
+  },
+  "ssoLogin": {
+    "message": "Anmeldung via SSO"
+  },
+  "ssoEnterUrl": {
+    "message": "Bitte zuerst die Server-URL eingeben."
+  },
+  "ssoUnavailable": {
+    "message": "SSO über den lokalen Browser ist auf diesem Server nicht aktiviert. Der Administrator muss CLIENT_SSO_VIA_LOCAL_BROWSER = True in seahub_settings.py setzen."
+  },
+  "ssoWaiting": {
+    "message": "Warte auf Anmeldung im Browser..."
+  },
+  "ssoTimeout": {
+    "message": "SSO-Anmeldung abgelaufen. Bitte erneut versuchen."
+  },
+  "ssoError": {
+    "message": "SSO-Anmeldung fehlgeschlagen. Bitte erneut versuchen."
+  },
   "connecting": {
     "message": "Verbinde..."
   },

@@ -30,6 +30,53 @@ class SeafileAPI {
   }
 
   /**
+   * Get server info (features, version, etc.).
+   * @param {string} server
+   * @returns {Promise<Object>}
+   */
+  async getServerInfo(server) {
+    const resp = await fetch(`${server}/api2/server-info/`);
+    if (!resp.ok) {
+      throw new Error(`Failed to get server info (${resp.status})`);
+    }
+    return await resp.json();
+  }
+
+  /**
+   * Request a client SSO login link.
+   * @param {string} server
+   * @returns {Promise<Object>} Object with { link } property
+   */
+  async createSSOLink(server) {
+    const resp = await fetch(`${server}/api2/client-sso-link/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        shib_platform: "thunderbird-extension",
+        shib_device_name: "Thunderbird",
+      }),
+    });
+    if (!resp.ok) {
+      throw new Error(`Failed to create SSO link (${resp.status})`);
+    }
+    return await resp.json();
+  }
+
+  /**
+   * Poll SSO login status.
+   * @param {string} server
+   * @param {string} ssoToken - Token from createSSOLink
+   * @returns {Promise<Object>} { status: "waiting"|"success"|"error", username?, apiToken? }
+   */
+  async checkSSOStatus(server, ssoToken) {
+    const resp = await fetch(`${server}/api2/client-sso-link/${ssoToken}/`);
+    if (!resp.ok) {
+      throw new Error(`Failed to check SSO status (${resp.status})`);
+    }
+    return await resp.json();
+  }
+
+  /**
    * List all accessible libraries/repos.
    * @param {string} server
    * @param {string} token

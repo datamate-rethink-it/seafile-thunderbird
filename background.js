@@ -45,7 +45,10 @@ async function getAccountConfig(accountId) {
  */
 async function reAuthenticate(accountId, config) {
   if (!config.username || !config.password) {
-    throw new Error("Cannot re-authenticate: no stored credentials.");
+    const msg = config.authMethod === "sso"
+      ? "Session expired. Please reconnect via SSO in the Seafile account settings."
+      : "Cannot re-authenticate: no stored credentials.";
+    throw new Error(msg);
   }
   try {
     const newToken = await seafile.getToken(config.serverUrl, config.username, config.password);
@@ -302,6 +305,28 @@ browser.runtime.onMessage.addListener(async (message) => {
         message.serverUrl, message.username, message.password, message.otp
       );
       return { token };
+    }
+    case "startSSO": {
+      const info = await seafile.getServerInfo(message.serverUrl);
+      const features = info.features || [];
+      if (!features.includes("client-sso-via-local-browser")) {
+        return { ssoUnavailable: true };
+      }
+      const result = await seafile.createSSOLink(message.serverUrl);
+      const match = result.link.match(/\/client-sso\/([^/?]+)/);
+      if (!match) {
+        throw new Error("Failed to parse SSO token from server response.");
+      }
+      await browser.windows.openDefaultBrowser(result.link);
+      return { ssoToken: match[1] };
+    }
+    case "checkSSOStatus": {
+      const status = await seafile.checkSSOStatus(message.serverUrl, message.ssoToken);
+      return {
+        status: status.status,
+        username: status.username,
+        apiToken: status.apiToken || status.api_key,
+      };
     }
     case "listRepos": {
       const repos = await seafile.listRepos(message.serverUrl, message.apiToken);

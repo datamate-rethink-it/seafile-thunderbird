@@ -168,6 +168,28 @@
     .folder-picker .folder-list li:hover {
       background: #f0f4ff;
     }
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 16px 0;
+      color: #888;
+      font-size: 12px;
+    }
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #ccc;
+    }
+    .divider span {
+      padding: 0 12px;
+    }
+    .status.info {
+      display: block;
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeeba;
+    }
   </style>
 </head>
 <body>
@@ -192,6 +214,11 @@
     </div>
     <button id="connectBtn" class="primary" data-i18n="connect">Connect</button>
     <div id="connectStatus" class="status"></div>
+
+    <div class="divider"><span data-i18n="or">or</span></div>
+
+    <button id="ssoBtn" class="primary" data-i18n="ssoLogin">Login via SSO</button>
+    <div id="ssoStatus" class="status"></div>
   </div>
 
   <!-- Tabs (visible after connect) -->
