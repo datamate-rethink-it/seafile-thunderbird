@@ -22,6 +22,9 @@ const deleteExistingBtn = document.getElementById("deleteExistingBtn");
 const linkOptions = document.getElementById("linkOptions");
 const linkPasswordInput = document.getElementById("linkPassword");
 const linkExpireDaysInput = document.getElementById("linkExpireDays");
+const generatePasswordBtn = document.getElementById("generatePasswordBtn");
+const showPasswordInEmailInput = document.getElementById("showPasswordInEmail");
+const showPasswordLabel = document.getElementById("showPasswordLabel");
 const insertBtn = document.getElementById("insertBtn");
 
 let currentPath = "/";
@@ -105,6 +108,8 @@ async function showDetailView(file, filePath) {
   if (!accountConfig.skipLinkOptions) {
     linkPasswordInput.value = accountConfig.sharePassword || "";
     linkExpireDaysInput.value = accountConfig.shareExpireDays || 0;
+    showPasswordInEmailInput.checked = accountConfig.showPasswordInEmail !== false;
+    updatePasswordCheckboxVisibility();
   }
 
   // Switch views
@@ -114,7 +119,7 @@ async function showDetailView(file, filePath) {
 
   // If skipLinkOptions is set, insert directly
   if (accountConfig.skipLinkOptions) {
-    await doInsert(accountConfig.sharePassword, accountConfig.shareExpireDays || 0);
+    await doInsert(accountConfig.sharePassword, accountConfig.shareExpireDays || 0, null, accountConfig.showPasswordInEmail !== false);
     return;
   }
 
@@ -141,7 +146,7 @@ async function showDetailView(file, filePath) {
 /**
  * Insert a link into the compose email.
  */
-async function doInsert(password, expireDays, linkUrl) {
+async function doInsert(password, expireDays, linkUrl, showPassword) {
   insertBtn.disabled = true;
   clearStatus();
   const fileName = selectedFilePath.split("/").pop();
@@ -164,7 +169,8 @@ async function doInsert(password, expireDays, linkUrl) {
       link: linkUrl,
       fileName,
       fileSize,
-      passwordProtected: !!password,
+      password: password || "",
+      showPasswordInEmail: !!showPassword,
       expireDays: expireDays || 0,
       tabId: composeTabId,
     });
@@ -261,7 +267,58 @@ async function loadRepos() {
   currentRepoId = repoSelectEl.value;
 }
 
+/**
+ * Generate a random password (12 chars, mixed case + digits + special).
+ */
+function generatePassword() {
+  const lower = "abcdefghijkmnpqrstuvwxyz";
+  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const digits = "23456789";
+  const special = "!@#$%&*?";
+  const all = lower + upper + digits + special;
+
+  // Ensure at least one of each type
+  const required = [
+    lower[Math.floor(Math.random() * lower.length)],
+    upper[Math.floor(Math.random() * upper.length)],
+    digits[Math.floor(Math.random() * digits.length)],
+    special[Math.floor(Math.random() * special.length)],
+  ];
+  const rest = [];
+  for (let i = required.length; i < 12; i++) {
+    rest.push(all[Math.floor(Math.random() * all.length)]);
+  }
+  // Combine and shuffle the middle part, keep alphanumeric at start and end
+  const middle = [...required, ...rest];
+  for (let i = middle.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [middle[i], middle[j]] = [middle[j], middle[i]];
+  }
+  // Ensure first and last chars are alphanumeric (for double-click selection)
+  const alnum = lower + upper + digits;
+  middle[0] = alnum[Math.floor(Math.random() * alnum.length)];
+  middle[middle.length - 1] = alnum[Math.floor(Math.random() * alnum.length)];
+  // Make sure we still have at least one special char in the middle
+  const hasSpecial = middle.some(c => special.includes(c));
+  if (!hasSpecial) {
+    const pos = 1 + Math.floor(Math.random() * (middle.length - 2));
+    middle[pos] = special[Math.floor(Math.random() * special.length)];
+  }
+  return middle.join("");
+}
+
 // --- Event handlers ---
+
+generatePasswordBtn.addEventListener("click", () => {
+  linkPasswordInput.value = generatePassword();
+  updatePasswordCheckboxVisibility();
+});
+
+linkPasswordInput.addEventListener("input", updatePasswordCheckboxVisibility);
+
+function updatePasswordCheckboxVisibility() {
+  showPasswordLabel.style.display = linkPasswordInput.value.trim() ? "flex" : "none";
+}
 
 repoSelectEl.addEventListener("change", () => {
   currentRepoId = repoSelectEl.value;
@@ -273,7 +330,8 @@ backBtn.addEventListener("click", showBrowseView);
 insertBtn.addEventListener("click", () => {
   const password = linkPasswordInput.value.trim();
   const expireDays = Math.max(0, parseInt(linkExpireDaysInput.value, 10) || 0);
-  doInsert(password, expireDays);
+  const showPassword = showPasswordInEmailInput.checked;
+  doInsert(password, expireDays, null, showPassword);
 });
 
 useExistingBtn.addEventListener("click", () => {

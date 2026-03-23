@@ -45,7 +45,7 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 - **Encrypted library filtering** — encrypted libraries are excluded automatically
 - **Tabbed settings** — Connection, Share Attachments, Save Attachments
 - **Library refresh** — library list refreshes automatically when switching tabs
-- **Localization** — English and German
+- **Localization** — English, German, French, Chinese, Spanish, Russian, Portuguese (BR)
 
 ## Requirements
 
@@ -126,9 +126,7 @@ The local Seafile instance will be available at `http://127.0.0.1:8080`.
 ├── icons/
 │   ├── file-icons.js          # Shared SVG file type + status icons
 │   └── *.png, *.svg           # Seafile logo icons
-├── _locales/
-│   ├── en/messages.json       # English strings
-│   └── de/messages.json       # German strings
+├── _locales/                  # Translations (en, de, fr, zh_CN, es, ru, pt_BR)
 ├── dev/
 │   └── docker-compose.yml     # Local Seafile for development
 └── LICENSE                    # Apache 2.0

@@ -154,8 +154,17 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab) => {
         cfg.uploadPath, abortController.signal
       );
 
-      // 4. Create share link
+      // 4. Create share link (delete existing if necessary)
       const filePath = `${cfg.uploadPath}/${fileInfo.name}`;
+      const existingLinks = await seafile.getShareLinks(
+        cfg.serverUrl, cfg.apiToken, cfg.repoId, filePath
+      );
+      for (const old of existingLinks) {
+        const oldToken = old.token || extractTokenFromUrl(old.link);
+        if (oldToken) {
+          await seafile.deleteShareLink(cfg.serverUrl, cfg.apiToken, oldToken);
+        }
+      }
       const shareResult = await seafile.createShareLink(
         cfg.serverUrl, cfg.apiToken, cfg.repoId, filePath,
         { password: cfg.sharePassword, expireDays: cfg.shareExpireDays }
@@ -416,14 +425,18 @@ browser.runtime.onMessage.addListener(async (message) => {
       return { success: true };
     }
     case "insertLinkIntoCompose": {
-      const { link, fileName, fileSize, passwordProtected, expireDays, tabId } = message;
+      const { link, fileName, fileSize, password, showPasswordInEmail, expireDays, tabId } = message;
       const details = await browser.compose.getComposeDetails(tabId);
 
       if (details.isPlainText) {
         // Plain text: append at end (no scripting available)
         let text = `\n${fileName}: ${link}`;
         if (fileSize) text += `\nSize: ${fileSize}`;
-        if (passwordProtected) text += `\nPassword protected`;
+        if (password) {
+          text += showPasswordInEmail
+            ? `\nPassword: ${password}`
+            : `\nPassword protected (password will be sent separately)`;
+        }
         if (expireDays) text += `\nExpires in ${expireDays} days`;
         text += "\n";
         const newBody = details.plainTextBody + text;
@@ -433,7 +446,11 @@ browser.runtime.onMessage.addListener(async (message) => {
         let metaLines = "";
         if (fileSize) metaLines += `Size: ${fileSize}<br>`;
         metaLines += `Link: <a href="${link}" style="color:#0060df;">${link}</a>`;
-        if (passwordProtected) metaLines += `<br>Password protected`;
+        if (password) {
+          metaLines += showPasswordInEmail
+            ? `<br>Password: <code style="background:#f0f0f0;padding:2px 6px;border-radius:2px;display:inline-block;user-select:all;">${password}</code>`
+            : `<br>Password protected (password will be sent separately)`;
+        }
         if (expireDays) {
           const expiryDate = new Date();
           expiryDate.setDate(expiryDate.getDate() + expireDays);

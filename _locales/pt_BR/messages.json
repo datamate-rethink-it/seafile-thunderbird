@@ -1,0 +1,200 @@
+{
+  "extensionName": {
+    "message": "Seafile para Thunderbird"
+  },
+  "extensionDescription": {
+    "message": "Compartilhar anexos grandes de e-mail via links de download do Seafile"
+  },
+  "serviceName": {
+    "message": "Seafile"
+  },
+  "serverConnection": {
+    "message": "Conexão com o servidor"
+  },
+  "serverUrl": {
+    "message": "URL do servidor"
+  },
+  "username": {
+    "message": "Nome de usuário / E-mail"
+  },
+  "password": {
+    "message": "Senha"
+  },
+  "otpLabel": {
+    "message": "Código 2FA"
+  },
+  "otpHint": {
+    "message": "Necessário apenas se a autenticação de dois fatores estiver ativada."
+  },
+  "connect": {
+    "message": "Conectar"
+  },
+  "or": {
+    "message": "ou"
+  },
+  "ssoLogin": {
+    "message": "Login via SSO"
+  },
+  "ssoEnterUrl": {
+    "message": "Por favor, insira primeiro a URL do servidor."
+  },
+  "ssoUnavailable": {
+    "message": "O SSO via navegador local não está ativado neste servidor. O administrador precisa definir CLIENT_SSO_VIA_LOCAL_BROWSER = True em seahub_settings.py."
+  },
+  "ssoWaiting": {
+    "message": "Aguardando autenticação no navegador..."
+  },
+  "ssoTimeout": {
+    "message": "O login SSO expirou. Por favor, tente novamente."
+  },
+  "ssoError": {
+    "message": "O login SSO falhou. Por favor, tente novamente."
+  },
+  "connecting": {
+    "message": "Conectando..."
+  },
+  "connected": {
+    "message": "Conectado"
+  },
+  "connectedAs": {
+    "message": "Conectado como"
+  },
+  "connectedViaSSO": {
+    "message": "Conectado via SSO"
+  },
+  "connectedViaPassword": {
+    "message": "Conectado via senha"
+  },
+  "disconnect": {
+    "message": "Desconectar"
+  },
+  "uploadSettings": {
+    "message": "Configurações de envio"
+  },
+  "targetLibrary": {
+    "message": "Biblioteca destino"
+  },
+  "selectLibrary": {
+    "message": "-- Selecionar uma biblioteca --"
+  },
+  "encryptedHint": {
+    "message": "Bibliotecas criptografadas não são suportadas."
+  },
+  "uploadFolder": {
+    "message": "Pasta de envio"
+  },
+  "saveAttachmentSettings": {
+    "message": "Configurações de salvamento de anexos"
+  },
+  "saveTargetLibrary": {
+    "message": "Biblioteca padrão"
+  },
+  "sameAsUpload": {
+    "message": "-- Mesma biblioteca de envio --"
+  },
+  "saveFolder": {
+    "message": "Pasta padrão"
+  },
+  "saveFolderHint": {
+    "message": "Pasta padrão ao salvar anexos recebidos"
+  },
+  "shareLinkOptions": {
+    "message": "Opções do link compartilhado"
+  },
+  "sharePassword": {
+    "message": "Proteção por senha"
+  },
+  "sharePasswordHint": {
+    "message": "Deixe vazio para sem senha"
+  },
+  "shareExpireDays": {
+    "message": "Expiração (dias)"
+  },
+  "shareExpireDaysHint": {
+    "message": "0 = sem expiração"
+  },
+  "tabConnection": {
+    "message": "Conexão"
+  },
+  "tabSharing": {
+    "message": "Compartilhar anexos"
+  },
+  "tabSaving": {
+    "message": "Salvar anexos"
+  },
+  "save": {
+    "message": "Salvar"
+  },
+  "saved": {
+    "message": "Salvo"
+  },
+  "insertSeafileLink": {
+    "message": "Inserir link do Seafile"
+  },
+  "emptyFolder": {
+    "message": "Pasta vazia"
+  },
+  "backToFiles": {
+    "message": "Voltar"
+  },
+  "existingLinkFound": {
+    "message": "Já existe um link compartilhado para este arquivo."
+  },
+  "useExisting": {
+    "message": "Usar existente"
+  },
+  "deleteAndNew": {
+    "message": "Excluir e criar novo"
+  },
+  "insertLink": {
+    "message": "Inserir link no e-mail"
+  },
+  "linkInserted": {
+    "message": "Link inserido!"
+  },
+  "showPasswordInEmail": {
+    "message": "Mostrar senha no e-mail"
+  },
+  "showPasswordInEmailHint": {
+    "message": "Padrão para novos links. Pode ser alterado por link."
+  },
+  "skipLinkOptions": {
+    "message": "Sempre usar esses padrões ao inserir links do Seafile (pular diálogo de opções)"
+  },
+  "saveToSeafile": {
+    "message": "Salvar no Seafile"
+  },
+  "loading": {
+    "message": "Carregando..."
+  },
+  "noAttachments": {
+    "message": "Nenhum anexo encontrado."
+  },
+  "notConfigured": {
+    "message": "Nenhuma conta Seafile configurada. Configure uma conta em Configurações → Redação → Anexos."
+  },
+  "selectAll": {
+    "message": "Selecionar tudo"
+  },
+  "targetFolder": {
+    "message": "Pasta destino:"
+  },
+  "saveSuccess": {
+    "message": "Todos os arquivos selecionados foram salvos no Seafile!"
+  },
+  "saveReplaceExisting": {
+    "message": "Substituir arquivos existentes com o mesmo nome"
+  },
+  "savePartialError": {
+    "message": "Alguns arquivos não puderam ser enviados."
+  },
+  "errorSelectLibrary": {
+    "message": "Por favor, selecione uma biblioteca destino."
+  },
+  "errorNotConnected": {
+    "message": "Conta Seafile não conectada. Configure sua conexão em Configurações → Redação → Anexos."
+  },
+  "errorNotConfigured": {
+    "message": "Conta Seafile não totalmente configurada. Selecione uma biblioteca em Configurações → Redação → Anexos."
+  }
+}

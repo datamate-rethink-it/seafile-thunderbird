@@ -152,6 +152,12 @@
   "linkInserted": {
     "message": "Link eingefügt!"
   },
+  "showPasswordInEmail": {
+    "message": "Passwort in E-Mail anzeigen"
+  },
+  "showPasswordInEmailHint": {
+    "message": "Standardwert für neue Links. Kann pro Link geändert werden."
+  },
   "skipLinkOptions": {
     "message": "Beim Einfügen von Seafile-Links immer diese Standardwerte verwenden (Optionsdialog überspringen)"
   },

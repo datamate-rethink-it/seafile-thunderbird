@@ -1,0 +1,200 @@
+{
+  "extensionName": {
+    "message": "Seafile pour Thunderbird"
+  },
+  "extensionDescription": {
+    "message": "Partager les pièces jointes volumineuses via des liens de téléchargement Seafile"
+  },
+  "serviceName": {
+    "message": "Seafile"
+  },
+  "serverConnection": {
+    "message": "Connexion au serveur"
+  },
+  "serverUrl": {
+    "message": "URL du serveur"
+  },
+  "username": {
+    "message": "Nom d'utilisateur / E-mail"
+  },
+  "password": {
+    "message": "Mot de passe"
+  },
+  "otpLabel": {
+    "message": "Code 2FA"
+  },
+  "otpHint": {
+    "message": "Requis uniquement si l'authentification à deux facteurs est activée."
+  },
+  "connect": {
+    "message": "Connexion"
+  },
+  "or": {
+    "message": "ou"
+  },
+  "ssoLogin": {
+    "message": "Connexion via SSO"
+  },
+  "ssoEnterUrl": {
+    "message": "Veuillez d'abord saisir l'URL du serveur."
+  },
+  "ssoUnavailable": {
+    "message": "Le SSO via le navigateur local n'est pas activé sur ce serveur. L'administrateur doit définir CLIENT_SSO_VIA_LOCAL_BROWSER = True dans seahub_settings.py."
+  },
+  "ssoWaiting": {
+    "message": "En attente de l'authentification dans le navigateur..."
+  },
+  "ssoTimeout": {
+    "message": "La connexion SSO a expiré. Veuillez réessayer."
+  },
+  "ssoError": {
+    "message": "La connexion SSO a échoué. Veuillez réessayer."
+  },
+  "connecting": {
+    "message": "Connexion en cours..."
+  },
+  "connected": {
+    "message": "Connecté"
+  },
+  "connectedAs": {
+    "message": "Connecté en tant que"
+  },
+  "connectedViaSSO": {
+    "message": "Connecté via SSO"
+  },
+  "connectedViaPassword": {
+    "message": "Connecté via mot de passe"
+  },
+  "disconnect": {
+    "message": "Déconnecter"
+  },
+  "uploadSettings": {
+    "message": "Paramètres d'envoi"
+  },
+  "targetLibrary": {
+    "message": "Bibliothèque cible"
+  },
+  "selectLibrary": {
+    "message": "-- Sélectionner une bibliothèque --"
+  },
+  "encryptedHint": {
+    "message": "Les bibliothèques chiffrées ne sont pas prises en charge."
+  },
+  "uploadFolder": {
+    "message": "Dossier d'envoi"
+  },
+  "saveAttachmentSettings": {
+    "message": "Paramètres de sauvegarde des pièces jointes"
+  },
+  "saveTargetLibrary": {
+    "message": "Bibliothèque par défaut"
+  },
+  "sameAsUpload": {
+    "message": "-- Identique à la bibliothèque d'envoi --"
+  },
+  "saveFolder": {
+    "message": "Dossier par défaut"
+  },
+  "saveFolderHint": {
+    "message": "Dossier par défaut lors de la sauvegarde des pièces jointes reçues"
+  },
+  "shareLinkOptions": {
+    "message": "Options du lien de partage"
+  },
+  "sharePassword": {
+    "message": "Protection par mot de passe"
+  },
+  "sharePasswordHint": {
+    "message": "Laisser vide pour aucun mot de passe"
+  },
+  "shareExpireDays": {
+    "message": "Expiration (jours)"
+  },
+  "shareExpireDaysHint": {
+    "message": "0 = pas d'expiration"
+  },
+  "tabConnection": {
+    "message": "Connexion"
+  },
+  "tabSharing": {
+    "message": "Partager les pièces jointes"
+  },
+  "tabSaving": {
+    "message": "Enregistrer les pièces jointes"
+  },
+  "save": {
+    "message": "Enregistrer"
+  },
+  "saved": {
+    "message": "Enregistré"
+  },
+  "insertSeafileLink": {
+    "message": "Insérer un lien Seafile"
+  },
+  "emptyFolder": {
+    "message": "Dossier vide"
+  },
+  "backToFiles": {
+    "message": "Retour"
+  },
+  "existingLinkFound": {
+    "message": "Un lien de partage existe déjà pour ce fichier."
+  },
+  "useExisting": {
+    "message": "Utiliser l'existant"
+  },
+  "deleteAndNew": {
+    "message": "Supprimer et recréer"
+  },
+  "insertLink": {
+    "message": "Insérer le lien dans l'e-mail"
+  },
+  "linkInserted": {
+    "message": "Lien inséré !"
+  },
+  "showPasswordInEmail": {
+    "message": "Afficher le mot de passe dans l'e-mail"
+  },
+  "showPasswordInEmailHint": {
+    "message": "Valeur par défaut pour les nouveaux liens. Peut être modifié par lien."
+  },
+  "skipLinkOptions": {
+    "message": "Toujours utiliser ces paramètres par défaut lors de l'insertion de liens Seafile (ignorer le dialogue d'options)"
+  },
+  "saveToSeafile": {
+    "message": "Enregistrer dans Seafile"
+  },
+  "loading": {
+    "message": "Chargement..."
+  },
+  "noAttachments": {
+    "message": "Aucune pièce jointe trouvée."
+  },
+  "notConfigured": {
+    "message": "Aucun compte Seafile configuré. Veuillez configurer un compte Seafile dans Paramètres → Rédaction → Pièces jointes."
+  },
+  "selectAll": {
+    "message": "Tout sélectionner"
+  },
+  "targetFolder": {
+    "message": "Dossier cible :"
+  },
+  "saveSuccess": {
+    "message": "Tous les fichiers sélectionnés ont été enregistrés dans Seafile !"
+  },
+  "saveReplaceExisting": {
+    "message": "Remplacer les fichiers existants portant le même nom"
+  },
+  "savePartialError": {
+    "message": "Certains fichiers n'ont pas pu être envoyés."
+  },
+  "errorSelectLibrary": {
+    "message": "Veuillez sélectionner une bibliothèque cible."
+  },
+  "errorNotConnected": {
+    "message": "Compte Seafile non connecté. Veuillez configurer votre connexion dans Paramètres → Rédaction → Pièces jointes."
+  },
+  "errorNotConfigured": {
+    "message": "Compte Seafile pas entièrement configuré. Veuillez sélectionner une bibliothèque dans Paramètres → Rédaction → Pièces jointes."
+  }
+}

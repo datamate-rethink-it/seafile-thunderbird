@@ -152,6 +152,12 @@
   "linkInserted": {
     "message": "Link inserted!"
   },
+  "showPasswordInEmail": {
+    "message": "Show password in email"
+  },
+  "showPasswordInEmailHint": {
+    "message": "Default for new links. Can be changed per link."
+  },
   "skipLinkOptions": {
     "message": "Always use these defaults when inserting Seafile links (skip options dialog)"
   },

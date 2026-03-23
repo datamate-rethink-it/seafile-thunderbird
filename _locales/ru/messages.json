@@ -1,0 +1,200 @@
+{
+  "extensionName": {
+    "message": "Seafile для Thunderbird"
+  },
+  "extensionDescription": {
+    "message": "Отправка больших вложений по электронной почте через ссылки для скачивания Seafile"
+  },
+  "serviceName": {
+    "message": "Seafile"
+  },
+  "serverConnection": {
+    "message": "Подключение к серверу"
+  },
+  "serverUrl": {
+    "message": "URL сервера"
+  },
+  "username": {
+    "message": "Имя пользователя / Email"
+  },
+  "password": {
+    "message": "Пароль"
+  },
+  "otpLabel": {
+    "message": "Код 2FA"
+  },
+  "otpHint": {
+    "message": "Требуется только при включённой двухфакторной аутентификации."
+  },
+  "connect": {
+    "message": "Подключиться"
+  },
+  "or": {
+    "message": "или"
+  },
+  "ssoLogin": {
+    "message": "Вход через SSO"
+  },
+  "ssoEnterUrl": {
+    "message": "Сначала введите URL сервера."
+  },
+  "ssoUnavailable": {
+    "message": "SSO через локальный браузер не включён на этом сервере. Администратор должен установить CLIENT_SSO_VIA_LOCAL_BROWSER = True в seahub_settings.py."
+  },
+  "ssoWaiting": {
+    "message": "Ожидание аутентификации в браузере..."
+  },
+  "ssoTimeout": {
+    "message": "Время ожидания SSO истекло. Попробуйте снова."
+  },
+  "ssoError": {
+    "message": "Ошибка входа SSO. Попробуйте снова."
+  },
+  "connecting": {
+    "message": "Подключение..."
+  },
+  "connected": {
+    "message": "Подключено"
+  },
+  "connectedAs": {
+    "message": "Подключено как"
+  },
+  "connectedViaSSO": {
+    "message": "Подключено через SSO"
+  },
+  "connectedViaPassword": {
+    "message": "Подключено по паролю"
+  },
+  "disconnect": {
+    "message": "Отключиться"
+  },
+  "uploadSettings": {
+    "message": "Настройки загрузки"
+  },
+  "targetLibrary": {
+    "message": "Целевая библиотека"
+  },
+  "selectLibrary": {
+    "message": "-- Выберите библиотеку --"
+  },
+  "encryptedHint": {
+    "message": "Зашифрованные библиотеки не поддерживаются."
+  },
+  "uploadFolder": {
+    "message": "Папка загрузки"
+  },
+  "saveAttachmentSettings": {
+    "message": "Настройки сохранения вложений"
+  },
+  "saveTargetLibrary": {
+    "message": "Библиотека по умолчанию"
+  },
+  "sameAsUpload": {
+    "message": "-- Та же, что и для загрузки --"
+  },
+  "saveFolder": {
+    "message": "Папка по умолчанию"
+  },
+  "saveFolderHint": {
+    "message": "Папка по умолчанию при сохранении полученных вложений"
+  },
+  "shareLinkOptions": {
+    "message": "Параметры ссылки"
+  },
+  "sharePassword": {
+    "message": "Защита паролем"
+  },
+  "sharePasswordHint": {
+    "message": "Оставьте пустым для отсутствия пароля"
+  },
+  "shareExpireDays": {
+    "message": "Срок действия (дни)"
+  },
+  "shareExpireDaysHint": {
+    "message": "0 = без ограничения срока"
+  },
+  "tabConnection": {
+    "message": "Подключение"
+  },
+  "tabSharing": {
+    "message": "Отправка вложений"
+  },
+  "tabSaving": {
+    "message": "Сохранение вложений"
+  },
+  "save": {
+    "message": "Сохранить"
+  },
+  "saved": {
+    "message": "Сохранено"
+  },
+  "insertSeafileLink": {
+    "message": "Вставить ссылку Seafile"
+  },
+  "emptyFolder": {
+    "message": "Пустая папка"
+  },
+  "backToFiles": {
+    "message": "Назад"
+  },
+  "existingLinkFound": {
+    "message": "Для этого файла уже существует ссылка."
+  },
+  "useExisting": {
+    "message": "Использовать существующую"
+  },
+  "deleteAndNew": {
+    "message": "Удалить и создать новую"
+  },
+  "insertLink": {
+    "message": "Вставить ссылку в письмо"
+  },
+  "linkInserted": {
+    "message": "Ссылка вставлена!"
+  },
+  "showPasswordInEmail": {
+    "message": "Показать пароль в письме"
+  },
+  "showPasswordInEmailHint": {
+    "message": "Значение по умолчанию для новых ссылок. Можно изменить для каждой ссылки."
+  },
+  "skipLinkOptions": {
+    "message": "Всегда использовать эти значения по умолчанию при вставке ссылок Seafile (пропустить диалог)"
+  },
+  "saveToSeafile": {
+    "message": "Сохранить в Seafile"
+  },
+  "loading": {
+    "message": "Загрузка..."
+  },
+  "noAttachments": {
+    "message": "Вложения не найдены."
+  },
+  "notConfigured": {
+    "message": "Учётная запись Seafile не настроена. Настройте её в Настройки → Составление → Вложения."
+  },
+  "selectAll": {
+    "message": "Выбрать все"
+  },
+  "targetFolder": {
+    "message": "Целевая папка:"
+  },
+  "saveSuccess": {
+    "message": "Все выбранные файлы сохранены в Seafile!"
+  },
+  "saveReplaceExisting": {
+    "message": "Заменять существующие файлы с тем же именем"
+  },
+  "savePartialError": {
+    "message": "Некоторые файлы не удалось загрузить."
+  },
+  "errorSelectLibrary": {
+    "message": "Выберите целевую библиотеку."
+  },
+  "errorNotConnected": {
+    "message": "Учётная запись Seafile не подключена. Настройте подключение в Настройки → Составление → Вложения."
+  },
+  "errorNotConfigured": {
+    "message": "Учётная запись Seafile настроена не полностью. Выберите библиотеку в Настройки → Составление → Вложения."
+  }
+}

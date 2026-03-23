@@ -38,6 +38,7 @@ const savePathEl = document.getElementById("savePath");
 const saveFolderList = document.getElementById("saveFolderList");
 const sharePasswordInput = document.getElementById("sharePassword");
 const shareExpireDaysInput = document.getElementById("shareExpireDays");
+const showPasswordInEmailInput = document.getElementById("showPasswordInEmail");
 const skipLinkOptionsInput = document.getElementById("skipLinkOptions");
 const saveReplaceExistingInput = document.getElementById("saveReplaceExisting");
 const ssoBtn = document.getElementById("ssoBtn");
@@ -225,6 +226,7 @@ async function loadConfig() {
   }
   sharePasswordInput.value = config.sharePassword || "";
   shareExpireDaysInput.value = config.shareExpireDays || 0;
+  showPasswordInEmailInput.checked = config.showPasswordInEmail !== false;
   skipLinkOptionsInput.checked = !!config.skipLinkOptions;
   saveReplaceExistingInput.checked = !!config.saveReplaceExisting;
 
@@ -450,6 +452,7 @@ function autoSave(sourceEl) {
       config.savePath = saveCurrentPath;
       config.sharePassword = sharePasswordInput.value.trim();
       config.shareExpireDays = Math.max(0, parseInt(shareExpireDaysInput.value, 10) || 0);
+      config.showPasswordInEmail = showPasswordInEmailInput.checked;
       config.skipLinkOptions = skipLinkOptionsInput.checked;
       config.saveReplaceExisting = saveReplaceExistingInput.checked;
       await browser.storage.local.set({ [accountId]: config });
@@ -483,6 +486,7 @@ shareExpireDaysInput.addEventListener("input", () => {
   shareExpireDaysInput.value = shareExpireDaysInput.value.replace(/[^0-9]/g, "");
   autoSave(shareExpireDaysInput);
 });
+showPasswordInEmailInput.addEventListener("change", () => autoSave(showPasswordInEmailInput.parentElement));
 skipLinkOptionsInput.addEventListener("change", () => autoSave(skipLinkOptionsInput.parentElement));
 saveReplaceExistingInput.addEventListener("change", () => autoSave(saveReplaceExistingInput.parentElement));
 
