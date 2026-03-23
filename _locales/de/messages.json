@@ -56,6 +56,18 @@
   "connected": {
     "message": "Verbunden"
   },
+  "connectedAs": {
+    "message": "Verbunden als"
+  },
+  "connectedViaSSO": {
+    "message": "Verbunden via SSO"
+  },
+  "connectedViaPassword": {
+    "message": "Verbunden via Passwort"
+  },
+  "disconnect": {
+    "message": "Trennen"
+  },
   "uploadSettings": {
     "message": "Upload-Einstellungen"
   },
@@ -101,14 +113,47 @@
   "shareExpireDaysHint": {
     "message": "0 = kein Ablaufdatum"
   },
+  "tabConnection": {
+    "message": "Verbindung"
+  },
   "tabSharing": {
-    "message": "Teilen"
+    "message": "Anhänge teilen"
   },
   "tabSaving": {
-    "message": "Speichern"
+    "message": "Anhänge speichern"
   },
   "save": {
     "message": "Speichern"
+  },
+  "saved": {
+    "message": "Gespeichert"
+  },
+  "insertSeafileLink": {
+    "message": "Seafile-Link einfügen"
+  },
+  "emptyFolder": {
+    "message": "Leerer Ordner"
+  },
+  "backToFiles": {
+    "message": "Zurück"
+  },
+  "existingLinkFound": {
+    "message": "Für diese Datei existiert bereits ein Freigabelink."
+  },
+  "useExisting": {
+    "message": "Bestehenden verwenden"
+  },
+  "deleteAndNew": {
+    "message": "Löschen & neu erstellen"
+  },
+  "insertLink": {
+    "message": "Link in E-Mail einfügen"
+  },
+  "linkInserted": {
+    "message": "Link eingefügt!"
+  },
+  "skipLinkOptions": {
+    "message": "Beim Einfügen von Seafile-Links immer diese Standardwerte verwenden (Optionsdialog überspringen)"
   },
   "saveToSeafile": {
     "message": "In Seafile speichern"
@@ -133,6 +178,9 @@
   },
   "savePartialError": {
     "message": "Einige Dateien konnten nicht hochgeladen werden."
+  },
+  "errorSelectLibrary": {
+    "message": "Bitte eine Zielbibliothek auswählen."
   },
   "errorNotConnected": {
     "message": "Seafile-Konto nicht verbunden. Bitte unter Einstellungen → Verfassen → Anhänge konfigurieren."

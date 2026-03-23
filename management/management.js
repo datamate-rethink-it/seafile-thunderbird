@@ -18,13 +18,18 @@ function applyI18n() {
   }
 }
 
+const loginForm = document.getElementById("loginForm");
+const connectedInfo = document.getElementById("connectedInfo");
+const connectedServer = document.getElementById("connectedServer");
+const connectedUser = document.getElementById("connectedUser");
+const connectedMethod = document.getElementById("connectedMethod");
+const disconnectBtn = document.getElementById("disconnectBtn");
 const serverUrlInput = document.getElementById("serverUrl");
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const otpInput = document.getElementById("otp");
 const connectBtn = document.getElementById("connectBtn");
 const connectStatus = document.getElementById("connectStatus");
-const settingsTabs = document.getElementById("settingsTabs");
 const repoSelect = document.getElementById("repoSelect");
 const uploadPathEl = document.getElementById("uploadPath");
 const uploadFolderList = document.getElementById("uploadFolderList");
@@ -33,10 +38,11 @@ const savePathEl = document.getElementById("savePath");
 const saveFolderList = document.getElementById("saveFolderList");
 const sharePasswordInput = document.getElementById("sharePassword");
 const shareExpireDaysInput = document.getElementById("shareExpireDays");
+const skipLinkOptionsInput = document.getElementById("skipLinkOptions");
 const ssoBtn = document.getElementById("ssoBtn");
 const ssoStatus = document.getElementById("ssoStatus");
-const saveBtn = document.getElementById("saveBtn");
-const saveStatus = document.getElementById("saveStatus");
+const uploadFolderPicker = document.getElementById("uploadFolderPicker");
+const saveFolderPicker = document.getElementById("saveFolderPicker");
 
 // Current folder picker state
 let uploadCurrentPath = "/";
@@ -55,34 +61,75 @@ async function sendMessage(action, data) {
 }
 
 /**
- * Show a status message.
+ * Show a status message with a close button.
+ * @param {HTMLElement} element
+ * @param {string} message
+ * @param {boolean|string} type - true/"error", false/"success", or "info"
  */
-function showStatus(element, message, isError) {
+function showStatus(element, message, type) {
+  const cls = type === true || type === "error" ? "error" : type === "info" ? "info" : "success";
   element.textContent = message;
-  element.className = `status ${isError ? "error" : "success"}`;
+  element.className = `status ${cls}`;
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "close-btn";
+  closeBtn.textContent = "\u00D7";
+  closeBtn.addEventListener("click", () => { element.className = "status"; });
+  element.appendChild(closeBtn);
 }
 
 /**
- * Mark the connect button as successfully connected.
+ * Switch to a specific tab.
+ * @param {string} tabName - "connection", "sharing", or "saving"
  */
-function markConnected() {
-  connectBtn.textContent = "\u2714 " + (browser.i18n.getMessage("connected") || "Connected");
-  connectBtn.disabled = true;
-  connectStatus.className = "status";
+function switchTab(tabName) {
+  const tab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+  if (tab.classList.contains("disabled")) return;
+
+  document.querySelector(".tab.active").classList.remove("active");
+  document.querySelector(".tab-content.active").classList.remove("active");
+  tab.classList.add("active");
+  document.getElementById(`tab-${tabName}`).classList.add("active");
+}
+
+/**
+ * Enable the sharing and saving tabs.
+ */
+function enableSettingsTabs() {
+  document.querySelector('.tab[data-tab="sharing"]').classList.remove("disabled");
+  document.querySelector('.tab[data-tab="saving"]').classList.remove("disabled");
+}
+
+/**
+ * Show the connected state with server/user info.
+ * @param {Object} config - Account config
+ */
+function markConnected(config) {
+  loginForm.style.display = "none";
+  connectedInfo.style.display = "block";
+  connectedServer.textContent = config.serverUrl;
+  connectedUser.textContent = config.username || "";
+  if (config.authMethod === "sso") {
+    connectedMethod.textContent = browser.i18n.getMessage("connectedViaSSO") || "Connected via SSO";
+  } else {
+    connectedMethod.textContent = browser.i18n.getMessage("connectedViaPassword") || "Connected via password";
+  }
+}
+
+/**
+ * Toggle a folder picker open/closed.
+ */
+function toggleFolderPicker(picker) {
+  picker.classList.toggle("open");
 }
 
 /**
  * Load folder contents into a folder picker.
- * @param {string} repoId - Library ID
- * @param {string} path - Directory path
- * @param {HTMLElement} pathEl - Element showing current path
- * @param {HTMLElement} listEl - UL element for folder list
- * @param {Function} onNavigate - Called with new path when navigating
  */
 async function loadFolderPicker(repoId, path, pathEl, listEl, onNavigate) {
   if (!repoId) return;
 
-  pathEl.textContent = path;
+  const picker = pathEl.closest(".folder-picker");
+  pathEl.querySelector(".path-text").textContent = path;
   listEl.innerHTML = "";
 
   try {
@@ -91,7 +138,7 @@ async function loadFolderPicker(repoId, path, pathEl, listEl, onNavigate) {
     if (path !== "/") {
       const parentLi = document.createElement("li");
       const parentPath = path.substring(0, path.lastIndexOf("/")) || "/";
-      parentLi.innerHTML = `\u2B06 ..`;
+      parentLi.innerHTML = `<span class="folder-icon">${FILE_ICONS.folderUp}</span> ..`;
       parentLi.addEventListener("click", () => onNavigate(parentPath));
       listEl.appendChild(parentLi);
     }
@@ -99,7 +146,7 @@ async function loadFolderPicker(repoId, path, pathEl, listEl, onNavigate) {
     for (const dir of dirs) {
       const li = document.createElement("li");
       const dirPath = path === "/" ? `/${dir.name}` : `${path}/${dir.name}`;
-      li.innerHTML = `\uD83D\uDCC1 ${dir.name}`;
+      li.innerHTML = `<span class="folder-icon">${FILE_ICONS.folder}</span> ${dir.name}`;
       li.addEventListener("click", () => onNavigate(dirPath));
       listEl.appendChild(li);
     }
@@ -137,21 +184,6 @@ for (const input of [serverUrlInput, usernameInput, passwordInput, otpInput]) {
   });
 }
 
-/**
- * Reload upload folder picker when library changes.
- */
-repoSelect.addEventListener("change", () => {
-  uploadCurrentPath = "/";
-  navigateUploadFolder("/");
-});
-
-/**
- * Reload save folder picker when library changes.
- */
-saveRepoSelect.addEventListener("change", () => {
-  saveCurrentPath = "/";
-  navigateSaveFolder("/");
-});
 
 /**
  * Load saved configuration for this account.
@@ -168,13 +200,14 @@ async function loadConfig() {
   }
   sharePasswordInput.value = config.sharePassword || "";
   shareExpireDaysInput.value = config.shareExpireDays || 0;
+  skipLinkOptionsInput.checked = !!config.skipLinkOptions;
 
   if (config.apiToken) {
     // Already connected - try to load repos
     try {
       await loadRepos(config);
-      settingsTabs.classList.add("visible");
-      markConnected();
+      enableSettingsTabs();
+      markConnected(config);
 
       // Pre-select saved repos
       if (config.repoId) {
@@ -189,6 +222,9 @@ async function loadConfig() {
       saveCurrentPath = config.savePath || "/";
       navigateUploadFolder(uploadCurrentPath);
       navigateSaveFolder(saveCurrentPath);
+
+      // Switch to sharing tab
+      switchTab("sharing");
     } catch (e) {
       // Token might be expired
       showStatus(connectStatus, "Session expired. Please reconnect.", true);
@@ -242,15 +278,15 @@ for (const input of [serverUrlInput, usernameInput, passwordInput, otpInput]) {
 }
 
 /**
- * After successful authentication, load repos and show settings.
+ * After successful authentication, load repos and switch to sharing tab.
  * @param {Object} config - Account config with serverUrl, apiToken, etc.
  */
 async function onConnected(config) {
   await browser.storage.local.set({ [accountId]: config });
   await loadRepos(config);
-  settingsTabs.classList.add("visible");
-  markConnected();
-  ssoBtn.disabled = true;
+  enableSettingsTabs();
+  markConnected(config);
+  switchTab("sharing");
   if (repoSelect.value) {
     navigateUploadFolder("/");
     navigateSaveFolder("/");
@@ -303,15 +339,13 @@ ssoBtn.addEventListener("click", async () => {
     const result = await sendMessage("startSSO", { serverUrl });
 
     if (result.ssoUnavailable) {
-      showStatus(ssoStatus, browser.i18n.getMessage("ssoUnavailable") || "SSO via local browser is not enabled on this server. The admin needs to set CLIENT_SSO_VIA_LOCAL_BROWSER = True in seahub_settings.py.", false);
-      ssoStatus.className = "status info";
+      showStatus(ssoStatus, browser.i18n.getMessage("ssoUnavailable") || "SSO via local browser is not enabled on this server. The admin needs to set CLIENT_SSO_VIA_LOCAL_BROWSER = True in seahub_settings.py.", "info");
       ssoBtn.disabled = false;
       return;
     }
 
     // Start polling
-    showStatus(ssoStatus, browser.i18n.getMessage("ssoWaiting") || "Waiting for authentication in browser...", false);
-    ssoStatus.className = "status info";
+    showStatus(ssoStatus, browser.i18n.getMessage("ssoWaiting") || "Waiting for authentication in browser...", "info");
 
     let elapsed = 0;
     ssoPollingInterval = setInterval(async () => {
@@ -349,63 +383,125 @@ ssoBtn.addEventListener("click", async () => {
 });
 
 /**
- * Handle "Save" button click.
+ * Auto-save current settings to storage.
  */
-saveBtn.addEventListener("click", async () => {
-  const repoId = repoSelect.value;
-  const repoName = repoSelect.options[repoSelect.selectedIndex]?.textContent || "";
-  const uploadPath = uploadCurrentPath;
-  const saveRepoId = saveRepoSelect.value || "";
-  const savePath = saveCurrentPath;
-  const sharePassword = sharePasswordInput.value.trim();
-  const shareExpireDays = Math.max(0, parseInt(shareExpireDaysInput.value, 10) || 0);
+/**
+ * Show a brief checkmark next to an element to indicate it was saved.
+ */
+function flashSaved(el) {
+  // Find the label for this element (previous sibling or parent)
+  const formGroup = el.closest(".form-group") || el.parentElement;
+  const label = formGroup.querySelector("label");
+  if (!label) return;
 
-  if (!repoId) {
-    showStatus(saveStatus, "Please select a library.", true);
-    return;
+  let check = label.querySelector(".save-check");
+  if (!check) {
+    check = document.createElement("span");
+    check.className = "save-check";
+    check.innerHTML = STATUS_ICONS.success;
+    label.appendChild(check);
   }
+  check.classList.add("visible");
+  clearTimeout(check._timer);
+  check._timer = setTimeout(() => check.classList.remove("visible"), 1500);
+}
 
-  saveBtn.disabled = true;
+let autoSaveTimer = null;
+let autoSaveSource = null;
+function autoSave(sourceEl) {
+  autoSaveSource = sourceEl || null;
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(async () => {
+    try {
+      const stored = await browser.storage.local.get(accountId);
+      const config = stored[accountId] || {};
 
-  try {
-    // Load existing config and merge
-    const stored = await browser.storage.local.get(accountId);
-    const config = stored[accountId] || {};
-    config.repoId = repoId;
-    config.repoName = repoName;
-    config.uploadPath = uploadPath;
-    config.saveRepoId = saveRepoId;
-    config.savePath = savePath;
-    config.sharePassword = sharePassword;
-    config.shareExpireDays = shareExpireDays;
-    await browser.storage.local.set({ [accountId]: config });
+      config.repoId = repoSelect.value;
+      config.repoName = repoSelect.options[repoSelect.selectedIndex]?.textContent || "";
+      config.uploadPath = uploadCurrentPath;
+      config.saveRepoId = saveRepoSelect.value || "";
+      config.savePath = saveCurrentPath;
+      config.sharePassword = sharePasswordInput.value.trim();
+      config.shareExpireDays = Math.max(0, parseInt(shareExpireDaysInput.value, 10) || 0);
+      config.skipLinkOptions = skipLinkOptionsInput.checked;
+      await browser.storage.local.set({ [accountId]: config });
 
-    // Mark account as configured
-    await browser.cloudFile.updateAccount(accountId, { configured: true });
+      if (config.repoId) {
+        await browser.cloudFile.updateAccount(accountId, { configured: true });
+      }
 
-    showStatus(saveStatus, "Settings saved!", false);
-  } catch (e) {
-    showStatus(saveStatus, `Failed to save: ${e.message}`, true);
-  } finally {
-    saveBtn.disabled = false;
-  }
+      if (autoSaveSource) {
+        flashSaved(autoSaveSource);
+      }
+    } catch (e) {
+      console.error("Auto-save failed:", e);
+    }
+  }, 300);
+}
+
+// Auto-save on any settings change
+repoSelect.addEventListener("change", () => {
+  uploadCurrentPath = "/";
+  navigateUploadFolder("/");
+  autoSave(repoSelect);
 });
-
-// Sanitize expiration input - only allow digits
+saveRepoSelect.addEventListener("change", () => {
+  saveCurrentPath = "/";
+  navigateSaveFolder("/");
+  autoSave(saveRepoSelect);
+});
+sharePasswordInput.addEventListener("input", () => autoSave(sharePasswordInput));
 shareExpireDaysInput.addEventListener("input", () => {
   shareExpireDaysInput.value = shareExpireDaysInput.value.replace(/[^0-9]/g, "");
+  autoSave(shareExpireDaysInput);
+});
+skipLinkOptionsInput.addEventListener("change", () => autoSave(skipLinkOptionsInput.parentElement));
+
+// Disconnect handler
+disconnectBtn.addEventListener("click", async () => {
+  const stored = await browser.storage.local.get(accountId);
+  const config = stored[accountId] || {};
+
+  // Clear auth data but keep server URL
+  const serverUrl = config.serverUrl || "";
+  await browser.storage.local.set({ [accountId]: { serverUrl } });
+  await browser.cloudFile.updateAccount(accountId, { configured: false });
+
+  // Reset UI
+  connectedInfo.style.display = "none";
+  loginForm.style.display = "block";
+  serverUrlInput.value = serverUrl;
+  usernameInput.value = "";
+  passwordInput.value = "";
+  passwordInput.placeholder = "";
+  otpInput.value = "";
+  connectBtn.textContent = browser.i18n.getMessage("connect") || "Connect";
+  connectBtn.disabled = false;
+  ssoBtn.disabled = false;
+  connectStatus.className = "status";
+
+  // Disable settings tabs
+  document.querySelector('.tab[data-tab="sharing"]').classList.add("disabled");
+  document.querySelector('.tab[data-tab="saving"]').classList.add("disabled");
+  switchTab("connection");
 });
 
 // Tab switching
 for (const tab of document.querySelectorAll(".tab")) {
-  tab.addEventListener("click", () => {
-    document.querySelector(".tab.active").classList.remove("active");
-    document.querySelector(".tab-content.active").classList.remove("active");
-    tab.classList.add("active");
-    document.getElementById(`tab-${tab.dataset.tab}`).classList.add("active");
-    saveStatus.className = "status";
-  });
+  tab.addEventListener("click", () => switchTab(tab.dataset.tab));
 }
+
+// Folder picker toggle — save on close
+uploadPathEl.addEventListener("click", () => {
+  const wasOpen = uploadFolderPicker.classList.contains("open");
+  toggleFolderPicker(uploadFolderPicker);
+  if (wasOpen) autoSave(uploadFolderPicker);
+});
+savePathEl.addEventListener("click", () => {
+  const wasOpen = saveFolderPicker.classList.contains("open");
+  toggleFolderPicker(saveFolderPicker);
+  if (wasOpen) autoSave(saveFolderPicker);
+});
 
 // Initialize page
 applyI18n();

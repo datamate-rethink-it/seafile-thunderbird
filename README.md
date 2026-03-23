@@ -1,6 +1,6 @@
 # Seafile for Thunderbird
 
-A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a CloudFile provider. Large email attachments are automatically uploaded to your Seafile server and replaced with download links. Received attachments can be saved directly to Seafile.
+A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a CloudFile provider. Large email attachments are automatically uploaded to your Seafile server and replaced with download links. Received attachments can be saved directly to Seafile. Existing files on Seafile can be inserted as share links into emails.
 
 ## Features
 
@@ -13,6 +13,14 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 - **File rename support** — renaming an attachment after upload renames the file on Seafile and updates the share link
 - **Upload abort** — cancel in-progress uploads from Thunderbird's UI
 - **Clean deletion** — removing a cloud attachment deletes both the share link and the file on Seafile
+
+### Insert Seafile links (compose)
+
+- **Browse & insert** — browse your Seafile libraries and insert share links for existing files directly into emails
+- **File type icons** — color-coded SVG icons for common file types (PDF, images, spreadsheets, etc.)
+- **Link options** — set password and expiration per link, or use defaults from settings
+- **Existing link detection** — reuse existing share links or delete and recreate
+- **Rich email template** — inserted links match the CloudFile template style (file name, size, link URL, Seafile logo)
 
 ### Saving (incoming)
 
@@ -30,9 +38,11 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 ### General
 
 - **Auto re-authentication** — expired API tokens are refreshed automatically (username/password login)
-- **Folder picker** — browse and select folders visually in settings (no manual path entry)
+- **Collapsible folder picker** — browse and select folders visually (click to expand, click to confirm)
+- **Auto-save settings** — all configuration changes are saved immediately
+- **Disconnect** — clearly shows connection status and auth method, one-click disconnect
 - **Encrypted library filtering** — encrypted libraries are excluded automatically
-- **Tabbed settings** — separate Sharing and Saving configuration
+- **Tabbed settings** — Connection, Share Attachments, Save Attachments
 - **Localization** — English and German
 
 ## Requirements
@@ -62,9 +72,10 @@ After installation, go to **Settings → Composition → Attachments** and click
 2. Log in using one of two methods:
    - **Username/password**: Enter credentials and optionally a **2FA code**, then click **Connect**
    - **SSO**: Click **Login via SSO** — a browser window opens for authentication. If SSO is not enabled on the server, a hint with the required server configuration is shown.
-3. **Sharing tab**: Select target library and upload folder, optionally set password and link expiration
-4. **Saving tab**: Select default library and folder for saving received attachments
-5. Click **Save**
+3. **Share Attachments tab**: Select target library and upload folder, optionally set password and link expiration
+4. **Save Attachments tab**: Select default library and folder for saving received attachments
+
+All settings are saved automatically.
 
 ## Usage
 
@@ -73,6 +84,10 @@ After installation, go to **Settings → Composition → Attachments** and click
 When composing an email, add an attachment as usual. If the file exceeds the size threshold, Thunderbird will offer to upload it via Seafile. You can also right-click any attachment and select **Convert to → Seafile**.
 
 The recipient sees a download link in the email body with file name, size, and (if configured) password and expiration info.
+
+### Inserting Seafile links
+
+When composing an email, click the **Insert Seafile Link** button in the compose toolbar. Browse your Seafile libraries, select a file, optionally set password and expiration, and click **Insert link into email**. The link is inserted with a styled template showing file name, size, and download URL.
 
 ### Saving attachments
 
@@ -100,10 +115,15 @@ The local Seafile instance will be available at `http://127.0.0.1:8080`.
 ├── management/
 │   ├── management.html        # Account configuration page (tabbed)
 │   └── management.js          # Configuration logic + folder picker
+├── insert-link/
+│   ├── popup.html             # Insert Seafile link popup (compose)
+│   └── popup.js               # File browser + link insertion logic
 ├── save-attachments/
 │   ├── popup.html             # Save attachments popup
 │   └── popup.js               # Popup logic (attachment list, folder nav)
-├── icons/                     # Seafile logo icons (16/32/64px)
+├── icons/
+│   ├── file-icons.js          # Shared SVG file type + status icons
+│   └── *.png, *.svg           # Seafile logo icons
 ├── _locales/
 │   ├── en/messages.json       # English strings
 │   └── de/messages.json       # German strings
@@ -124,7 +144,6 @@ This allows desktop clients and this extension to authenticate via the system br
 
 ## Roadmap
 
-- [ ] Browse and insert existing Seafile files as links
 - [ ] Publish on [addons.thunderbird.net](https://addons.thunderbird.net)
 
 ## License

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 13px;
+      margin: 0;
+      padding: 12px;
+      color: #333;
+      width: 380px;
+      min-height: 100px;
+    }
+    h3 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+    }
+    .form-group {
+      margin-bottom: 8px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 3px;
+      font-weight: 600;
+    }
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 5px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #4a90d9;
+      box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.2);
+    }
+    .hint {
+      display: block;
+      margin-top: 3px;
+      font-size: 11px;
+      color: #888;
+    }
+    .current-path {
+      font-size: 12px;
+      color: #555;
+      background: #f5f5f5;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
+    .file-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 12px 0;
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .file-list:empty::after {
+      content: attr(data-empty);
+      display: block;
+      padding: 12px;
+      color: #aaa;
+      font-size: 12px;
+      text-align: center;
+    }
+    .file-list li {
+      padding: 6px 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .file-list li:last-child {
+      border-bottom: none;
+    }
+    .file-list li:hover {
+      background: #f0f4ff;
+    }
+    .file-icon {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      color: #666;
+      display: flex;
+      align-items: center;
+    }
+    .file-icon svg {
+      display: block;
+    }
+    .file-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-size {
+      flex-shrink: 0;
+      color: #888;
+      font-size: 11px;
+    }
+    .empty-msg {
+      color: #888;
+      text-align: center;
+      padding: 16px;
+    }
+    button {
+      padding: 6px 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #f0f0f0;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    button:hover {
+      background: #e0e0e0;
+    }
+    button.primary {
+      background: #4a90d9;
+      color: white;
+      border-color: #3a7bc8;
+      width: 100%;
+    }
+    button.primary:hover {
+      background: #3a7bc8;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .status {
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 4px;
+      display: none;
+      font-size: 12px;
+    }
+    .status.success {
+      display: block;
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status.error {
+      display: block;
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .status.info {
+      display: block;
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeeba;
+    }
+
+    /* Detail view */
+    .detail-view {
+      display: none;
+    }
+    .detail-view.active {
+      display: block;
+    }
+    .selected-file {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: #f5f5f5;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+    .selected-file .file-name {
+      font-weight: 600;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #4a90d9;
+      cursor: pointer;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .existing-link-bar {
+      display: none;
+      padding: 8px;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #856404;
+    }
+    .existing-link-bar.visible {
+      display: block;
+    }
+    .existing-link-bar .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .existing-link-bar button {
+      font-size: 11px;
+      padding: 4px 10px;
+    }
+  </style>
+</head>
+<body>
+  <h3 data-i18n="insertSeafileLink">Insert Seafile Link</h3>
+
+  <div id="loading" class="empty-msg" data-i18n="loading">Loading...</div>
+  <div id="notConfigured" class="empty-msg" style="display:none" data-i18n="notConfigured">No Seafile account configured.</div>
+
+  <!-- Browse view -->
+  <div id="browseView" style="display:none">
+    <div class="form-group">
+      <label for="repoSelect" data-i18n="targetLibrary">Library</label>
+      <select id="repoSelect"></select>
+    </div>
+    <div class="current-path" id="currentPath">/</div>
+    <ul class="file-list" id="fileList" data-empty="Empty folder"></ul>
+  </div>
+
+  <!-- Detail view (after file selection) -->
+  <div id="detailView" class="detail-view">
+    <div class="back-link" id="backBtn">&larr; <span data-i18n="backToFiles">Back</span></div>
+
+    <div class="selected-file" id="selectedFile">
+      <span class="file-icon" id="selectedFileIcon"></span>
+      <span class="file-name" id="selectedFileName"></span>
+      <span class="file-size" id="selectedFileSize"></span>
+    </div>
+
+    <div class="existing-link-bar" id="existingLinkBar">
+      <span data-i18n="existingLinkFound">A share link already exists for this file.</span>
+      <div class="btn-row">
+        <button id="useExistingBtn" data-i18n="useExisting">Use existing</button>
+        <button id="deleteExistingBtn" data-i18n="deleteAndNew">Delete &amp; create new</button>
+      </div>
+    </div>
+
+    <div id="linkOptions">
+      <div class="form-group">
+        <label for="linkPassword" data-i18n="sharePassword">Password Protection</label>
+        <input type="text" id="linkPassword" placeholder="">
+        <span class="hint" data-i18n="sharePasswordHint">Leave empty for no password</span>
+      </div>
+      <div class="form-group">
+        <label for="linkExpireDays" data-i18n="shareExpireDays">Expiration (days)</label>
+        <input type="number" id="linkExpireDays" min="0" placeholder="0">
+        <span class="hint" data-i18n="shareExpireDaysHint">0 = no expiration</span>
+      </div>
+      <button id="insertBtn" class="primary" data-i18n="insertLink">Insert link into email</button>
+    </div>
+  </div>
+
+  <div id="status" class="status"></div>
+
+  <script src="../icons/file-icons.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -160,6 +160,25 @@ class SeafileAPI {
    * @param {number} [options.expireDays] - Optional expiry in days
    * @returns {Promise<Object>} Share link object with link property
    */
+  /**
+   * Get existing share links for a file.
+   * @param {string} server
+   * @param {string} token
+   * @param {string} repoId
+   * @param {string} path - File path within the repo
+   * @returns {Promise<Array>} Array of existing share link objects
+   */
+  async getShareLinks(server, token, repoId, path) {
+    const params = new URLSearchParams({ repo_id: repoId, path });
+    const resp = await fetch(`${server}/api/v2.1/share-links/?${params}`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!resp.ok) {
+      return [];
+    }
+    return await resp.json();
+  }
+
   async createShareLink(server, token, repoId, path, options = {}) {
     const body = { repo_id: repoId, path };
     if (options.password) {

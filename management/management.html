@@ -61,23 +61,63 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+    .save-check {
+      display: inline-flex;
+      align-items: center;
+      color: #2ba050;
+      margin-left: 6px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+    }
+    .save-check.visible {
+      opacity: 1;
+    }
     .status {
       margin-top: 8px;
       padding: 8px;
       border-radius: 4px;
       display: none;
+      position: relative;
+      padding-right: 24px;
+    }
+    .status.success,
+    .status.error,
+    .status.info {
+      display: block;
     }
     .status.success {
-      display: block;
       background: #d4edda;
       color: #155724;
       border: 1px solid #c3e6cb;
     }
     .status.error {
-      display: block;
       background: #f8d7da;
       color: #721c24;
       border: 1px solid #f5c6cb;
+    }
+    .status.info {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeeba;
+    }
+    .status .close-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: none;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      color: inherit;
+      opacity: 0.6;
+      padding: 0 4px;
+      line-height: 1;
+    }
+    .status .close-btn:hover {
+      opacity: 1;
     }
     h3 {
       margin: 0 0 12px 0;
@@ -98,7 +138,7 @@
       padding: 0 16px;
     }
     .tab {
-      padding: 8px 16px;
+      padding: 8px 12px;
       cursor: pointer;
       border: 1px solid transparent;
       border-bottom: none;
@@ -107,7 +147,7 @@
       font-size: 13px;
       color: #555;
     }
-    .tab:hover {
+    .tab:hover:not(.disabled) {
       color: #333;
       background: #f5f5f5;
     }
@@ -117,17 +157,15 @@
       color: #333;
       font-weight: 600;
     }
+    .tab.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
     .tab-content {
       display: none;
       padding: 16px;
     }
     .tab-content.active {
-      display: block;
-    }
-    .settings-tabs {
-      display: none;
-    }
-    .settings-tabs.visible {
       display: block;
     }
     .folder-picker {
@@ -140,8 +178,26 @@
       color: #555;
       background: #f5f5f5;
       padding: 5px 8px;
-      border-bottom: 1px solid #eee;
       word-break: break-all;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .folder-picker .current-path:hover {
+      background: #eee;
+    }
+    .folder-picker .current-path .toggle-arrow {
+      font-size: 10px;
+      color: #999;
+      transition: transform 0.15s;
+    }
+    .folder-picker.open .current-path {
+      border-bottom: 1px solid #eee;
+    }
+    .folder-picker.open .current-path .toggle-arrow {
+      transform: rotate(180deg);
     }
     .folder-picker .folder-list {
       list-style: none;
@@ -149,6 +205,10 @@
       margin: 0;
       max-height: 120px;
       overflow-y: auto;
+      display: none;
+    }
+    .folder-picker.open .folder-list {
+      display: block;
     }
     .folder-picker .folder-list:empty::after {
       content: attr(data-empty);
@@ -168,6 +228,14 @@
     .folder-picker .folder-list li:hover {
       background: #f0f4ff;
     }
+    .folder-icon {
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+    }
+    .folder-icon svg {
+      display: block;
+    }
     .divider {
       display: flex;
       align-items: center;
@@ -184,101 +252,113 @@
     .divider span {
       padding: 0 12px;
     }
-    .status.info {
-      display: block;
-      background: #fff3cd;
-      color: #856404;
-      border: 1px solid #ffeeba;
-    }
   </style>
 </head>
 <body>
-  <!-- Connection (always visible) -->
-  <div style="padding: 16px 16px 0 16px;">
-    <div class="form-group">
-      <label for="serverUrl" data-i18n="serverUrl">Server URL</label>
-      <input type="url" id="serverUrl" placeholder="https://cloud.seafile.com">
-    </div>
-    <div class="form-group">
-      <label for="username" data-i18n="username">Username / Email</label>
-      <input type="text" id="username" placeholder="user@example.com">
-    </div>
-    <div class="form-group">
-      <label for="password" data-i18n="password">Password</label>
-      <input type="password" id="password">
-    </div>
-    <div class="form-group">
-      <label for="otp" data-i18n="otpLabel">2FA Code</label>
-      <input type="text" id="otp" inputmode="numeric" autocomplete="one-time-code" placeholder="123456">
-      <span class="hint" data-i18n="otpHint">Only required if two-factor authentication is enabled.</span>
-    </div>
-    <button id="connectBtn" class="primary" data-i18n="connect">Connect</button>
-    <div id="connectStatus" class="status"></div>
-
-    <div class="divider"><span data-i18n="or">or</span></div>
-
-    <button id="ssoBtn" class="primary" data-i18n="ssoLogin">Login via SSO</button>
-    <div id="ssoStatus" class="status"></div>
+  <div class="tabs">
+    <div class="tab active" data-tab="connection" data-i18n="tabConnection">Connection</div>
+    <div class="tab disabled" data-tab="sharing" data-i18n="tabSharing">Share Attachments</div>
+    <div class="tab disabled" data-tab="saving" data-i18n="tabSaving">Save Attachments</div>
   </div>
 
-  <!-- Tabs (visible after connect) -->
-  <div class="settings-tabs" id="settingsTabs">
-    <div class="tabs" style="margin-top: 12px;">
-      <div class="tab active" data-tab="sharing" data-i18n="tabSharing">Sharing</div>
-      <div class="tab" data-tab="saving" data-i18n="tabSaving">Saving</div>
+  <!-- Tab: Connection -->
+  <div class="tab-content active" id="tab-connection">
+    <!-- Connected state -->
+    <div id="connectedInfo" style="display:none;">
+      <div class="form-group">
+        <label data-i18n="serverUrl">Server URL</label>
+        <div id="connectedServer" style="font-size:13px;color:#333;padding:4px 0;"></div>
+      </div>
+      <div class="form-group">
+        <label data-i18n="connectedAs">Connected as</label>
+        <div id="connectedUser" style="font-size:13px;color:#333;padding:4px 0;"></div>
+      </div>
+      <div id="connectedMethod" style="font-size:11px;color:#888;margin-bottom:12px;"></div>
+      <button id="disconnectBtn" data-i18n="disconnect">Disconnect</button>
     </div>
 
-    <!-- Tab: Sharing -->
-    <div class="tab-content active" id="tab-sharing">
+    <!-- Login form -->
+    <div id="loginForm">
       <div class="form-group">
-        <label for="repoSelect" data-i18n="targetLibrary">Target Library</label>
-        <select id="repoSelect">
-          <option value="" data-i18n="selectLibrary">-- Select a library --</option>
-        </select>
-        <span class="hint" data-i18n="encryptedHint">Encrypted libraries are not supported.</span>
+        <label for="serverUrl" data-i18n="serverUrl">Server URL</label>
+        <input type="url" id="serverUrl" placeholder="https://cloud.seafile.com">
       </div>
       <div class="form-group">
-        <label data-i18n="uploadFolder">Upload Folder</label>
-        <div class="folder-picker" id="uploadFolderPicker">
-          <div class="current-path" id="uploadPath">/</div>
-          <ul class="folder-list" id="uploadFolderList" data-empty="No subfolders"></ul>
-        </div>
+        <label for="username" data-i18n="username">Username / Email</label>
+        <input type="text" id="username" placeholder="user@example.com">
       </div>
       <div class="form-group">
-        <label for="sharePassword" data-i18n="sharePassword">Password Protection</label>
-        <input type="text" id="sharePassword" placeholder="">
-        <span class="hint" data-i18n="sharePasswordHint">Leave empty for no password</span>
+        <label for="password" data-i18n="password">Password</label>
+        <input type="password" id="password">
       </div>
       <div class="form-group">
-        <label for="shareExpireDays" data-i18n="shareExpireDays">Expiration (days)</label>
-        <input type="number" id="shareExpireDays" min="0" placeholder="0">
-        <span class="hint" data-i18n="shareExpireDaysHint">0 = no expiration</span>
+        <label for="otp" data-i18n="otpLabel">2FA Code</label>
+        <input type="text" id="otp" inputmode="numeric" autocomplete="one-time-code" placeholder="123456">
+        <span class="hint" data-i18n="otpHint">Only required if two-factor authentication is enabled.</span>
       </div>
-    </div>
+      <button id="connectBtn" class="primary" data-i18n="connect">Connect</button>
+      <div id="connectStatus" class="status"></div>
 
-    <!-- Tab: Saving -->
-    <div class="tab-content" id="tab-saving">
-      <div class="form-group">
-        <label for="saveRepoSelect" data-i18n="saveTargetLibrary">Default Library</label>
-        <select id="saveRepoSelect">
-          <option value="" data-i18n="sameAsUpload">-- Same as upload library --</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label data-i18n="saveFolder">Default Folder</label>
-        <div class="folder-picker" id="saveFolderPicker">
-          <div class="current-path" id="savePath">/</div>
-          <ul class="folder-list" id="saveFolderList" data-empty="No subfolders"></ul>
-        </div>
-      </div>
-    </div>
+      <div class="divider"><span data-i18n="or">or</span></div>
 
-    <div style="padding: 0 16px 16px 16px;">
-      <button id="saveBtn" class="primary" data-i18n="save">Save</button>
-      <div id="saveStatus" class="status"></div>
+      <button id="ssoBtn" class="primary" data-i18n="ssoLogin">Login via SSO</button>
+      <div id="ssoStatus" class="status"></div>
     </div>
   </div>
 
+  <!-- Tab: Share Attachments -->
+  <div class="tab-content" id="tab-sharing">
+    <div class="form-group">
+      <label for="repoSelect" data-i18n="targetLibrary">Target Library</label>
+      <select id="repoSelect">
+        <option value="" data-i18n="selectLibrary">-- Select a library --</option>
+      </select>
+      <span class="hint" data-i18n="encryptedHint">Encrypted libraries are not supported.</span>
+    </div>
+    <div class="form-group">
+      <label data-i18n="uploadFolder">Upload Folder</label>
+      <div class="folder-picker" id="uploadFolderPicker">
+        <div class="current-path" id="uploadPath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
+        <ul class="folder-list" id="uploadFolderList" data-empty="No subfolders"></ul>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="sharePassword" data-i18n="sharePassword">Password Protection</label>
+      <input type="text" id="sharePassword" placeholder="">
+      <span class="hint" data-i18n="sharePasswordHint">Leave empty for no password</span>
+    </div>
+    <div class="form-group">
+      <label for="shareExpireDays" data-i18n="shareExpireDays">Expiration (days)</label>
+      <input type="number" id="shareExpireDays" min="0" placeholder="0">
+      <span class="hint" data-i18n="shareExpireDaysHint">0 = no expiration</span>
+    </div>
+    <div class="form-group" style="margin-top: 16px;">
+      <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer;">
+        <input type="checkbox" id="skipLinkOptions">
+        <span data-i18n="skipLinkOptions">Always use these defaults when inserting Seafile links (skip options dialog)</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Tab: Save Attachments -->
+  <div class="tab-content" id="tab-saving">
+    <div class="form-group">
+      <label for="saveRepoSelect" data-i18n="saveTargetLibrary">Default Library</label>
+      <select id="saveRepoSelect">
+        <option value="" data-i18n="sameAsUpload">-- Same as upload library --</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label data-i18n="saveFolder">Default Folder</label>
+      <div class="folder-picker" id="saveFolderPicker">
+        <div class="current-path" id="savePath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
+        <ul class="folder-list" id="saveFolderList" data-empty="No subfolders"></ul>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="../icons/file-icons.js"></script>
   <script src="management.js"></script>
 </body>
 </html>

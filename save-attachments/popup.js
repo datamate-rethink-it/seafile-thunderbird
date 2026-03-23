@@ -115,7 +115,7 @@ async function navigateToFolder(path) {
     if (path !== "/") {
       const parentLi = document.createElement("li");
       const parentPath = path.substring(0, path.lastIndexOf("/")) || "/";
-      parentLi.innerHTML = `<span class="folder-icon">\u2B06</span> ..`;
+      parentLi.innerHTML = `<span class="folder-icon">${FILE_ICONS.folderUp}</span> ..`;
       parentLi.addEventListener("click", () => navigateToFolder(parentPath));
       folderListEl.appendChild(parentLi);
     }
@@ -123,7 +123,7 @@ async function navigateToFolder(path) {
     for (const dir of dirs) {
       const li = document.createElement("li");
       const dirPath = path === "/" ? `/${dir.name}` : `${path}/${dir.name}`;
-      li.innerHTML = `<span class="folder-icon">\uD83D\uDCC1</span> ${dir.name}`;
+      li.innerHTML = `<span class="folder-icon">${FILE_ICONS.folder}</span> ${dir.name}`;
       li.addEventListener("click", () => navigateToFolder(dirPath));
       folderListEl.appendChild(li);
     }
@@ -165,7 +165,7 @@ saveBtn.addEventListener("click", async () => {
     const partName = cb.dataset.part;
     const statusEl = document.querySelector(`[data-part-status="${partName}"]`);
     const att = attachments.find(a => a.partName === partName);
-    statusEl.textContent = "\u23F3";
+    statusEl.innerHTML = STATUS_ICONS.pending;
 
     try {
       await sendMessage("uploadAttachment", {
@@ -175,10 +175,10 @@ saveBtn.addEventListener("click", async () => {
         targetDir: currentPath,
         repoId: currentRepoId,
       });
-      statusEl.textContent = "\u2705";
+      statusEl.innerHTML = STATUS_ICONS.success;
       cb.disabled = true;
     } catch (e) {
-      statusEl.textContent = "\u274C";
+      statusEl.innerHTML = STATUS_ICONS.error;
       errorCount++;
       console.error(`Failed to upload ${att.name}:`, e);
     }

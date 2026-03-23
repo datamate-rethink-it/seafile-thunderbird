@@ -50,9 +50,13 @@
     }
     .att-status {
       flex-shrink: 0;
-      width: 18px;
-      text-align: center;
-      font-size: 14px;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+    }
+    .att-status svg {
+      display: block;
     }
     .form-group {
       margin-bottom: 8px;
@@ -116,7 +120,12 @@
       background: #f0f4ff;
     }
     .folder-icon {
-      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+    }
+    .folder-icon svg {
+      display: block;
     }
     .current-path {
       font-size: 12px;
@@ -206,6 +215,7 @@
     <div id="saveStatus" class="status"></div>
   </div>
 
+  <script src="../icons/file-icons.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

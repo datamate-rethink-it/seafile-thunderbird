@@ -23,8 +23,16 @@
   "background": {
     "scripts": ["api/seafile.js", "background.js"]
   },
-  "permissions": ["storage", "messagesRead", "notifications"],
+  "permissions": ["storage", "messagesRead", "notifications", "compose"],
   "host_permissions": ["<all_urls>"],
+  "compose_action": {
+    "default_popup": "insert-link/popup.html",
+    "default_title": "__MSG_insertSeafileLink__",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  },
   "message_display_action": {
     "default_popup": "save-attachments/popup.html",
     "default_title": "__MSG_saveToSeafile__",

@@ -56,6 +56,18 @@
   "connected": {
     "message": "Connected"
   },
+  "connectedAs": {
+    "message": "Connected as"
+  },
+  "connectedViaSSO": {
+    "message": "Connected via SSO"
+  },
+  "connectedViaPassword": {
+    "message": "Connected via password"
+  },
+  "disconnect": {
+    "message": "Disconnect"
+  },
   "uploadSettings": {
     "message": "Upload Settings"
   },
@@ -101,14 +113,47 @@
   "shareExpireDaysHint": {
     "message": "0 = no expiration"
   },
+  "tabConnection": {
+    "message": "Connection"
+  },
   "tabSharing": {
-    "message": "Sharing"
+    "message": "Share Attachments"
   },
   "tabSaving": {
-    "message": "Saving"
+    "message": "Save Attachments"
   },
   "save": {
     "message": "Save"
+  },
+  "saved": {
+    "message": "Saved"
+  },
+  "insertSeafileLink": {
+    "message": "Insert Seafile Link"
+  },
+  "emptyFolder": {
+    "message": "Empty folder"
+  },
+  "backToFiles": {
+    "message": "Back"
+  },
+  "existingLinkFound": {
+    "message": "A share link already exists for this file."
+  },
+  "useExisting": {
+    "message": "Use existing"
+  },
+  "deleteAndNew": {
+    "message": "Delete & create new"
+  },
+  "insertLink": {
+    "message": "Insert link into email"
+  },
+  "linkInserted": {
+    "message": "Link inserted!"
+  },
+  "skipLinkOptions": {
+    "message": "Always use these defaults when inserting Seafile links (skip options dialog)"
   },
   "saveToSeafile": {
     "message": "Save to Seafile"
@@ -133,6 +178,9 @@
   },
   "savePartialError": {
     "message": "Some files failed to upload."
+  },
+  "errorSelectLibrary": {
+    "message": "Please select a target library."
   },
   "errorNotConnected": {
     "message": "Seafile account not connected. Please set up your connection in Settings → Composition → Attachments."
