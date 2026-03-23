@@ -13,7 +13,7 @@
   "cloud_file": {
     "name": "__MSG_serviceName__",
     "management_url": "management/management.html",
-    "reuse_uploads": false
+    "reuse_uploads": true
   },
   "icons": {
     "16": "icons/icon-16.png",
@@ -23,7 +23,7 @@
   "background": {
     "scripts": ["api/seafile.js", "background.js"]
   },
-  "permissions": ["storage", "messagesRead", "notifications", "compose"],
+  "permissions": ["storage", "messagesRead", "notifications", "compose", "scripting"],
   "host_permissions": ["<all_urls>"],
   "compose_action": {
     "default_popup": "insert-link/popup.html",
