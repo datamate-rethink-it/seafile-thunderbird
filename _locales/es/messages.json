@@ -196,5 +196,8 @@
   },
   "errorNotConfigured": {
     "message": "Cuenta de Seafile no completamente configurada. Seleccione una biblioteca en Ajustes → Redacción → Adjuntos."
+  },
+  "httpWarning": {
+    "message": "Advertencia: Conexión por HTTP. Sus credenciales podrían transmitirse en texto plano."
   }
 }

@@ -196,5 +196,8 @@
   },
   "errorNotConfigured": {
     "message": "Seafile 账户配置不完整。请在 设置 → 编写 → 附件 中选择资料库。"
+  },
+  "httpWarning": {
+    "message": "警告：使用 HTTP 连接。您的凭据可能以明文传输。"
   }
 }

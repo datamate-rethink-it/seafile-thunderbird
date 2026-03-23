@@ -196,5 +196,8 @@
   },
   "errorNotConfigured": {
     "message": "Seafile account not fully configured. Please select a library in Settings → Composition → Attachments."
+  },
+  "httpWarning": {
+    "message": "Warning: Connecting over HTTP. Your credentials may be transmitted in plaintext."
   }
 }

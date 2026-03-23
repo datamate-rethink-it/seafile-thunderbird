@@ -2,6 +2,15 @@
  * Popup for saving email attachments to Seafile.
  */
 
+/**
+ * Escape a string for safe insertion into HTML.
+ */
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 const loadingEl = document.getElementById("loading");
 const noAttachmentsEl = document.getElementById("noAttachments");
 const notConfiguredEl = document.getElementById("notConfigured");
@@ -66,10 +75,10 @@ function renderAttachments() {
   for (const att of attachments) {
     const li = document.createElement("li");
     li.innerHTML = `
-      <input type="checkbox" class="att-checkbox" data-part="${att.partName}" checked>
-      <span class="att-name" title="${att.name}">${att.name}</span>
+      <input type="checkbox" class="att-checkbox" data-part="${escapeHtml(att.partName)}" checked>
+      <span class="att-name" title="${escapeHtml(att.name)}">${escapeHtml(att.name)}</span>
       <span class="att-size">${formatSize(att.size)}</span>
-      <span class="att-status" data-part-status="${att.partName}"></span>
+      <span class="att-status" data-part-status="${escapeHtml(att.partName)}"></span>
     `;
     li.querySelector(".att-checkbox").addEventListener("change", syncSelectAll);
     attachmentListEl.appendChild(li);
@@ -133,7 +142,7 @@ async function navigateToFolder(path) {
     for (const dir of dirs) {
       const li = document.createElement("li");
       const dirPath = path === "/" ? `/${dir.name}` : `${path}/${dir.name}`;
-      li.innerHTML = `<span class="folder-icon">${FILE_ICONS.folder}</span> ${dir.name}`;
+      li.innerHTML = `<span class="folder-icon">${FILE_ICONS.folder}</span> ${escapeHtml(dir.name)}`;
       li.addEventListener("click", () => navigateToFolder(dirPath));
       folderListEl.appendChild(li);
     }

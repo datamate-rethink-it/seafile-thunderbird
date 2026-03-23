@@ -196,5 +196,8 @@
   },
   "errorNotConfigured": {
     "message": "Seafile-Konto nicht vollständig konfiguriert. Bitte eine Bibliothek unter Einstellungen → Verfassen → Anhänge auswählen."
+  },
+  "httpWarning": {
+    "message": "Warnung: Verbindung über HTTP. Ihre Zugangsdaten könnten unverschlüsselt übertragen werden."
   }
 }

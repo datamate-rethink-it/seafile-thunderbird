@@ -196,5 +196,8 @@
   },
   "errorNotConfigured": {
     "message": "Compte Seafile pas entièrement configuré. Veuillez sélectionner une bibliothèque dans Paramètres → Rédaction → Pièces jointes."
+  },
+  "httpWarning": {
+    "message": "Avertissement : Connexion en HTTP. Vos identifiants pourraient être transmis en clair."
   }
 }

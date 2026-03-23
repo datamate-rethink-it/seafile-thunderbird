@@ -2,6 +2,24 @@
  * Popup for inserting Seafile file links into compose emails.
  */
 
+/**
+ * Escape a string for safe insertion into HTML.
+ */
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/**
+ * Generate a cryptographically secure random integer in [0, max).
+ */
+function secureRandomInt(max) {
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  return array[0] % max;
+}
+
 const loadingEl = document.getElementById("loading");
 const notConfiguredEl = document.getElementById("notConfigured");
 const browseView = document.getElementById("browseView");
@@ -219,7 +237,7 @@ async function navigateToFolder(path) {
       const dirPath = path === "/" ? `/${dir.name}` : `${path}/${dir.name}`;
       li.innerHTML = `
         <span class="file-icon">${FILE_ICONS.folder}</span>
-        <span class="file-name">${dir.name}</span>
+        <span class="file-name">${escapeHtml(dir.name)}</span>
       `;
       li.addEventListener("click", () => navigateToFolder(dirPath));
       fileListEl.appendChild(li);
@@ -230,7 +248,7 @@ async function navigateToFolder(path) {
       const filePath = path === "/" ? `/${file.name}` : `${path}/${file.name}`;
       li.innerHTML = `
         <span class="file-icon">${getFileIcon(file.name)}</span>
-        <span class="file-name" title="${file.name}">${file.name}</span>
+        <span class="file-name" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>
         <span class="file-size">${formatSize(file.size)}</span>
       `;
       li.addEventListener("click", () => showDetailView(file, filePath));
@@ -279,30 +297,30 @@ function generatePassword() {
 
   // Ensure at least one of each type
   const required = [
-    lower[Math.floor(Math.random() * lower.length)],
-    upper[Math.floor(Math.random() * upper.length)],
-    digits[Math.floor(Math.random() * digits.length)],
-    special[Math.floor(Math.random() * special.length)],
+    lower[secureRandomInt(lower.length)],
+    upper[secureRandomInt(upper.length)],
+    digits[secureRandomInt(digits.length)],
+    special[secureRandomInt(special.length)],
   ];
   const rest = [];
   for (let i = required.length; i < 12; i++) {
-    rest.push(all[Math.floor(Math.random() * all.length)]);
+    rest.push(all[secureRandomInt(all.length)]);
   }
   // Combine and shuffle the middle part, keep alphanumeric at start and end
   const middle = [...required, ...rest];
   for (let i = middle.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = secureRandomInt(i + 1);
     [middle[i], middle[j]] = [middle[j], middle[i]];
   }
   // Ensure first and last chars are alphanumeric (for double-click selection)
   const alnum = lower + upper + digits;
-  middle[0] = alnum[Math.floor(Math.random() * alnum.length)];
-  middle[middle.length - 1] = alnum[Math.floor(Math.random() * alnum.length)];
+  middle[0] = alnum[secureRandomInt(alnum.length)];
+  middle[middle.length - 1] = alnum[secureRandomInt(alnum.length)];
   // Make sure we still have at least one special char in the middle
   const hasSpecial = middle.some(c => special.includes(c));
   if (!hasSpecial) {
-    const pos = 1 + Math.floor(Math.random() * (middle.length - 2));
-    middle[pos] = special[Math.floor(Math.random() * special.length)];
+    const pos = 1 + secureRandomInt(middle.length - 2);
+    middle[pos] = special[secureRandomInt(special.length)];
   }
   return middle.join("");
 }

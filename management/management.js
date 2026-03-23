@@ -9,6 +9,15 @@
 const accountId = new URL(location.href).searchParams.get("accountId");
 
 /**
+ * Escape a string for safe insertion into HTML.
+ */
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/**
  * Apply i18n translations to all elements with data-i18n attributes.
  */
 function applyI18n() {
@@ -172,7 +181,7 @@ async function loadFolderPicker(repoId, path, pathEl, listEl, onNavigate) {
     for (const dir of dirs) {
       const li = document.createElement("li");
       const dirPath = path === "/" ? `/${dir.name}` : `${path}/${dir.name}`;
-      li.innerHTML = `<span class="folder-icon">${FILE_ICONS.folder}</span> ${dir.name}`;
+      li.innerHTML = `<span class="folder-icon">${FILE_ICONS.folder}</span> ${escapeHtml(dir.name)}`;
       li.addEventListener("click", () => onNavigate(dirPath));
       listEl.appendChild(li);
     }
@@ -221,9 +230,6 @@ async function loadConfig() {
 
   serverUrlInput.value = config.serverUrl || "";
   usernameInput.value = config.username || "";
-  if (config.password) {
-    passwordInput.placeholder = "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022";
-  }
   sharePasswordInput.value = config.sharePassword || "";
   shareExpireDaysInput.value = config.shareExpireDays || 0;
   showPasswordInEmailInput.checked = config.showPasswordInEmail !== false;
@@ -340,9 +346,14 @@ connectBtn.addEventListener("click", async () => {
   connectBtn.textContent = browser.i18n.getMessage("connecting") || "Connecting...";
   connectStatus.className = "status";
 
+  // Warn about HTTP connections (except localhost)
+  if (serverUrl.startsWith("http://") && !/^http:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(serverUrl)) {
+    showStatus(connectStatus, browser.i18n.getMessage("httpWarning") || "Warning: Connecting over HTTP. Your credentials may be transmitted in plaintext.", "info");
+  }
+
   try {
     const result = await sendMessage("getToken", { serverUrl, username, password, otp });
-    const config = { serverUrl, username, password, apiToken: result.token };
+    const config = { serverUrl, username, apiToken: result.token };
     await onConnected(config);
   } catch (e) {
     showStatus(connectStatus, `Connection failed: ${e.message}`, true);
@@ -363,6 +374,11 @@ ssoBtn.addEventListener("click", async () => {
 
   ssoBtn.disabled = true;
   ssoStatus.className = "status";
+
+  // Warn about HTTP connections (except localhost)
+  if (serverUrl.startsWith("http://") && !/^http:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(serverUrl)) {
+    showStatus(ssoStatus, browser.i18n.getMessage("httpWarning") || "Warning: Connecting over HTTP. Your credentials may be transmitted in plaintext.", "info");
+  }
 
   try {
     const result = await sendMessage("startSSO", { serverUrl });
