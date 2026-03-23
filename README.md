@@ -6,16 +6,23 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 
 ## Screenshots
 
-<!-- TODO: Add screenshots -->
+### Settings
 
-| Settings | Insert Seafile Link | Save Attachments |
+| Connection | Connected | Share Attachments | Save Attachments |
+|---|---|---|---|
+| ![Connection](docs/screenshots/connection.png) | ![Connected](docs/screenshots/connection-connected.png) | ![Share settings](docs/screenshots/share-settings.png) | ![Save settings](docs/screenshots/save-settings.png) |
+
+### Insert Seafile Link
+
+| Browse files | Link options | Inserted link (with password & expiry) |
 |---|---|---|
-| ![Connection](docs/screenshots/connection.png) | ![Browse files](docs/screenshots/insert-link-browse.png) | ![Save attachments](docs/screenshots/save-attachments.png) |
-| ![Share settings](docs/screenshots/share-settings.png) | ![Link options](docs/screenshots/insert-link-detail.png) | |
+| ![Browse](docs/screenshots/insert-link-browse.png) | ![Detail](docs/screenshots/insert-link-detail.png) | ![Insert link box](docs/screenshots/insert-link-box.png) |
 
-| CloudFile template (outgoing) |
-|---|
-| ![CloudFile box](docs/screenshots/cloudfile-box.png) |
+### CloudFile & Save Attachments
+
+| CloudFile template (outgoing) | Save attachments (incoming) |
+|---|---|
+| ![CloudFile box](docs/screenshots/cloudfile-box.png) | ![Save attachments](docs/screenshots/save-attachments.png) |
 
 ## Features
 
