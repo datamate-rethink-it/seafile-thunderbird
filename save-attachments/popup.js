@@ -98,10 +98,7 @@ function syncSelectAll() {
  * Load libraries into the dropdown.
  */
 async function loadRepos() {
-  const repos = await sendMessage("listRepos", {
-    serverUrl: accountConfig.serverUrl,
-    apiToken: accountConfig.apiToken,
-  });
+  const repos = await sendMessage("listRepos");
 
   repoSelectEl.innerHTML = "";
   for (const repo of repos) {

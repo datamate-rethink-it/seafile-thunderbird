@@ -332,7 +332,13 @@ browser.runtime.onMessage.addListener(async (message) => {
       };
     }
     case "listRepos": {
-      const repos = await seafile.listRepos(message.serverUrl, message.apiToken);
+      const config = await getFirstConfiguredAccount() || {};
+      const serverUrl = config.serverUrl || message.serverUrl;
+      const token = config.apiToken || message.apiToken;
+      if (!serverUrl || !token) {
+        return { error: "No Seafile account configured." };
+      }
+      const repos = await seafile.listRepos(serverUrl, token);
       return repos;
     }
     case "getDisplayedMessage": {
@@ -457,7 +463,11 @@ browser.runtime.onMessage.addListener(async (message) => {
 
         const linkHtml = `<div style="padding:15px;background:#dae3f0;border-radius:4px;font-family:sans-serif;"><div style="font-size:13px;color:#333;margin-bottom:8px;">I've linked a file to this email:</div><div style="background:#fff;border:1px solid #c8cfd6;border-radius:4px;padding:10px 12px;"><table style="width:100%;border-collapse:collapse;"><tr><td style="width:28px;vertical-align:top;padding-right:8px;"><span style="font-size:20px;color:#7b8a99;">&#128206;</span></td><td style="vertical-align:top;font-size:12px;color:#555;"><a href="${safeLink}" style="color:#0060df;font-size:13px;text-decoration:underline;">${safeFileName}</a><br>${metaLines}</td><td style="width:50px;vertical-align:middle;text-align:center;"><img src="${logoSvg}" alt="Seafile" width="28" height="28" style="display:block;margin:0 auto 2px auto;"><div style="font-size:9px;color:#888;">Seafile</div></td></tr></table></div><div style="font-size:11px;color:#555;margin-top:6px;">Learn more about <a href="https://www.seafile.com" style="color:#0060df;">Seafile</a>.</div></div>`;
 
-        // Use scripting.executeScript to insert at cursor without touching existing body
+        // Insert at cursor position without modifying existing body content.
+        // Note: execCommand("insertHTML") is deprecated in web standards but is the
+        // only way to insert at cursor in Thunderbird's compose editor. The compose
+        // API (setComposeDetails) would replace the entire body and re-render existing
+        // CloudFile templates. No alternative is currently available via the TB API.
         await browser.scripting.executeScript({
           target: { tabId },
           func: (html) => {

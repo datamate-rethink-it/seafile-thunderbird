@@ -23,7 +23,8 @@ class SeafileAPI {
     });
     if (!resp.ok) {
       const text = await resp.text();
-      throw new Error(`Authentication failed (${resp.status}): ${text}`);
+      console.error(`Auth failed (${resp.status}):`, text);
+      throw new Error(`Authentication failed (${resp.status})`);
     }
     const data = await resp.json();
     return data.token;
@@ -142,7 +143,8 @@ class SeafileAPI {
     });
     if (!resp.ok) {
       const text = await resp.text();
-      throw new Error(`File upload failed (${resp.status}): ${text}`);
+      console.error(`Upload failed (${resp.status}):`, text);
+      throw new Error(`File upload failed (${resp.status})`);
     }
     const data = await resp.json();
     // Response is an array of uploaded files
@@ -198,7 +200,8 @@ class SeafileAPI {
     });
     if (!resp.ok) {
       const text = await resp.text();
-      throw new Error(`Failed to create share link (${resp.status}): ${text}`);
+      console.error(`Share link failed (${resp.status}):`, text);
+      throw new Error(`Failed to create share link (${resp.status})`);
     }
     return await resp.json();
   }
@@ -287,7 +290,8 @@ class SeafileAPI {
     );
     if (!resp.ok) {
       const text = await resp.text();
-      throw new Error(`Failed to rename file (${resp.status}): ${text}`);
+      console.error(`Rename failed (${resp.status}):`, text);
+      throw new Error(`Failed to rename file (${resp.status})`);
     }
   }
 
