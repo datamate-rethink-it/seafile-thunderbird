@@ -1,6 +1,21 @@
 # Seafile for Thunderbird
 
-A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a CloudFile provider. Large email attachments are automatically uploaded to your Seafile server and replaced with download links. Received attachments can be saved directly to Seafile. Existing files on Seafile can be inserted as share links into emails.
+A Thunderbird add-on that integrates [Seafile](https://www.seafile.com) as a CloudFile provider. Large email attachments are automatically uploaded to your Seafile server and replaced with download links. Received attachments can be saved directly to Seafile. Existing files on Seafile can be browsed and inserted as share links into emails.
+
+Built by [datamate](https://datamate.org), the Seafile partner for Europe.
+
+## Screenshots
+
+<!-- TODO: Add screenshots -->
+
+| Settings | Insert Seafile Link | Save Attachments |
+|---|---|---|
+| ![Connection](docs/screenshots/connection.png) | ![Browse files](docs/screenshots/insert-link-browse.png) | ![Save attachments](docs/screenshots/save-attachments.png) |
+| ![Share settings](docs/screenshots/share-settings.png) | ![Link options](docs/screenshots/insert-link-detail.png) | |
+
+| CloudFile template (outgoing) |
+|---|
+| ![CloudFile box](docs/screenshots/cloudfile-box.png) |
 
 ## Features
 
@@ -22,7 +37,7 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 - **File selection** — click a file to select it, then configure link options before inserting
 - **File type icons** — color-coded SVG icons for common file types (PDF, images, spreadsheets, archives, audio, video, code, etc.)
 - **Password & expiration** — set password and expiration per link, or use defaults from settings
-- **Password generator** — generate secure 12-character passwords with one click
+- **Password generator** — generate secure 12-character passwords with one click (cryptographically secure)
 - **Show password in email** — choose to display the password in the email or show a "sent separately" hint (configurable per link, default in settings)
 - **Existing link detection** — reuse existing share links or delete and recreate
 - **Rich email template** — inserted links match the CloudFile template style (file name, size, link URL, Seafile logo)
@@ -40,45 +55,50 @@ A Thunderbird extension that integrates [Seafile](https://www.seafile.com) as a 
 
 - **Username & password** — standard Seafile login
 - **Two-factor authentication (2FA)** — optional TOTP code field for accounts with 2FA enabled
-- **Single Sign-On (SSO)** — login via browser using SAML, OAuth, Keycloak, or any SSO method configured on the server (requires `CLIENT_SSO_VIA_LOCAL_BROWSER = True` in seahub_settings.py)
+- **Single Sign-On (SSO)** — login via browser using SAML, OAuth, Keycloak, or any SSO method configured on the server
 - **Auto re-authentication** — expired API tokens are refreshed automatically (username/password login)
 - **Connection status** — clearly shows server, username, and authentication method (SSO or password)
 - **Disconnect** — one-click disconnect with automatic cleanup
+- **HTTPS validation** — warns when connecting over HTTP to non-localhost servers
 
 ### Settings & UI
 
 - **Tabbed settings** — Connection, Share Attachments, Save Attachments
-- **Auto-save** — all configuration changes are saved immediately with visual feedback (green checkmark)
+- **Auto-save** — all configuration changes are saved immediately with visual feedback
 - **Collapsible folder picker** — browse and select folders visually (click to expand, click outside to close)
 - **Library refresh** — library list refreshes automatically when switching tabs
 - **Encrypted library filtering** — encrypted libraries are excluded automatically
 - **Error notifications** — system notifications when actions fail (e.g. unconfigured account)
-- **Localization** — English, German, French, Chinese, Spanish, Russian, Portuguese (BR)
+- **Localization** — English, German, French, Chinese (Simplified), Spanish, Russian, Portuguese (BR)
 
 ## Requirements
 
-- Thunderbird 128 or later
-- A Seafile server (any version with stable API v2/v2.1)
+- **Thunderbird** 128 or later
+- **Seafile Server** 10.0 or later (Community Edition or Professional Edition)
 
 ## Installation
 
-### From .xpi
+### From addons.thunderbird.net (recommended)
 
-Install the `.xpi` file via **Add-ons & Themes → gear icon → Install Add-on From File**.
+<!-- TODO: Add ATN link once published -->
+
+### From .xpi file
+
+Download the latest `.xpi` from the [Releases](https://github.com/christophdb/seafile-thunderbird/releases) page and install via **Add-ons & Themes → gear icon → Install Add-on From File**.
 
 ### From source (development)
 
-1. Open Thunderbird
-2. Go to **Add-ons & Themes** (`Ctrl+Shift+A`)
+1. Clone this repository
+2. Open Thunderbird → **Add-ons & Themes** (`Ctrl+Shift+A`)
 3. Click the gear icon → **Debug Add-ons**
 4. Click **Load Temporary Add-on...**
-5. Select the `manifest.json` file from this repository
+5. Select the `manifest.json` file
 
 ## Configuration
 
 After installation, go to **Settings → Composition → Attachments** and click **Add Seafile**.
 
-1. Enter your **Seafile server URL** (e.g. `https://cloud.seafile.com`)
+1. Enter your **Seafile server URL** (e.g. `https://cloud.seafile.com`). HTTPS is strongly recommended.
 2. Log in using one of two methods:
    - **Username/password**: Enter credentials and optionally a **2FA code**, then click **Connect**
    - **SSO**: Click **Login via SSO** — a browser window opens for authentication. If SSO is not enabled on the server, a hint with the required server configuration is shown.
@@ -86,6 +106,16 @@ After installation, go to **Settings → Composition → Attachments** and click
 4. **Save Attachments tab**: Select default library and folder for saving received attachments
 
 All settings are saved automatically.
+
+### SSO setup
+
+To use SSO login, the Seafile server admin must enable client SSO in `seahub_settings.py`:
+
+```python
+CLIENT_SSO_VIA_LOCAL_BROWSER = True
+```
+
+This works with any SSO method configured on the server (SAML, OAuth, Keycloak, Shibboleth, etc.).
 
 ## Usage
 
@@ -97,23 +127,25 @@ The recipient sees a download link in the email body with file name, size, and (
 
 ### Inserting Seafile links
 
-When composing an email, click the **Insert Seafile Link** button in the compose toolbar. Browse your Seafile libraries, select a file, optionally set password and expiration, and click **Insert link into email**. The link is inserted with a styled template showing file name, size, and download URL.
+When composing an email, click the **Insert Seafile Link** button in the compose toolbar. Browse your Seafile libraries, select a file, optionally set password and expiration, and click **Insert link into email**. The link is inserted at the cursor position with a styled template showing file name, size, and download URL.
 
 ### Saving attachments
 
 When viewing an email with attachments, click the **Save to Seafile** button in the message header toolbar. A popup lets you select which attachments to save, choose a library and folder, and upload them to Seafile.
 
-## Development
+## Known Limitations
 
-A Docker Compose setup is included for local testing with Seafile:
+- **Attachment reminder warning** — When inserting a Seafile link, Thunderbird may show a yellow "Found an attachment keyword" warning because it detects the file name in the email body. This is a Thunderbird feature that cannot be suppressed by extensions. You can dismiss it with the X button.
+- **Folder picker and external clicks** — The collapsible folder picker in settings closes when clicking inside the settings area, but may not close when clicking on Thunderbird's surrounding UI (due to iframe boundaries).
+- **No upload progress** — Thunderbird's CloudFile API does not provide a progress callback, so there is no upload progress bar (this is a [known Thunderbird limitation](https://bugzilla.mozilla.org/show_bug.cgi?id=1788498) since 2012).
+
+## Building
+
+To create an `.xpi` file for distribution:
 
 ```bash
-cd dev
-cp .env.example .env  # adjust credentials if needed
-docker compose up -d
+zip -r seafile-thunderbird.xpi manifest.json background.js api/ management/ insert-link/ save-attachments/ icons/ _locales/ LICENSE PRIVACY.md
 ```
-
-The local Seafile instance will be available at `http://127.0.0.1:8080`.
 
 ## Project Structure
 
@@ -137,26 +169,41 @@ The local Seafile instance will be available at `http://127.0.0.1:8080`.
 ├── _locales/                  # Translations (en, de, fr, zh_CN, es, ru, pt_BR)
 ├── dev/
 │   └── docker-compose.yml     # Local Seafile for development
+├── PRIVACY.md                 # Privacy policy
 └── LICENSE                    # Apache 2.0
 ```
 
-## SSO Configuration
-
-To use SSO login, the Seafile server admin must enable client SSO in `seahub_settings.py`:
-
-```python
-CLIENT_SSO_VIA_LOCAL_BROWSER = True
-```
-
-This allows desktop clients and this extension to authenticate via the system browser. The setting is supported by Seafile Server 7.1+ and works with any SSO method (SAML, OAuth, Keycloak, Shibboleth, etc.).
-
 ## Privacy
 
-This extension does not collect or share any data with third parties. All data is stored locally and communicated exclusively with your configured Seafile server. See [PRIVACY.md](PRIVACY.md) for details.
+This extension does not collect or share any data with third parties. All data is stored locally in your Thunderbird profile and communicated exclusively with your configured Seafile server. Your Seafile password is never stored — only the API token is persisted.
+
+See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
+
+## Contributing
+
+Contributions are welcome! Please open an issue to discuss your idea before submitting a pull request.
+
+- Bug reports: [GitHub Issues](https://github.com/christophdb/seafile-thunderbird/issues)
+- Translation improvements: Edit the files in `_locales/` and submit a PR
+
+## Development
+
+A Docker Compose setup is included for local testing with Seafile:
+
+```bash
+cd dev
+cp .env.example .env  # adjust credentials if needed
+docker compose up -d
+```
+
+The local Seafile instance will be available at `http://127.0.0.1:8080`.
 
 ## Roadmap
 
 - [ ] Publish on [addons.thunderbird.net](https://addons.thunderbird.net)
+- [ ] Search files in Seafile libraries
+- [ ] Create new folders from within popups
+- [ ] Multiple Seafile account support
 
 ## License
 
