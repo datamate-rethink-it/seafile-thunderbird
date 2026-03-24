@@ -249,6 +249,10 @@
 <body>
   <h3 data-i18n="insertSeafileLink">Insert Seafile Link</h3>
 
+  <div id="accountSelector" class="form-group" style="display:none">
+    <select id="accountSelect"></select>
+  </div>
+
   <div id="loading" class="empty-msg" data-i18n="loading">Loading...</div>
   <div id="notConfigured" class="empty-msg" style="display:none" data-i18n="notConfigured">No Seafile account configured.</div>
 
@@ -260,7 +264,8 @@
     </div>
     <label data-i18n="targetFolder">Target folder:</label>
     <div class="current-path" id="currentPath">/</div>
-    <ul class="file-list" id="fileList" data-empty="Empty folder"></ul>
+    <input type="text" id="fileFilter" style="display:none;margin-bottom:6px;padding:4px 8px;font-size:12px;" data-i18n-placeholder="filterFiles" placeholder="Filter files by name...">
+    <ul class="file-list" id="fileList" data-empty="Empty folder" data-i18n-empty="emptyFolder"></ul>
   </div>
 
   <!-- Detail view (after file selection) -->
@@ -277,7 +282,7 @@
       <span data-i18n="existingLinkFound">A share link already exists for this file.</span>
       <div class="btn-row">
         <button id="useExistingBtn" data-i18n="useExisting">Use existing</button>
-        <button id="deleteExistingBtn" data-i18n="deleteAndNew">Delete &amp; create new</button>
+        <button id="createNewBtn" data-i18n="createNew">Create new</button>
       </div>
     </div>
 

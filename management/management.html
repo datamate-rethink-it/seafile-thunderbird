@@ -15,7 +15,7 @@
       background: transparent;
     }
     .form-group {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     label {
       display: block;
@@ -32,6 +32,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 13px;
+      background: #f5f5f5;
     }
     input:focus, select:focus {
       outline: none;
@@ -146,7 +147,7 @@
       padding: 0 16px;
     }
     .tab {
-      padding: 8px 12px;
+      padding: 8px 8px;
       cursor: pointer;
       border: 1px solid transparent;
       border-bottom: none;
@@ -171,7 +172,7 @@
     }
     .tab-content {
       display: none;
-      padding: 16px;
+      padding: 12px 16px;
     }
     .tab-content.active {
       display: block;
@@ -260,12 +261,22 @@
     .divider span {
       padding: 0 12px;
     }
+    .defaults-hint {
+      margin: 0 0 10px 0;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #856404;
+      background: #fff3e0;
+      border: 1px solid #ffab40;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
   <div class="tabs">
     <div class="tab active" data-tab="connection" data-i18n="tabConnection">Connection</div>
-    <div class="tab disabled" data-tab="sharing" data-i18n="tabSharing">Share Attachments</div>
+    <div class="tab disabled" data-tab="filelink" data-i18n="tabFileLink">FileLink</div>
+    <div class="tab disabled" data-tab="sharing" data-i18n="tabSharing">Share Links</div>
     <div class="tab disabled" data-tab="saving" data-i18n="tabSaving">Save Attachments</div>
   </div>
 
@@ -314,9 +325,9 @@
     </div>
   </div>
 
-  <!-- Tab: Share Attachments -->
-  <div class="tab-content" id="tab-sharing">
-    <p class="hint" style="margin: 0 0 12px 0; font-size: 12px;" data-i18n="sharingDefaultsHint">Define default values for sharing attachments. You can adjust these for each email.</p>
+  <!-- Tab: FileLink -->
+  <div class="tab-content" id="tab-filelink">
+    <p class="defaults-hint" data-i18n="fileLinkHint">Configure where Thunderbird uploads attachments that are replaced by download links.</p>
     <div class="form-group">
       <label for="repoSelect" data-i18n="targetLibrary">Target Library</label>
       <select id="repoSelect">
@@ -328,13 +339,50 @@
       <label data-i18n="uploadFolder">Upload Folder</label>
       <div class="folder-picker" id="uploadFolderPicker">
         <div class="current-path" id="uploadPath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
-        <ul class="folder-list" id="uploadFolderList" data-empty="No subfolders"></ul>
+        <ul class="folder-list" id="uploadFolderList" data-empty="No subfolders" data-i18n-empty="noSubfolders"></ul>
       </div>
     </div>
     <div class="form-group">
-      <label for="sharePassword" data-i18n="sharePassword">Password Protection</label>
-      <input type="text" id="sharePassword" placeholder="">
-      <span class="hint" data-i18n="sharePasswordHint">Leave empty for no password</span>
+      <label for="fileLinkPasswordMode" data-i18n="sharePassword">Password Protection</label>
+      <select id="fileLinkPasswordMode">
+        <option value="none" data-i18n="passwordNone">No password</option>
+        <option value="random" data-i18n="passwordRandom">Random password</option>
+        <option value="custom" data-i18n="passwordCustom">Custom password</option>
+      </select>
+    </div>
+    <div class="form-group" id="fileLinkPasswordLengthGroup" style="display:none">
+      <label for="fileLinkPasswordLength" data-i18n="passwordLength">Password length</label>
+      <input type="number" id="fileLinkPasswordLength" min="8" max="64" value="12">
+    </div>
+    <div class="form-group" id="fileLinkCustomPasswordGroup" style="display:none">
+      <label for="fileLinkCustomPassword" data-i18n="customPassword">Password</label>
+      <input type="text" id="fileLinkCustomPassword" placeholder="">
+    </div>
+    <div class="form-group">
+      <label for="fileLinkExpireDays" data-i18n="shareExpireDays">Expiration (days)</label>
+      <input type="number" id="fileLinkExpireDays" min="0" placeholder="0">
+      <span class="hint" data-i18n="shareExpireDaysHint">0 = no expiration</span>
+    </div>
+  </div>
+
+  <!-- Tab: Share Links -->
+  <div class="tab-content" id="tab-sharing">
+    <p class="defaults-hint" data-i18n="sharingDefaultsHint">Define default values for share links. You can adjust these for each link.</p>
+    <div class="form-group">
+      <label for="sharePasswordMode" data-i18n="sharePassword">Password Protection</label>
+      <select id="sharePasswordMode">
+        <option value="none" data-i18n="passwordNone">No password</option>
+        <option value="random" data-i18n="passwordRandom">Random password</option>
+        <option value="custom" data-i18n="passwordCustom">Custom password</option>
+      </select>
+    </div>
+    <div class="form-group" id="sharePasswordLengthGroup" style="display:none">
+      <label for="sharePasswordLength" data-i18n="passwordLength">Password length</label>
+      <input type="number" id="sharePasswordLength" min="8" max="64" value="12">
+    </div>
+    <div class="form-group" id="shareCustomPasswordGroup" style="display:none">
+      <label for="shareCustomPassword" data-i18n="customPassword">Password</label>
+      <input type="text" id="shareCustomPassword" placeholder="">
     </div>
     <div class="form-group">
       <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer;">
@@ -357,7 +405,7 @@
 
   <!-- Tab: Save Attachments -->
   <div class="tab-content" id="tab-saving">
-    <p class="hint" style="margin: 0 0 12px 0; font-size: 12px;" data-i18n="savingDefaultsHint">Define default values for saving attachments. You can adjust these for each email.</p>
+    <p class="defaults-hint" data-i18n="savingDefaultsHint">Define default values for saving attachments. You can adjust these for each email.</p>
     <div class="form-group">
       <label for="saveRepoSelect" data-i18n="saveTargetLibrary">Target Library</label>
       <select id="saveRepoSelect">
@@ -368,7 +416,7 @@
       <label data-i18n="saveFolder">Target Folder</label>
       <div class="folder-picker" id="saveFolderPicker">
         <div class="current-path" id="savePath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
-        <ul class="folder-list" id="saveFolderList" data-empty="No subfolders"></ul>
+        <ul class="folder-list" id="saveFolderList" data-empty="No subfolders" data-i18n-empty="noSubfolders"></ul>
       </div>
     </div>
     <div class="form-group" style="margin-top: 16px;">

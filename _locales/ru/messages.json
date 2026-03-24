@@ -87,7 +87,7 @@
     "message": "Настройки сохранения вложений"
   },
   "sharingDefaultsHint": {
-    "message": "Задайте значения по умолчанию для отправки вложений. Их можно изменить для каждого письма."
+    "message": "Задайте значения по умолчанию для ссылок. Их можно изменить для каждой ссылки."
   },
   "savingDefaultsHint": {
     "message": "Задайте значения по умолчанию для сохранения вложений. Их можно изменить для каждого письма."
@@ -110,6 +110,21 @@
   "sharePassword": {
     "message": "Защита паролем"
   },
+  "passwordNone": {
+    "message": "Без пароля"
+  },
+  "passwordRandom": {
+    "message": "Случайный пароль"
+  },
+  "passwordCustom": {
+    "message": "Свой пароль"
+  },
+  "passwordLength": {
+    "message": "Длина пароля"
+  },
+  "customPassword": {
+    "message": "Пароль"
+  },
   "sharePasswordHint": {
     "message": "Оставьте пустым для отсутствия пароля"
   },
@@ -122,11 +137,20 @@
   "tabConnection": {
     "message": "Подключение"
   },
+  "tabFileLink": {
+    "message": "FileLink"
+  },
+  "fileLinkHint": {
+    "message": "Настройте, куда Thunderbird загружает вложения, заменяемые ссылками для скачивания."
+  },
   "tabSharing": {
-    "message": "Отправка вложений"
+    "message": "Ссылки"
   },
   "tabSaving": {
     "message": "Сохранение вложений"
+  },
+  "seafileAccount": {
+    "message": "Аккаунт"
   },
   "save": {
     "message": "Сохранить"
@@ -140,6 +164,12 @@
   "emptyFolder": {
     "message": "Пустая папка"
   },
+  "filterFiles": {
+    "message": "Фильтровать по имени..."
+  },
+  "noSubfolders": {
+    "message": "Нет подпапок"
+  },
   "backToFiles": {
     "message": "Назад"
   },
@@ -149,8 +179,8 @@
   "useExisting": {
     "message": "Использовать существующую"
   },
-  "deleteAndNew": {
-    "message": "Удалить и создать новую"
+  "createNew": {
+    "message": "Создать новую"
   },
   "insertLink": {
     "message": "Вставить ссылку в письмо"
@@ -159,13 +189,13 @@
     "message": "Ссылка вставлена!"
   },
   "showPasswordInEmail": {
-    "message": "Показать пароль в письме"
+    "message": "Показать пароль в письме (если задан)"
   },
   "showPasswordInEmailHint": {
     "message": "Значение по умолчанию для новых ссылок. Можно изменить для каждой ссылки."
   },
   "skipLinkOptions": {
-    "message": "Всегда использовать эти значения по умолчанию при вставке ссылок Seafile (пропустить диалог)"
+    "message": "Пропустить диалог (всегда применять эти значения)"
   },
   "saveToSeafile": {
     "message": "Сохранить в Seafile"

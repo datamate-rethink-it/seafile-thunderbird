@@ -28,6 +28,8 @@ const repoSelectEl = document.getElementById("repoSelect");
 const fileListEl = document.getElementById("fileList");
 const currentPathEl = document.getElementById("currentPath");
 const statusEl = document.getElementById("status");
+const accountSelectorEl = document.getElementById("accountSelector");
+const accountSelectEl = document.getElementById("accountSelect");
 
 // Detail view elements
 const backBtn = document.getElementById("backBtn");
@@ -36,7 +38,7 @@ const selectedFileName = document.getElementById("selectedFileName");
 const selectedFileSize = document.getElementById("selectedFileSize");
 const existingLinkBar = document.getElementById("existingLinkBar");
 const useExistingBtn = document.getElementById("useExistingBtn");
-const deleteExistingBtn = document.getElementById("deleteExistingBtn");
+const createNewBtn = document.getElementById("createNewBtn");
 const linkOptions = document.getElementById("linkOptions");
 const linkPasswordInput = document.getElementById("linkPassword");
 const linkExpireDaysInput = document.getElementById("linkExpireDays");
@@ -49,11 +51,16 @@ let currentPath = "/";
 let currentRepoId = null;
 let accountConfig = null;
 let composeTabId = null;
+let currentAccountId = null;
 
 // State for the selected file
 let selectedFilePath = null;
 let selectedFileObj = null;
 let existingLink = null;
+
+const fileFilterInput = document.getElementById("fileFilter");
+const LAST_ACCOUNT_KEY = "lastAccountId_insert";
+const FILE_FILTER_THRESHOLD = 8;
 
 /**
  * Send a message to the background script.
@@ -83,6 +90,14 @@ function applyI18n() {
     const msg = browser.i18n.getMessage(el.getAttribute("data-i18n"));
     if (msg) el.textContent = msg;
   }
+  for (const el of document.querySelectorAll("[data-i18n-empty]")) {
+    const msg = browser.i18n.getMessage(el.dataset.i18nEmpty);
+    if (msg) el.dataset.empty = msg;
+  }
+  for (const el of document.querySelectorAll("[data-i18n-placeholder]")) {
+    const msg = browser.i18n.getMessage(el.dataset.i18nPlaceholder);
+    if (msg) el.placeholder = msg;
+  }
 }
 
 /**
@@ -96,6 +111,23 @@ function showStatus(message, type) {
 
 function clearStatus() {
   statusEl.className = "status";
+}
+
+/**
+ * Resolve the default password from account config.
+ */
+function resolveSharePassword(config) {
+  const mode = config.sharePasswordMode || "none";
+  if (mode === "random") return generatePassword(config.sharePasswordLength || 12);
+  if (mode === "custom") return config.shareCustomPassword || "";
+  return "";
+}
+
+/**
+ * Extract hostname from a URL for display.
+ */
+function getHostLabel(url) {
+  try { return new URL(url).hostname; } catch { return url; }
 }
 
 /**
@@ -116,6 +148,7 @@ async function showDetailView(file, filePath) {
   selectedFilePath = filePath;
   selectedFileObj = file;
   existingLink = null;
+  insertBtn.disabled = false;
 
   // Populate file info
   selectedFileIcon.innerHTML = getFileIcon(file.name);
@@ -124,7 +157,7 @@ async function showDetailView(file, filePath) {
 
   // Pre-fill defaults from config
   if (!accountConfig.skipLinkOptions) {
-    linkPasswordInput.value = accountConfig.sharePassword || "";
+    linkPasswordInput.value = resolveSharePassword(accountConfig);
     linkExpireDaysInput.value = accountConfig.shareExpireDays || 0;
     showPasswordInEmailInput.checked = accountConfig.showPasswordInEmail !== false;
     updatePasswordCheckboxVisibility();
@@ -137,7 +170,7 @@ async function showDetailView(file, filePath) {
 
   // If skipLinkOptions is set, insert directly
   if (accountConfig.skipLinkOptions) {
-    await doInsert(accountConfig.sharePassword, accountConfig.shareExpireDays || 0, null, accountConfig.showPasswordInEmail !== false);
+    await doInsert(resolveSharePassword(accountConfig), accountConfig.shareExpireDays || 0, null, accountConfig.showPasswordInEmail !== false);
     return;
   }
 
@@ -149,6 +182,7 @@ async function showDetailView(file, filePath) {
     const result = await sendMessage("checkExistingLink", {
       repoId: currentRepoId,
       path: filePath,
+      accountId: currentAccountId,
     });
     if (result.links && result.links.length > 0) {
       existingLink = result.links[0];
@@ -178,6 +212,7 @@ async function doInsert(password, expireDays, linkUrl, showPassword) {
         path: selectedFilePath,
         password: password || undefined,
         expireDays: expireDays || undefined,
+        accountId: currentAccountId,
       });
       linkUrl = shareResult.link;
     }
@@ -211,12 +246,15 @@ async function navigateToFolder(path) {
   currentPath = path;
   currentPathEl.textContent = path;
   fileListEl.innerHTML = "";
+  fileFilterInput.value = "";
+  fileFilterInput.style.display = "none";
 
   try {
     const entries = await sendMessage("listDir", {
       path,
       repoId: currentRepoId,
       includeFiles: true,
+      accountId: currentAccountId,
     });
 
     // Parent directory link
@@ -234,6 +272,8 @@ async function navigateToFolder(path) {
 
     for (const dir of dirs) {
       const li = document.createElement("li");
+      li.dataset.name = dir.name.toLowerCase();
+      li.dataset.type = "dir";
       const dirPath = path === "/" ? `/${dir.name}` : `${path}/${dir.name}`;
       li.innerHTML = `
         <span class="file-icon">${FILE_ICONS.folder}</span>
@@ -245,6 +285,8 @@ async function navigateToFolder(path) {
 
     for (const file of files) {
       const li = document.createElement("li");
+      li.dataset.name = file.name.toLowerCase();
+      li.dataset.type = "file";
       const filePath = path === "/" ? `/${file.name}` : `${path}/${file.name}`;
       li.innerHTML = `
         <span class="file-icon">${getFileIcon(file.name)}</span>
@@ -254,6 +296,11 @@ async function navigateToFolder(path) {
       li.addEventListener("click", () => showDetailView(file, filePath));
       fileListEl.appendChild(li);
     }
+
+    // Show filter input if more than threshold entries
+    if (entries.length > FILE_FILTER_THRESHOLD) {
+      fileFilterInput.style.display = "block";
+    }
   } catch (e) {
     console.error("Failed to list directory:", e);
     showStatus(`Error: ${e.message}`, "error");
@@ -261,10 +308,25 @@ async function navigateToFolder(path) {
 }
 
 /**
+ * Filter the file list by name.
+ */
+fileFilterInput.addEventListener("input", () => {
+  const query = fileFilterInput.value.toLowerCase().trim();
+  for (const li of fileListEl.children) {
+    if (!li.dataset.name) {
+      // Parent dir link (..) — always visible
+      li.style.display = "";
+      continue;
+    }
+    li.style.display = li.dataset.name.includes(query) ? "" : "none";
+  }
+});
+
+/**
  * Load libraries into the dropdown.
  */
 async function loadRepos() {
-  const repos = await sendMessage("listRepos");
+  const repos = await sendMessage("listRepos", { accountId: currentAccountId });
 
   repoSelectEl.innerHTML = "";
   const unencrypted = repos.filter(r => !r.encrypted);
@@ -285,7 +347,7 @@ async function loadRepos() {
 /**
  * Generate a random password (12 chars, mixed case + digits + special).
  */
-function generatePassword() {
+function generatePassword(length = 12) {
   const lower = "abcdefghijkmnpqrstuvwxyz";
   const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
   const digits = "23456789";
@@ -300,7 +362,7 @@ function generatePassword() {
     special[secureRandomInt(special.length)],
   ];
   const rest = [];
-  for (let i = required.length; i < 12; i++) {
+  for (let i = required.length; i < length; i++) {
     rest.push(all[secureRandomInt(all.length)]);
   }
   // Combine and shuffle the middle part, keep alphanumeric at start and end
@@ -355,27 +417,45 @@ useExistingBtn.addEventListener("click", () => {
   }
 });
 
-deleteExistingBtn.addEventListener("click", async () => {
-  if (!existingLink) return;
-  deleteExistingBtn.disabled = true;
-  try {
-    const token = existingLink.token || existingLink.link.match(/\/[fd]\/([a-zA-Z0-9]+)\/?/)?.[1];
-    if (token) {
-      await sendMessage("deleteShareLink", { linkToken: token });
-    }
-    existingLink = null;
-    existingLinkBar.classList.remove("visible");
-    linkOptions.style.display = "block";
-  } catch (e) {
-    showStatus(`Error: ${e.message}`, "error");
-  } finally {
-    deleteExistingBtn.disabled = false;
-  }
+createNewBtn.addEventListener("click", () => {
+  existingLinkBar.classList.remove("visible");
+  linkOptions.style.display = "block";
 });
 
 linkExpireDaysInput.addEventListener("input", () => {
   linkExpireDaysInput.value = linkExpireDaysInput.value.replace(/[^0-9]/g, "");
 });
+
+/**
+ * Handle account switch.
+ */
+accountSelectEl.addEventListener("change", async () => {
+  currentAccountId = accountSelectEl.value;
+  await browser.storage.local.set({ [LAST_ACCOUNT_KEY]: currentAccountId });
+  // Reset state
+  currentPath = "/";
+  currentRepoId = null;
+  repoSelectEl.innerHTML = "";
+  fileListEl.innerHTML = "";
+  showBrowseView();
+  await loadForAccount(currentAccountId);
+});
+
+/**
+ * Load data for a specific account.
+ */
+async function loadForAccount(accountId) {
+  currentAccountId = accountId;
+  accountConfig = await sendMessage("getAccountConfig", { accountId });
+  if (!accountConfig) {
+    loadingEl.style.display = "none";
+    notConfiguredEl.style.display = "block";
+    return;
+  }
+
+  await loadRepos();
+  await navigateToFolder("/");
+}
 
 /**
  * Initialize the popup.
@@ -384,11 +464,32 @@ async function init() {
   applyI18n();
 
   try {
-    accountConfig = await sendMessage("getAccountConfig");
-    if (!accountConfig) {
+    // Get all configured accounts
+    const accounts = await sendMessage("getAllConfiguredAccounts");
+    if (!accounts || accounts.length === 0) {
       loadingEl.style.display = "none";
       notConfiguredEl.style.display = "block";
       return;
+    }
+
+    // Determine which account to use
+    const lastUsed = (await browser.storage.local.get(LAST_ACCOUNT_KEY))[LAST_ACCOUNT_KEY];
+    const selectedAccountId = accounts.find(a => a.accountId === lastUsed)?.accountId
+      || accounts[0].accountId;
+
+    // Show account selector if multiple accounts
+    if (accounts.length > 1) {
+      accountSelectorEl.style.display = "block";
+      for (const acc of accounts) {
+        const option = document.createElement("option");
+        option.value = acc.accountId;
+        const host = getHostLabel(acc.serverUrl);
+        option.textContent = acc.displayName
+          ? `${acc.displayName} (${host})`
+          : `${acc.username} (${host})`;
+        accountSelectEl.appendChild(option);
+      }
+      accountSelectEl.value = selectedAccountId;
     }
 
     const tabs = await browser.tabs.query({ active: true, currentWindow: true });
@@ -397,8 +498,8 @@ async function init() {
     loadingEl.style.display = "none";
     browseView.style.display = "block";
 
-    await loadRepos();
-    await navigateToFolder("/");
+    await loadForAccount(selectedAccountId);
+    await browser.storage.local.set({ [LAST_ACCOUNT_KEY]: selectedAccountId });
   } catch (e) {
     loadingEl.style.display = "none";
     showStatus(`Error: ${e.message}`, "error");

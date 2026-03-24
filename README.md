@@ -50,7 +50,8 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 - **Upload abort** — cancel in-progress uploads from Thunderbird's UI
 - **Clean deletion** — removing a cloud attachment deletes both the share link and the file on Seafile
 - **Reuse uploads** — previously uploaded files can be reinserted directly from the Filelink menu
-- **Existing link handling** — if a share link already exists for a file, it is automatically replaced
+- **Existing link handling** — if a share link already exists, it is replaced automatically
+- **Password modes** — no password, random password (configurable length), or custom password
 
 ### Insert Seafile links (compose)
 
@@ -60,7 +61,8 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 - **Password & expiration** — set password and expiration per link, or use defaults from settings
 - **Password generator** — generate secure 12-character passwords with one click (cryptographically secure)
 - **Show password in email** — choose to display the password in the email or show a "sent separately" hint (configurable per link, default in settings)
-- **Existing link detection** — reuse existing share links or delete and recreate
+- **File filter** — search/filter files by name when folders contain many entries
+- **Existing link detection** — reuse existing share links or create a new one
 - **Rich email template** — inserted links match the CloudFile template style (file name, size, link URL, Seafile logo)
 - **Cursor position insert** — links are inserted at the cursor position without modifying existing email content
 
@@ -84,7 +86,8 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 
 ### Settings & UI
 
-- **Tabbed settings** — Connection, Share Attachments, Save Attachments
+- **Multi-account support** — configure multiple Seafile accounts, switch between them in popups (last used is remembered)
+- **Tabbed settings** — Connection, FileLink, Share Links, Save Attachments
 - **Auto-save** — all configuration changes are saved immediately with visual feedback
 - **Collapsible folder picker** — browse and select folders visually (click to expand, click outside to close)
 - **Library refresh** — library list refreshes automatically when switching tabs
@@ -123,8 +126,9 @@ After installation, go to **Settings → Composition → Attachments** and click
 2. Log in using one of two methods:
    - **Username/password**: Enter credentials and optionally a **2FA code**, then click **Connect**
    - **SSO**: Click **Login via SSO** — a browser window opens for authentication. If SSO is not enabled on the server, a hint with the required server configuration is shown.
-3. **Share Attachments tab**: Select target library and upload folder, optionally set password and link expiration
-4. **Save Attachments tab**: Select default library and folder for saving received attachments
+3. **FileLink tab**: Select target library and upload folder, configure password protection (none/random/custom) and link expiration
+4. **Share Links tab**: Set defaults for share links when inserting Seafile links (password, expiration, show password in email)
+5. **Save Attachments tab**: Select default library and folder for saving received attachments
 
 All settings are saved automatically.
 
@@ -222,9 +226,7 @@ The local Seafile instance will be available at `http://127.0.0.1:8080`.
 ## Roadmap
 
 - [ ] Publish on [addons.thunderbird.net](https://addons.thunderbird.net)
-- [ ] Search files in Seafile libraries
 - [ ] Create new folders from within popups
-- [ ] Multiple Seafile account support
 
 ## License
 

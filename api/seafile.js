@@ -217,7 +217,14 @@ class SeafileAPI {
     if (!resp.ok) {
       const text = await resp.text();
       console.error(`Share link failed (${resp.status}):`, text);
-      throw new Error(`Failed to create share link (${resp.status})`);
+      // Try to extract server error message (e.g. password policy violation)
+      let detail = "";
+      try {
+        const json = JSON.parse(text);
+        detail = json.error_msg || json.detail || json.password || "";
+        if (Array.isArray(detail)) detail = detail.join(". ");
+      } catch { /* not JSON */ }
+      throw new Error(detail || `Failed to create share link (${resp.status})`);
     }
     return await resp.json();
   }

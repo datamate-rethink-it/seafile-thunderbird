@@ -22,12 +22,17 @@ const currentPathEl = document.getElementById("currentPath");
 const selectAllEl = document.getElementById("selectAll");
 const saveBtn = document.getElementById("saveBtn");
 const saveStatus = document.getElementById("saveStatus");
+const accountSelectorEl = document.getElementById("accountSelector");
+const accountSelectEl = document.getElementById("accountSelect");
 
 let messageId = null;
 let attachments = [];
 let currentPath = "/";
 let currentRepoId = null;
 let accountConfig = null;
+let currentAccountId = null;
+
+const LAST_ACCOUNT_KEY = "lastAccountId_save";
 
 /**
  * Send a message to the background script.
@@ -57,6 +62,10 @@ function applyI18n() {
     const msg = browser.i18n.getMessage(el.getAttribute("data-i18n"));
     if (msg) el.textContent = msg;
   }
+  for (const el of document.querySelectorAll("[data-i18n-empty]")) {
+    const msg = browser.i18n.getMessage(el.dataset.i18nEmpty);
+    if (msg) el.dataset.empty = msg;
+  }
 }
 
 /**
@@ -65,6 +74,13 @@ function applyI18n() {
 function showStatus(message, isError) {
   saveStatus.textContent = message;
   saveStatus.className = `status ${isError ? "error" : "success"}`;
+}
+
+/**
+ * Extract hostname from a URL for display.
+ */
+function getHostLabel(url) {
+  try { return new URL(url).hostname; } catch { return url; }
 }
 
 /**
@@ -98,7 +114,7 @@ function syncSelectAll() {
  * Load libraries into the dropdown.
  */
 async function loadRepos() {
-  const repos = await sendMessage("listRepos");
+  const repos = await sendMessage("listRepos", { accountId: currentAccountId });
 
   repoSelectEl.innerHTML = "";
   for (const repo of repos) {
@@ -125,7 +141,7 @@ async function navigateToFolder(path) {
 
   folderListEl.innerHTML = "";
   try {
-    const dirs = await sendMessage("listDir", { path, repoId: currentRepoId });
+    const dirs = await sendMessage("listDir", { path, repoId: currentRepoId, accountId: currentAccountId });
 
     // Add parent directory link if not at root
     if (path !== "/") {
@@ -201,6 +217,7 @@ saveBtn.addEventListener("click", async () => {
         fileName: att.name,
         targetDir: currentPath,
         repoId: currentRepoId,
+        accountId: currentAccountId,
       });
       statusEl.innerHTML = STATUS_ICONS.success;
       cb.disabled = true;
@@ -223,18 +240,70 @@ saveBtn.addEventListener("click", async () => {
 });
 
 /**
+ * Load data for a specific account.
+ */
+async function loadForAccount(accountId) {
+  currentAccountId = accountId;
+  accountConfig = await sendMessage("getAccountConfig", { accountId });
+  if (!accountConfig) {
+    loadingEl.style.display = "none";
+    notConfiguredEl.style.display = "block";
+    return;
+  }
+
+  // Load libraries and navigate to default path
+  await loadRepos();
+  currentPath = accountConfig.savePath || "/";
+  await navigateToFolder(currentPath);
+}
+
+/**
+ * Handle account switch.
+ */
+accountSelectEl.addEventListener("change", async () => {
+  currentAccountId = accountSelectEl.value;
+  await browser.storage.local.set({ [LAST_ACCOUNT_KEY]: currentAccountId });
+  // Reset folder state
+  currentPath = "/";
+  currentRepoId = null;
+  repoSelectEl.innerHTML = "";
+  folderListEl.innerHTML = "";
+  await loadForAccount(currentAccountId);
+});
+
+/**
  * Initialize the popup.
  */
 async function init() {
   applyI18n();
 
   try {
-    // Get account config first
-    accountConfig = await sendMessage("getAccountConfig");
-    if (!accountConfig || accountConfig.error) {
+    // Get all configured accounts
+    const accounts = await sendMessage("getAllConfiguredAccounts");
+    if (!accounts || accounts.length === 0) {
       loadingEl.style.display = "none";
       notConfiguredEl.style.display = "block";
       return;
+    }
+
+    // Determine which account to use
+    const lastUsed = (await browser.storage.local.get(LAST_ACCOUNT_KEY))[LAST_ACCOUNT_KEY];
+    const selectedAccountId = accounts.find(a => a.accountId === lastUsed)?.accountId
+      || accounts[0].accountId;
+
+    // Show account selector if multiple accounts
+    if (accounts.length > 1) {
+      accountSelectorEl.style.display = "block";
+      for (const acc of accounts) {
+        const option = document.createElement("option");
+        option.value = acc.accountId;
+        const host = getHostLabel(acc.serverUrl);
+        option.textContent = acc.displayName
+          ? `${acc.displayName} (${host})`
+          : `${acc.username} (${host})`;
+        accountSelectEl.appendChild(option);
+      }
+      accountSelectEl.value = selectedAccountId;
     }
 
     // Get the currently displayed message
@@ -252,14 +321,13 @@ async function init() {
       return;
     }
 
-    // Show content
+    // Show content and render attachments
     contentEl.style.display = "block";
     renderAttachments();
 
-    // Load libraries and navigate to default path
-    await loadRepos();
-    currentPath = accountConfig.savePath || "/";
-    await navigateToFolder(currentPath);
+    // Load account data
+    await loadForAccount(selectedAccountId);
+    await browser.storage.local.set({ [LAST_ACCOUNT_KEY]: selectedAccountId });
   } catch (e) {
     loadingEl.style.display = "none";
     showStatus(`Error: ${e.message}`, true);

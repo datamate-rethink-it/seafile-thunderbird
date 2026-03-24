@@ -87,7 +87,7 @@
     "message": "保存附件默认设置"
   },
   "sharingDefaultsHint": {
-    "message": "定义共享附件的默认值。您可以在每封邮件中调整这些设置。"
+    "message": "定义共享链接的默认值。您可以在每个链接中调整这些设置。"
   },
   "savingDefaultsHint": {
     "message": "定义保存附件的默认值。您可以在每封邮件中调整这些设置。"
@@ -110,6 +110,21 @@
   "sharePassword": {
     "message": "密码保护"
   },
+  "passwordNone": {
+    "message": "无密码"
+  },
+  "passwordRandom": {
+    "message": "随机密码"
+  },
+  "passwordCustom": {
+    "message": "自定义密码"
+  },
+  "passwordLength": {
+    "message": "密码长度"
+  },
+  "customPassword": {
+    "message": "密码"
+  },
   "sharePasswordHint": {
     "message": "留空表示不设密码"
   },
@@ -122,11 +137,20 @@
   "tabConnection": {
     "message": "连接"
   },
+  "tabFileLink": {
+    "message": "FileLink"
+  },
+  "fileLinkHint": {
+    "message": "配置 Thunderbird 上传替换为下载链接的附件的位置。"
+  },
   "tabSharing": {
-    "message": "分享附件"
+    "message": "共享链接"
   },
   "tabSaving": {
     "message": "保存附件"
+  },
+  "seafileAccount": {
+    "message": "账户"
   },
   "save": {
     "message": "保存"
@@ -140,6 +164,12 @@
   "emptyFolder": {
     "message": "空文件夹"
   },
+  "filterFiles": {
+    "message": "按名称筛选文件..."
+  },
+  "noSubfolders": {
+    "message": "没有子文件夹"
+  },
   "backToFiles": {
     "message": "返回"
   },
@@ -149,8 +179,8 @@
   "useExisting": {
     "message": "使用现有链接"
   },
-  "deleteAndNew": {
-    "message": "删除并重新创建"
+  "createNew": {
+    "message": "新建"
   },
   "insertLink": {
     "message": "将链接插入邮件"
@@ -159,13 +189,13 @@
     "message": "链接已插入！"
   },
   "showPasswordInEmail": {
-    "message": "在邮件中显示密码"
+    "message": "在邮件中显示密码（如已设置）"
   },
   "showPasswordInEmailHint": {
     "message": "新链接的默认值，可按链接单独修改。"
   },
   "skipLinkOptions": {
-    "message": "插入 Seafile 链接时始终使用这些默认值（跳过选项对话框）"
+    "message": "跳过选项对话框（始终使用这些默认值）"
   },
   "saveToSeafile": {
     "message": "保存到 Seafile"

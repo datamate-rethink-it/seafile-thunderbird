@@ -87,7 +87,7 @@
     "message": "Save Attachment Defaults"
   },
   "sharingDefaultsHint": {
-    "message": "Define default values for sharing attachments. You can adjust these for each email."
+    "message": "Define default values for share links. You can adjust these for each link."
   },
   "savingDefaultsHint": {
     "message": "Define default values for saving attachments. You can adjust these for each email."
@@ -110,6 +110,21 @@
   "sharePassword": {
     "message": "Password Protection"
   },
+  "passwordNone": {
+    "message": "No password"
+  },
+  "passwordRandom": {
+    "message": "Random password"
+  },
+  "passwordCustom": {
+    "message": "Custom password"
+  },
+  "passwordLength": {
+    "message": "Password length"
+  },
+  "customPassword": {
+    "message": "Password"
+  },
   "sharePasswordHint": {
     "message": "Leave empty for no password"
   },
@@ -122,11 +137,20 @@
   "tabConnection": {
     "message": "Connection"
   },
+  "tabFileLink": {
+    "message": "FileLink"
+  },
+  "fileLinkHint": {
+    "message": "Configure where Thunderbird uploads attachments that are replaced by download links."
+  },
   "tabSharing": {
-    "message": "Share Attachments"
+    "message": "Share Links"
   },
   "tabSaving": {
     "message": "Save Attachments"
+  },
+  "seafileAccount": {
+    "message": "Account"
   },
   "save": {
     "message": "Save"
@@ -140,6 +164,12 @@
   "emptyFolder": {
     "message": "Empty folder"
   },
+  "filterFiles": {
+    "message": "Filter files by name..."
+  },
+  "noSubfolders": {
+    "message": "No subfolders"
+  },
   "backToFiles": {
     "message": "Back"
   },
@@ -149,8 +179,8 @@
   "useExisting": {
     "message": "Use existing"
   },
-  "deleteAndNew": {
-    "message": "Delete & create new"
+  "createNew": {
+    "message": "Create new"
   },
   "insertLink": {
     "message": "Insert link into email"
@@ -159,13 +189,13 @@
     "message": "Link inserted!"
   },
   "showPasswordInEmail": {
-    "message": "Show password in email"
+    "message": "Show password in email (if set)"
   },
   "showPasswordInEmailHint": {
     "message": "Default for new links. Can be changed per link."
   },
   "skipLinkOptions": {
-    "message": "Always use these defaults when inserting Seafile links (skip options dialog)"
+    "message": "Skip options dialog (always apply these defaults)"
   },
   "saveToSeafile": {
     "message": "Save to Seafile"

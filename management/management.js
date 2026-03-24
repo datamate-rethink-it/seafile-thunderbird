@@ -45,11 +45,17 @@ const uploadFolderList = document.getElementById("uploadFolderList");
 const saveRepoSelect = document.getElementById("saveRepoSelect");
 const savePathEl = document.getElementById("savePath");
 const saveFolderList = document.getElementById("saveFolderList");
-const sharePasswordInput = document.getElementById("sharePassword");
+const sharePasswordModeSelect = document.getElementById("sharePasswordMode");
+const sharePasswordLengthInput = document.getElementById("sharePasswordLength");
+const shareCustomPasswordInput = document.getElementById("shareCustomPassword");
 const shareExpireDaysInput = document.getElementById("shareExpireDays");
 const showPasswordInEmailInput = document.getElementById("showPasswordInEmail");
 const skipLinkOptionsInput = document.getElementById("skipLinkOptions");
 const saveReplaceExistingInput = document.getElementById("saveReplaceExisting");
+const fileLinkPasswordModeSelect = document.getElementById("fileLinkPasswordMode");
+const fileLinkPasswordLengthInput = document.getElementById("fileLinkPasswordLength");
+const fileLinkCustomPasswordInput = document.getElementById("fileLinkCustomPassword");
+const fileLinkExpireDaysInput = document.getElementById("fileLinkExpireDays");
 const ssoBtn = document.getElementById("ssoBtn");
 const ssoStatus = document.getElementById("ssoStatus");
 const uploadFolderPicker = document.getElementById("uploadFolderPicker");
@@ -102,7 +108,7 @@ function switchTab(tabName) {
   document.getElementById(`tab-${tabName}`).classList.add("active");
 
   // Refresh libraries when switching to a settings tab
-  if (tabName === "sharing" || tabName === "saving") {
+  if (tabName === "filelink" || tabName === "sharing" || tabName === "saving") {
     refreshRepos();
   }
 }
@@ -140,6 +146,7 @@ async function refreshRepos() {
  * Enable the sharing and saving tabs.
  */
 function enableSettingsTabs() {
+  document.querySelector('.tab[data-tab="filelink"]').classList.remove("disabled");
   document.querySelector('.tab[data-tab="sharing"]').classList.remove("disabled");
   document.querySelector('.tab[data-tab="saving"]').classList.remove("disabled");
 }
@@ -152,6 +159,7 @@ function markConnected(config) {
   loginForm.style.display = "none";
   connectedInfo.style.display = "block";
   connectedServer.textContent = config.serverUrl;
+
 
   // Show display name and contact email if available
   const name = config.displayName || "";
@@ -252,10 +260,18 @@ async function loadConfig() {
 
   serverUrlInput.value = config.serverUrl || "";
   usernameInput.value = config.username || "";
-  sharePasswordInput.value = config.sharePassword || "";
+  sharePasswordModeSelect.value = config.sharePasswordMode || "none";
+  sharePasswordLengthInput.value = config.sharePasswordLength || 12;
+  shareCustomPasswordInput.value = config.shareCustomPassword || "";
   shareExpireDaysInput.value = config.shareExpireDays || 0;
   showPasswordInEmailInput.checked = config.showPasswordInEmail !== false;
   skipLinkOptionsInput.checked = !!config.skipLinkOptions;
+  fileLinkPasswordModeSelect.value = config.fileLinkPasswordMode || "none";
+  fileLinkPasswordLengthInput.value = config.fileLinkPasswordLength || 12;
+  fileLinkCustomPasswordInput.value = config.fileLinkCustomPassword || "";
+  fileLinkExpireDaysInput.value = config.fileLinkExpireDays || 0;
+  updateFileLinkPasswordUI();
+  updateSharePasswordUI();
   saveReplaceExistingInput.checked = !!config.saveReplaceExisting;
 
   if (config.apiToken) {
@@ -301,9 +317,6 @@ async function loadConfig() {
       saveCurrentPath = config.savePath || "/";
       navigateUploadFolder(uploadCurrentPath);
       navigateSaveFolder(saveCurrentPath);
-
-      // Switch to sharing tab
-      switchTab("sharing");
     } catch (e) {
       // Token might be expired
       showStatus(connectStatus, "Session expired. Please reconnect.", true);
@@ -398,7 +411,7 @@ async function onConnected(newConfig) {
     autoSave(repoSelect);
   }
 
-  switchTab("sharing");
+  switchTab("filelink");
   uploadCurrentPath = config.uploadPath || "/";
   saveCurrentPath = config.savePath || "/";
   navigateUploadFolder(uploadCurrentPath);
@@ -543,11 +556,17 @@ function autoSave(sourceEl) {
       config.uploadPath = uploadCurrentPath;
       config.saveRepoId = saveRepoSelect.value || "";
       config.savePath = saveCurrentPath;
-      config.sharePassword = sharePasswordInput.value.trim();
+      config.sharePasswordMode = sharePasswordModeSelect.value;
+      config.sharePasswordLength = Math.max(8, parseInt(sharePasswordLengthInput.value, 10) || 12);
+      config.shareCustomPassword = shareCustomPasswordInput.value.trim();
       config.shareExpireDays = Math.max(0, parseInt(shareExpireDaysInput.value, 10) || 0);
       config.showPasswordInEmail = showPasswordInEmailInput.checked;
       config.skipLinkOptions = skipLinkOptionsInput.checked;
       config.saveReplaceExisting = saveReplaceExistingInput.checked;
+      config.fileLinkPasswordMode = fileLinkPasswordModeSelect.value;
+      config.fileLinkPasswordLength = Math.max(8, parseInt(fileLinkPasswordLengthInput.value, 10) || 12);
+      config.fileLinkCustomPassword = fileLinkCustomPasswordInput.value.trim();
+      config.fileLinkExpireDays = Math.max(0, parseInt(fileLinkExpireDaysInput.value, 10) || 0);
       await browser.storage.local.set({ [accountId]: config });
 
       if (config.repoId) {
@@ -574,7 +593,6 @@ saveRepoSelect.addEventListener("change", () => {
   navigateSaveFolder("/");
   autoSave(saveRepoSelect);
 });
-sharePasswordInput.addEventListener("input", () => autoSave(sharePasswordInput));
 shareExpireDaysInput.addEventListener("input", () => {
   shareExpireDaysInput.value = shareExpireDaysInput.value.replace(/[^0-9]/g, "");
   autoSave(shareExpireDaysInput);
@@ -582,6 +600,42 @@ shareExpireDaysInput.addEventListener("input", () => {
 showPasswordInEmailInput.addEventListener("change", () => autoSave(showPasswordInEmailInput.parentElement));
 skipLinkOptionsInput.addEventListener("change", () => autoSave(skipLinkOptionsInput.parentElement));
 saveReplaceExistingInput.addEventListener("change", () => autoSave(saveReplaceExistingInput.parentElement));
+
+// FileLink password mode toggle
+function updateFileLinkPasswordUI() {
+  const mode = fileLinkPasswordModeSelect.value;
+  document.getElementById("fileLinkPasswordLengthGroup").style.display = mode === "random" ? "block" : "none";
+  document.getElementById("fileLinkCustomPasswordGroup").style.display = mode === "custom" ? "block" : "none";
+}
+fileLinkPasswordModeSelect.addEventListener("change", () => {
+  updateFileLinkPasswordUI();
+  autoSave(fileLinkPasswordModeSelect);
+});
+fileLinkPasswordLengthInput.addEventListener("input", () => {
+  fileLinkPasswordLengthInput.value = fileLinkPasswordLengthInput.value.replace(/[^0-9]/g, "");
+  autoSave(fileLinkPasswordLengthInput);
+});
+fileLinkCustomPasswordInput.addEventListener("input", () => autoSave(fileLinkCustomPasswordInput));
+fileLinkExpireDaysInput.addEventListener("input", () => {
+  fileLinkExpireDaysInput.value = fileLinkExpireDaysInput.value.replace(/[^0-9]/g, "");
+  autoSave(fileLinkExpireDaysInput);
+});
+
+// Share Links password mode toggle
+function updateSharePasswordUI() {
+  const mode = sharePasswordModeSelect.value;
+  document.getElementById("sharePasswordLengthGroup").style.display = mode === "random" ? "block" : "none";
+  document.getElementById("shareCustomPasswordGroup").style.display = mode === "custom" ? "block" : "none";
+}
+sharePasswordModeSelect.addEventListener("change", () => {
+  updateSharePasswordUI();
+  autoSave(sharePasswordModeSelect);
+});
+sharePasswordLengthInput.addEventListener("input", () => {
+  sharePasswordLengthInput.value = sharePasswordLengthInput.value.replace(/[^0-9]/g, "");
+  autoSave(sharePasswordLengthInput);
+});
+shareCustomPasswordInput.addEventListener("input", () => autoSave(shareCustomPasswordInput));
 
 // Disconnect handler
 disconnectBtn.addEventListener("click", async () => {
@@ -607,6 +661,7 @@ disconnectBtn.addEventListener("click", async () => {
   connectStatus.className = "status";
 
   // Disable settings tabs
+  document.querySelector('.tab[data-tab="filelink"]').classList.add("disabled");
   document.querySelector('.tab[data-tab="sharing"]').classList.add("disabled");
   document.querySelector('.tab[data-tab="saving"]').classList.add("disabled");
   switchTab("connection");
@@ -646,4 +701,12 @@ window.addEventListener("blur", () => {
 
 // Initialize page
 applyI18n();
+// Translate data-empty attributes (CSS content: attr() can't use i18n)
+for (const el of document.querySelectorAll("[data-empty]")) {
+  const key = el.dataset.i18nEmpty;
+  if (key) {
+    const msg = browser.i18n.getMessage(key);
+    if (msg) el.dataset.empty = msg;
+  }
+}
 loadConfig();

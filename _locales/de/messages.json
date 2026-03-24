@@ -87,7 +87,7 @@
     "message": "Anhänge-Speichern-Standardwerte"
   },
   "sharingDefaultsHint": {
-    "message": "Standardwerte für das Teilen von Anhängen. Diese können bei jeder E-Mail angepasst werden."
+    "message": "Standardwerte für Freigabelinks. Diese können bei jedem Link angepasst werden."
   },
   "savingDefaultsHint": {
     "message": "Standardwerte für das Speichern von Anhängen. Diese können bei jeder E-Mail angepasst werden."
@@ -110,6 +110,21 @@
   "sharePassword": {
     "message": "Passwortschutz"
   },
+  "passwordNone": {
+    "message": "Kein Passwort"
+  },
+  "passwordRandom": {
+    "message": "Zufälliges Passwort"
+  },
+  "passwordCustom": {
+    "message": "Eigenes Passwort"
+  },
+  "passwordLength": {
+    "message": "Passwortlänge"
+  },
+  "customPassword": {
+    "message": "Passwort"
+  },
   "sharePasswordHint": {
     "message": "Leer lassen für keinen Passwortschutz"
   },
@@ -122,11 +137,20 @@
   "tabConnection": {
     "message": "Verbindung"
   },
+  "tabFileLink": {
+    "message": "FileLink"
+  },
+  "fileLinkHint": {
+    "message": "Legen Sie fest, wohin Thunderbird Anhänge hochlädt, die durch Download-Links ersetzt werden."
+  },
   "tabSharing": {
-    "message": "Anhänge teilen"
+    "message": "Freigabelinks"
   },
   "tabSaving": {
     "message": "Anhänge speichern"
+  },
+  "seafileAccount": {
+    "message": "Konto"
   },
   "save": {
     "message": "Speichern"
@@ -140,6 +164,12 @@
   "emptyFolder": {
     "message": "Leerer Ordner"
   },
+  "filterFiles": {
+    "message": "Dateien nach Name filtern..."
+  },
+  "noSubfolders": {
+    "message": "Keine Unterordner"
+  },
   "backToFiles": {
     "message": "Zurück"
   },
@@ -149,8 +179,8 @@
   "useExisting": {
     "message": "Bestehenden verwenden"
   },
-  "deleteAndNew": {
-    "message": "Löschen & neu erstellen"
+  "createNew": {
+    "message": "Neu erstellen"
   },
   "insertLink": {
     "message": "Link in E-Mail einfügen"
@@ -159,13 +189,13 @@
     "message": "Link eingefügt!"
   },
   "showPasswordInEmail": {
-    "message": "Passwort in E-Mail anzeigen"
+    "message": "Passwort in E-Mail anzeigen (falls gesetzt)"
   },
   "showPasswordInEmailHint": {
     "message": "Standardwert für neue Links. Kann pro Link geändert werden."
   },
   "skipLinkOptions": {
-    "message": "Beim Einfügen von Seafile-Links immer diese Standardwerte verwenden (Optionsdialog überspringen)"
+    "message": "Optionsdialog überspringen (immer diese Standardwerte verwenden)"
   },
   "saveToSeafile": {
     "message": "In Seafile speichern"

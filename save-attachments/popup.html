@@ -220,6 +220,10 @@
 <body>
   <h3 data-i18n="saveToSeafile">Save to Seafile</h3>
 
+  <div id="accountSelector" class="form-group" style="display:none">
+    <select id="accountSelect"></select>
+  </div>
+
   <div id="loading" class="empty-msg" data-i18n="loading">Loading...</div>
   <div id="noAttachments" class="empty-msg" style="display:none" data-i18n="noAttachments">No attachments found.</div>
   <div id="notConfigured" class="empty-msg" style="display:none" data-i18n="notConfigured">No Seafile account configured.</div>
@@ -239,7 +243,7 @@
       <label data-i18n="targetFolder">Folder:</label>
       <div class="folder-picker" id="folderPicker">
         <div class="current-path" id="currentPath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
-        <ul class="folder-list" id="folderList" data-empty="No subfolders"></ul>
+        <ul class="folder-list" id="folderList" data-empty="No subfolders" data-i18n-empty="noSubfolders"></ul>
       </div>
     </div>
 

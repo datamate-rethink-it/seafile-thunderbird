@@ -87,7 +87,7 @@
     "message": "Paramètres de sauvegarde des pièces jointes"
   },
   "sharingDefaultsHint": {
-    "message": "Définir les valeurs par défaut pour le partage de pièces jointes. Vous pouvez les ajuster pour chaque e-mail."
+    "message": "Définir les valeurs par défaut pour les liens de partage. Vous pouvez les ajuster pour chaque lien."
   },
   "savingDefaultsHint": {
     "message": "Définir les valeurs par défaut pour la sauvegarde de pièces jointes. Vous pouvez les ajuster pour chaque e-mail."
@@ -110,6 +110,21 @@
   "sharePassword": {
     "message": "Protection par mot de passe"
   },
+  "passwordNone": {
+    "message": "Aucun mot de passe"
+  },
+  "passwordRandom": {
+    "message": "Mot de passe aléatoire"
+  },
+  "passwordCustom": {
+    "message": "Mot de passe personnalisé"
+  },
+  "passwordLength": {
+    "message": "Longueur du mot de passe"
+  },
+  "customPassword": {
+    "message": "Mot de passe"
+  },
   "sharePasswordHint": {
     "message": "Laisser vide pour aucun mot de passe"
   },
@@ -122,11 +137,20 @@
   "tabConnection": {
     "message": "Connexion"
   },
+  "tabFileLink": {
+    "message": "FileLink"
+  },
+  "fileLinkHint": {
+    "message": "Configurez l'emplacement où Thunderbird téléverse les pièces jointes remplacées par des liens de téléchargement."
+  },
   "tabSharing": {
-    "message": "Partager les pièces jointes"
+    "message": "Liens de partage"
   },
   "tabSaving": {
     "message": "Enregistrer les pièces jointes"
+  },
+  "seafileAccount": {
+    "message": "Compte"
   },
   "save": {
     "message": "Enregistrer"
@@ -140,6 +164,12 @@
   "emptyFolder": {
     "message": "Dossier vide"
   },
+  "filterFiles": {
+    "message": "Filtrer par nom..."
+  },
+  "noSubfolders": {
+    "message": "Aucun sous-dossier"
+  },
   "backToFiles": {
     "message": "Retour"
   },
@@ -149,8 +179,8 @@
   "useExisting": {
     "message": "Utiliser l'existant"
   },
-  "deleteAndNew": {
-    "message": "Supprimer et recréer"
+  "createNew": {
+    "message": "Créer nouveau"
   },
   "insertLink": {
     "message": "Insérer le lien dans l'e-mail"
@@ -159,13 +189,13 @@
     "message": "Lien inséré !"
   },
   "showPasswordInEmail": {
-    "message": "Afficher le mot de passe dans l'e-mail"
+    "message": "Afficher le mot de passe dans l'e-mail (si défini)"
   },
   "showPasswordInEmailHint": {
     "message": "Valeur par défaut pour les nouveaux liens. Peut être modifié par lien."
   },
   "skipLinkOptions": {
-    "message": "Toujours utiliser ces paramètres par défaut lors de l'insertion de liens Seafile (ignorer le dialogue d'options)"
+    "message": "Ignorer le dialogue d'options (toujours appliquer ces paramètres)"
   },
   "saveToSeafile": {
     "message": "Enregistrer dans Seafile"

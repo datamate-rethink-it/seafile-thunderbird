@@ -16,6 +16,47 @@ function escapeHtml(str) {
 const activeUploads = new Map();
 
 /**
+ * Generate a random password (crypto-safe).
+ * @param {number} length - Password length (default 12)
+ * @returns {string}
+ */
+function generateRandomPassword(length = 12) {
+  const lower = "abcdefghijkmnpqrstuvwxyz";
+  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const digits = "23456789";
+  const special = "!@#$%&*?";
+  const all = lower + upper + digits + special;
+  const rng = new Uint32Array(length);
+  crypto.getRandomValues(rng);
+  const pick = (chars, i) => chars[rng[i] % chars.length];
+  // Ensure at least one of each type
+  const result = [pick(lower, 0), pick(upper, 1), pick(digits, 2), pick(special, 3)];
+  for (let i = result.length; i < length; i++) result.push(pick(all, i));
+  // Shuffle
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = rng[i] % (i + 1);
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  // Alphanumeric at start and end for double-click selection
+  const alnum = lower + upper + digits;
+  result[0] = pick(alnum, 0);
+  result[result.length - 1] = pick(alnum, length - 1);
+  return result.join("");
+}
+
+/**
+ * Resolve the effective password for a FileLink upload based on config.
+ * @param {Object} config
+ * @returns {string} Password or empty string
+ */
+function resolveFileLinkPassword(config) {
+  const mode = config.fileLinkPasswordMode || "none";
+  if (mode === "random") return generateRandomPassword(config.fileLinkPasswordLength || 12);
+  if (mode === "custom") return config.fileLinkCustomPassword || "";
+  return "";
+}
+
+/**
  * Show a system notification to the user.
  * @param {string} message
  */
@@ -159,9 +200,11 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab) => {
           await seafile.deleteShareLink(cfg.serverUrl, cfg.apiToken, oldToken);
         }
       }
+      const fileLinkPassword = resolveFileLinkPassword(cfg);
+      const fileLinkExpireDays = cfg.fileLinkExpireDays || 0;
       const shareResult = await seafile.createShareLink(
         cfg.serverUrl, cfg.apiToken, cfg.repoId, filePath,
-        { password: cfg.sharePassword, expireDays: cfg.shareExpireDays }
+        { password: fileLinkPassword || undefined, expireDays: fileLinkExpireDays || undefined }
       );
 
       // 5. Save metadata for later deletion
@@ -175,11 +218,11 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab) => {
       const templateInfo = {
         service_name: "Seafile",
         service_url: "https://www.seafile.com",
-        download_password_protected: !!cfg.sharePassword,
+        download_password_protected: !!fileLinkPassword,
       };
-      if (cfg.shareExpireDays > 0) {
+      if (fileLinkExpireDays > 0) {
         const expiryDate = new Date();
-        expiryDate.setDate(expiryDate.getDate() + cfg.shareExpireDays);
+        expiryDate.setDate(expiryDate.getDate() + fileLinkExpireDays);
         templateInfo.download_expiry_date = {
           timestamp: expiryDate.getTime(),
         };
@@ -245,9 +288,11 @@ browser.cloudFile.onFileRename.addListener(async (account, fileId, newName, tab)
       // 3. Create new share link for renamed file
       const dir = metadata.path.substring(0, metadata.path.lastIndexOf("/"));
       const newPath = `${dir}/${newName}`;
+      const renamePassword = resolveFileLinkPassword(cfg);
+      const renameExpireDays = cfg.fileLinkExpireDays || 0;
       const shareResult = await seafile.createShareLink(
         cfg.serverUrl, cfg.apiToken, cfg.repoId, newPath,
-        { password: cfg.sharePassword, expireDays: cfg.shareExpireDays }
+        { password: renamePassword || undefined, expireDays: renameExpireDays || undefined }
       );
 
       // 4. Save updated metadata
@@ -286,19 +331,44 @@ browser.cloudFile.onAccountDeleted.addListener(async (accountId) => {
 // --- Message Handler for Management Page and Save-Attachments Popup ---
 
 /**
- * Find the first configured CloudFile account.
+ * Get a configured CloudFile account by ID.
+ * @param {string} accountId
+ * @returns {Promise<Object|null>} Account config or null
+ */
+async function getConfiguredAccount(accountId) {
+  if (!accountId) return null;
+  const stored = await browser.storage.local.get(accountId);
+  const config = stored[accountId];
+  if (!config || !config.apiToken) return null;
+  return { accountId, ...config };
+}
+
+/**
+ * Find the first configured CloudFile account (fallback).
  * @returns {Promise<Object|null>} Account config or null
  */
 async function getFirstConfiguredAccount() {
   const accounts = await browser.cloudFile.getAllAccounts();
   for (const account of accounts) {
-    const stored = await browser.storage.local.get(account.id);
-    const config = stored[account.id];
-    if (config && config.apiToken && config.repoId) {
-      return { accountId: account.id, ...config };
-    }
+    const config = await getConfiguredAccount(account.id);
+    if (config && config.repoId) return config;
   }
   return null;
+}
+
+/**
+ * Resolve account: use explicit accountId if provided, otherwise first configured.
+ * @param {string} [accountId]
+ * @returns {Promise<Object>}
+ */
+async function resolveAccount(accountId) {
+  const config = accountId
+    ? await getConfiguredAccount(accountId)
+    : await getFirstConfiguredAccount();
+  if (!config) {
+    throw new Error("No Seafile account configured.");
+  }
+  return config;
 }
 
 browser.runtime.onMessage.addListener(async (message) => {
@@ -335,15 +405,30 @@ browser.runtime.onMessage.addListener(async (message) => {
       const info = await seafile.getAccountInfo(message.serverUrl, message.apiToken);
       return info;
     }
-    case "listRepos": {
-      const config = await getFirstConfiguredAccount() || {};
-      const serverUrl = config.serverUrl || message.serverUrl;
-      const token = config.apiToken || message.apiToken;
-      if (!serverUrl || !token) {
-        return { error: "No Seafile account configured." };
+    case "getAllConfiguredAccounts": {
+      const allAccounts = await browser.cloudFile.getAllAccounts();
+      const result = [];
+      for (const account of allAccounts) {
+        const stored = await browser.storage.local.get(account.id);
+        const config = stored[account.id];
+        if (config && config.apiToken && config.repoId) {
+          result.push({
+            accountId: account.id,
+            serverUrl: config.serverUrl,
+            username: config.username,
+            displayName: config.displayName || "",
+          });
+        }
       }
-      const repos = await seafile.listRepos(serverUrl, token);
-      return repos;
+      return result;
+    }
+    case "listRepos": {
+      // Management page sends serverUrl/apiToken directly; popups send accountId
+      if (message.serverUrl && message.apiToken) {
+        return await seafile.listRepos(message.serverUrl, message.apiToken);
+      }
+      const config = await resolveAccount(message.accountId);
+      return await seafile.listRepos(config.serverUrl, config.apiToken);
     }
     case "getDisplayedMessage": {
       const messageList = await browser.messageDisplay.getDisplayedMessages(message.tabId);
@@ -357,10 +442,7 @@ browser.runtime.onMessage.addListener(async (message) => {
       return attachments.filter(a => a.contentType !== "text/x-moz-deleted");
     }
     case "uploadAttachment": {
-      const config = await getFirstConfiguredAccount();
-      if (!config) {
-        return { error: "No Seafile account configured." };
-      }
+      const config = await resolveAccount(message.accountId);
       const file = await browser.messages.getAttachmentFile(
         message.messageId, message.partName
       );
@@ -385,13 +467,13 @@ browser.runtime.onMessage.addListener(async (message) => {
       return { success: true };
     }
     case "getAccountConfig": {
+      if (message.accountId) {
+        return await getConfiguredAccount(message.accountId);
+      }
       return await getFirstConfiguredAccount();
     }
     case "listDir": {
-      const config = await getFirstConfiguredAccount();
-      if (!config) {
-        return { error: "No Seafile account configured." };
-      }
+      const config = await resolveAccount(message.accountId);
       const repoId = message.repoId || config.repoId;
       const entries = await seafile.listDir(
         config.serverUrl, config.apiToken, repoId, message.path || "/"
@@ -399,20 +481,14 @@ browser.runtime.onMessage.addListener(async (message) => {
       return message.includeFiles ? entries : entries.filter(e => e.type === "dir");
     }
     case "checkExistingLink": {
-      const config = await getFirstConfiguredAccount();
-      if (!config) {
-        return { error: "No Seafile account configured." };
-      }
+      const config = await resolveAccount(message.accountId);
       const links = await seafile.getShareLinks(
         config.serverUrl, config.apiToken, message.repoId, message.path
       );
       return { links };
     }
     case "createFileLink": {
-      const config = await getFirstConfiguredAccount();
-      if (!config) {
-        return { error: "No Seafile account configured." };
-      }
+      const config = await resolveAccount(message.accountId);
       const shareResult = await seafile.createShareLink(
         config.serverUrl, config.apiToken,
         message.repoId, message.path,
@@ -421,10 +497,7 @@ browser.runtime.onMessage.addListener(async (message) => {
       return shareResult;
     }
     case "deleteShareLink": {
-      const config = await getFirstConfiguredAccount();
-      if (!config) {
-        return { error: "No Seafile account configured." };
-      }
+      const config = await resolveAccount(message.accountId);
       await seafile.deleteShareLink(config.serverUrl, config.apiToken, message.linkToken);
       return { success: true };
     }

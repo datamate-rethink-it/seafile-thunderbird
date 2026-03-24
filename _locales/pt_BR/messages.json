@@ -87,7 +87,7 @@
     "message": "Configurações de salvamento de anexos"
   },
   "sharingDefaultsHint": {
-    "message": "Defina valores padrão para compartilhar anexos. Você pode ajustá-los para cada e-mail."
+    "message": "Defina valores padrão para links de compartilhamento. Você pode ajustá-los para cada link."
   },
   "savingDefaultsHint": {
     "message": "Defina valores padrão para salvar anexos. Você pode ajustá-los para cada e-mail."
@@ -110,6 +110,21 @@
   "sharePassword": {
     "message": "Proteção por senha"
   },
+  "passwordNone": {
+    "message": "Sem senha"
+  },
+  "passwordRandom": {
+    "message": "Senha aleatória"
+  },
+  "passwordCustom": {
+    "message": "Senha personalizada"
+  },
+  "passwordLength": {
+    "message": "Comprimento da senha"
+  },
+  "customPassword": {
+    "message": "Senha"
+  },
   "sharePasswordHint": {
     "message": "Deixe vazio para sem senha"
   },
@@ -122,11 +137,20 @@
   "tabConnection": {
     "message": "Conexão"
   },
+  "tabFileLink": {
+    "message": "FileLink"
+  },
+  "fileLinkHint": {
+    "message": "Configure onde o Thunderbird envia anexos que são substituídos por links de download."
+  },
   "tabSharing": {
-    "message": "Compartilhar anexos"
+    "message": "Links de compartilhamento"
   },
   "tabSaving": {
     "message": "Salvar anexos"
+  },
+  "seafileAccount": {
+    "message": "Conta"
   },
   "save": {
     "message": "Salvar"
@@ -140,6 +164,12 @@
   "emptyFolder": {
     "message": "Pasta vazia"
   },
+  "filterFiles": {
+    "message": "Filtrar por nome..."
+  },
+  "noSubfolders": {
+    "message": "Sem subpastas"
+  },
   "backToFiles": {
     "message": "Voltar"
   },
@@ -149,8 +179,8 @@
   "useExisting": {
     "message": "Usar existente"
   },
-  "deleteAndNew": {
-    "message": "Excluir e criar novo"
+  "createNew": {
+    "message": "Criar novo"
   },
   "insertLink": {
     "message": "Inserir link no e-mail"
@@ -159,13 +189,13 @@
     "message": "Link inserido!"
   },
   "showPasswordInEmail": {
-    "message": "Mostrar senha no e-mail"
+    "message": "Mostrar senha no e-mail (se definida)"
   },
   "showPasswordInEmailHint": {
     "message": "Padrão para novos links. Pode ser alterado por link."
   },
   "skipLinkOptions": {
-    "message": "Sempre usar esses padrões ao inserir links do Seafile (pular diálogo de opções)"
+    "message": "Pular diálogo de opções (sempre aplicar esses padrões)"
   },
   "saveToSeafile": {
     "message": "Salvar no Seafile"

@@ -87,7 +87,7 @@
     "message": "Configuración de guardado de adjuntos"
   },
   "sharingDefaultsHint": {
-    "message": "Definir valores predeterminados para compartir adjuntos. Puede ajustarlos para cada correo."
+    "message": "Definir valores predeterminados para enlaces compartidos. Puede ajustarlos para cada enlace."
   },
   "savingDefaultsHint": {
     "message": "Definir valores predeterminados para guardar adjuntos. Puede ajustarlos para cada correo."
@@ -110,6 +110,21 @@
   "sharePassword": {
     "message": "Protección con contraseña"
   },
+  "passwordNone": {
+    "message": "Sin contraseña"
+  },
+  "passwordRandom": {
+    "message": "Contraseña aleatoria"
+  },
+  "passwordCustom": {
+    "message": "Contraseña personalizada"
+  },
+  "passwordLength": {
+    "message": "Longitud de contraseña"
+  },
+  "customPassword": {
+    "message": "Contraseña"
+  },
   "sharePasswordHint": {
     "message": "Dejar vacío para sin contraseña"
   },
@@ -122,11 +137,20 @@
   "tabConnection": {
     "message": "Conexión"
   },
+  "tabFileLink": {
+    "message": "FileLink"
+  },
+  "fileLinkHint": {
+    "message": "Configure dónde Thunderbird sube los adjuntos que se reemplazan por enlaces de descarga."
+  },
   "tabSharing": {
-    "message": "Compartir adjuntos"
+    "message": "Enlaces compartidos"
   },
   "tabSaving": {
     "message": "Guardar adjuntos"
+  },
+  "seafileAccount": {
+    "message": "Cuenta"
   },
   "save": {
     "message": "Guardar"
@@ -140,6 +164,12 @@
   "emptyFolder": {
     "message": "Carpeta vacía"
   },
+  "filterFiles": {
+    "message": "Filtrar por nombre..."
+  },
+  "noSubfolders": {
+    "message": "Sin subcarpetas"
+  },
   "backToFiles": {
     "message": "Volver"
   },
@@ -149,8 +179,8 @@
   "useExisting": {
     "message": "Usar existente"
   },
-  "deleteAndNew": {
-    "message": "Eliminar y crear nuevo"
+  "createNew": {
+    "message": "Crear nuevo"
   },
   "insertLink": {
     "message": "Insertar enlace en el correo"
@@ -159,13 +189,13 @@
     "message": "¡Enlace insertado!"
   },
   "showPasswordInEmail": {
-    "message": "Mostrar contraseña en el correo"
+    "message": "Mostrar contraseña en el correo (si se establece)"
   },
   "showPasswordInEmailHint": {
     "message": "Valor predeterminado para nuevos enlaces. Se puede cambiar por enlace."
   },
   "skipLinkOptions": {
-    "message": "Usar siempre estos valores predeterminados al insertar enlaces de Seafile (omitir diálogo de opciones)"
+    "message": "Omitir diálogo de opciones (usar siempre estos valores)"
   },
   "saveToSeafile": {
     "message": "Guardar en Seafile"
