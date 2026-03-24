@@ -213,7 +213,7 @@
     "message": "Tout sélectionner"
   },
   "targetFolder": {
-    "message": "Dossier cible :"
+    "message": "Dossier cible"
   },
   "saveSuccess": {
     "message": "Tous les fichiers sélectionnés ont été enregistrés dans Seafile !"

@@ -213,7 +213,7 @@
     "message": "全选"
   },
   "targetFolder": {
-    "message": "目标文件夹："
+    "message": "目标文件夹"
   },
   "saveSuccess": {
     "message": "所有选中的文件已保存到 Seafile！"

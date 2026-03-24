@@ -213,7 +213,7 @@
     "message": "Выбрать все"
   },
   "targetFolder": {
-    "message": "Целевая папка:"
+    "message": "Целевая папка"
   },
   "saveSuccess": {
     "message": "Все выбранные файлы сохранены в Seafile!"

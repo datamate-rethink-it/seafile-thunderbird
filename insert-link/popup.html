@@ -32,6 +32,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 13px;
+      background: #f5f5f5;
     }
     input:focus, select:focus {
       outline: none;
@@ -48,7 +49,8 @@
       font-size: 12px;
       color: #555;
       background: #f5f5f5;
-      padding: 4px 8px;
+      padding: 5px 8px;
+      border: 1px solid #ccc;
       border-radius: 4px;
       margin-bottom: 8px;
       word-break: break-all;
@@ -263,7 +265,7 @@
       <label for="repoSelect" data-i18n="targetLibrary">Library</label>
       <select id="repoSelect"></select>
     </div>
-    <label data-i18n="targetFolder">Target folder:</label>
+    <label data-i18n="targetFolder">Target folder</label>
     <div class="current-path" id="currentPath">/</div>
     <input type="text" id="fileFilter" style="display:none;margin-bottom:6px;padding:4px 8px;font-size:12px;" data-i18n-placeholder="filterFiles" placeholder="Filter files by name...">
     <ul class="file-list" id="fileList" data-empty="Empty folder" data-i18n-empty="emptyFolder"></ul>
