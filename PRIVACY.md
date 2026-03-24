@@ -43,4 +43,4 @@ This extension is open source under the [Apache License 2.0](LICENSE). You can r
 ## Contact
 
 For privacy questions or concerns, please open an issue at:
-https://github.com/christophdb/seafile-thunderbird/issues
+https://github.com/datamate-rethink-it/seafile-thunderbird/issues

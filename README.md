@@ -111,7 +111,7 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 
 ### From .xpi file
 
-Download the latest `.xpi` from the [Releases](https://github.com/christophdb/seafile-thunderbird/releases) page and install via **Add-ons & Themes → gear icon → Install Add-on From File**.
+Download the latest `.xpi` from the [Releases](https://github.com/datamate-rethink-it/seafile-thunderbird/releases) page and install via **Add-ons & Themes → gear icon → Install Add-on From File**.
 
 ### From source (development)
 
@@ -211,7 +211,7 @@ See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 
 Contributions are welcome! Please open an issue to discuss your idea before submitting a pull request.
 
-- Bug reports: [GitHub Issues](https://github.com/christophdb/seafile-thunderbird/issues)
+- Bug reports: [GitHub Issues](https://github.com/datamate-rethink-it/seafile-thunderbird/issues)
 - Translation improvements: Edit the files in `_locales/` and submit a PR
 
 ## Development
