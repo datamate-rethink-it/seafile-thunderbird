@@ -102,10 +102,17 @@
     select {
       width: 100%;
       padding: 5px 8px;
+      padding-right: 28px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 13px;
       background: #f5f5f5;
+      appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 10px;
     }
     .folder-breadcrumb {
       display: flex;
@@ -151,8 +158,8 @@
       background: #eee;
     }
     .folder-picker .current-path .toggle-arrow {
-      font-size: 10px;
-      color: #999;
+      display: flex;
+      align-items: center;
       transition: transform 0.15s;
     }
     .folder-picker.open .current-path {
@@ -267,7 +274,7 @@
     </div>
     <label data-i18n="targetFolder">Target folder</label>
     <div class="folder-picker" id="folderPicker">
-      <div class="current-path" id="currentPath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
+      <div class="current-path" id="currentPath"><span class="path-text">/</span><span class="toggle-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="#999"/></svg></span></div>
       <ul class="folder-list" id="folderList" data-empty="No subfolders" data-i18n-empty="noSubfolders"></ul>
     </div>
 
