@@ -7,36 +7,37 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 ## Screenshots
 
 ![Insert Seafile Link — Browse files](docs/screenshots/insert-link-browse.png)
-*Browse your Seafile libraries and insert share links directly into emails.*
+*Browse your Seafile libraries, filter by name, and insert share links directly into emails.*
 
 ![Insert Seafile Link — Link options](docs/screenshots/insert-link-detail.png)
 *Set password and expiration per link before inserting.*
 
-![Inserted link with password and expiry](docs/screenshots/insert-link-box.png)
-*The inserted link matches the CloudFile template style with file name, size, password, and Seafile logo.*
-
 ![Save attachments to Seafile](docs/screenshots/save-attachments.png)
-*Save received email attachments directly to your Seafile server.*
+*Save received email attachments directly to your Seafile server. Account selector for multi-account setups.*
 
 <details>
 <summary>More screenshots</summary>
 
+![Inserted link with password and expiry](docs/screenshots/insert-link-box.png)
+*The inserted link matches the CloudFile template style with file name, size, password, and Seafile logo.*
+
 ![CloudFile template](docs/screenshots/cloudfile-box.png)
-*Attachments uploaded via Thunderbird's built-in Filelink also use the Seafile provider.*
+*Attachments uploaded via Thunderbird's built-in FileLink also use the Seafile provider.*
+
+![Connection — Connected](docs/screenshots/connection-connected.png)
+*Connected state shows server, display name, and authentication method. Multiple accounts supported.*
+
+![FileLink settings](docs/screenshots/filelink-settings.png)
+*Configure target library, upload folder, and password protection (none, random, or custom) for FileLink uploads.*
+
+![Share Links settings](docs/screenshots/share-link-settings.png)
+*Set defaults for share links — password, expiration, and show-password-in-email option.*
+
+![Save Attachments settings](docs/screenshots/save-settings.png)
+*Set default library and folder for saving received attachments, with collapsible folder picker.*
 
 ![Connection — Login](docs/screenshots/connection.png)
 *Connect with username/password (with optional 2FA) or via SSO.*
-
-![Connection — Connected](docs/screenshots/connection-connected.png)
-*Connected state shows server, user, and authentication method.*
-
-![Share Attachments settings](docs/screenshots/share-settings.png)
-*Configure target library, upload folder, password protection, and expiration. (Settings have since been reorganized into FileLink and Share Links tabs.)*
-
-![Save Attachments settings](docs/screenshots/save-settings.png)
-*Set default library and folder for saving received attachments.*
-
-**Note:** Some screenshots may show an earlier UI version. The current version (1.3.0) has four settings tabs: Connection, FileLink, Share Links, and Save Attachments.
 
 </details>
 
