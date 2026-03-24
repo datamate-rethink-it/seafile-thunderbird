@@ -245,9 +245,7 @@ async function doInsert(password, expireDays, linkUrl, showPassword) {
 async function navigateToFolder(path) {
   currentPath = path;
   currentPathEl.textContent = path;
-  fileListEl.innerHTML = "";
   fileFilterInput.value = "";
-  fileFilterInput.style.display = "none";
 
   try {
     const entries = await sendMessage("listDir", {
@@ -257,13 +255,16 @@ async function navigateToFolder(path) {
       accountId: currentAccountId,
     });
 
+    // Build new list content before replacing (avoids height flicker)
+    const fragment = document.createDocumentFragment();
+
     // Parent directory link
     if (path !== "/") {
       const parentLi = document.createElement("li");
       const parentPath = path.substring(0, path.lastIndexOf("/")) || "/";
       parentLi.innerHTML = `<span class="file-icon">${FILE_ICONS.folderUp}</span><span class="file-name">..</span>`;
       parentLi.addEventListener("click", () => navigateToFolder(parentPath));
-      fileListEl.appendChild(parentLi);
+      fragment.appendChild(parentLi);
     }
 
     // Sort: directories first, then files
@@ -280,7 +281,7 @@ async function navigateToFolder(path) {
         <span class="file-name">${escapeHtml(dir.name)}</span>
       `;
       li.addEventListener("click", () => navigateToFolder(dirPath));
-      fileListEl.appendChild(li);
+      fragment.appendChild(li);
     }
 
     for (const file of files) {
@@ -294,13 +295,15 @@ async function navigateToFolder(path) {
         <span class="file-size">${formatSize(file.size)}</span>
       `;
       li.addEventListener("click", () => showDetailView(file, filePath));
-      fileListEl.appendChild(li);
+      fragment.appendChild(li);
     }
 
-    // Show filter input if more than threshold entries
-    if (entries.length > FILE_FILTER_THRESHOLD) {
-      fileFilterInput.style.display = "block";
-    }
+    // Replace list content in one operation
+    fileListEl.innerHTML = "";
+    fileListEl.appendChild(fragment);
+
+    // Show/hide filter input
+    fileFilterInput.style.display = entries.length > FILE_FILTER_THRESHOLD ? "block" : "none";
   } catch (e) {
     console.error("Failed to list directory:", e);
     showStatus(`Error: ${e.message}`, "error");
