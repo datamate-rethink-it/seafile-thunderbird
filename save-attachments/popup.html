@@ -23,13 +23,18 @@
       list-style: none;
       padding: 0;
       margin: 0 0 12px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 200px;
+      overflow-y: auto;
     }
     .attachment-list li {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 0;
-      border-bottom: 1px solid #eee;
+      gap: 6px;
+      padding: 6px 8px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 12px;
     }
     .attachment-list li:last-child {
       border-bottom: none;
@@ -39,19 +44,48 @@
     }
     .att-name {
       flex: 1;
+      min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      cursor: text;
+      padding: 1px 3px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+    }
+    .att-name:hover {
+      border-color: #ccc;
+    }
+    .att-name:focus {
+      outline: none;
+      border-color: #4a90d9;
+      background: #fff;
+    }
+    .att-name.renamed {
+      color: #4a90d9;
+    }
+    .att-reset {
+      display: none;
+      flex-shrink: 0;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      color: #999;
+    }
+    .att-reset:hover {
+      color: #4a90d9;
+    }
+    .att-reset.visible {
+      display: flex;
     }
     .att-size {
       flex-shrink: 0;
       color: #888;
       font-size: 11px;
+      margin-left: auto;
     }
     .att-status {
       flex-shrink: 0;
-      width: 16px;
-      height: 16px;
       display: flex;
       align-items: center;
     }
@@ -71,9 +105,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 13px;
-    }
-    .folder-section {
-      margin-bottom: 12px;
+      background: #f5f5f5;
     }
     .folder-breadcrumb {
       display: flex;
@@ -229,23 +261,21 @@
   <div id="notConfigured" class="empty-msg" style="display:none" data-i18n="notConfigured">No Seafile account configured.</div>
 
   <div id="content" style="display:none">
+    <div class="form-group">
+      <label for="repoSelect" data-i18n="targetLibrary">Target Library</label>
+      <select id="repoSelect"></select>
+    </div>
+    <label data-i18n="targetFolder">Target folder:</label>
+    <div class="folder-picker" id="folderPicker">
+      <div class="current-path" id="currentPath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
+      <ul class="folder-list" id="folderList" data-empty="No subfolders" data-i18n-empty="noSubfolders"></ul>
+    </div>
+
     <div class="select-all">
       <input type="checkbox" id="selectAll" checked>
       <label for="selectAll" data-i18n="selectAll">Select all</label>
     </div>
     <ul class="attachment-list" id="attachmentList"></ul>
-
-    <div class="folder-section">
-      <div class="form-group">
-        <label for="repoSelect" data-i18n="targetLibrary">Library:</label>
-        <select id="repoSelect"></select>
-      </div>
-      <label data-i18n="targetFolder">Folder:</label>
-      <div class="folder-picker" id="folderPicker">
-        <div class="current-path" id="currentPath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
-        <ul class="folder-list" id="folderList" data-empty="No subfolders" data-i18n-empty="noSubfolders"></ul>
-      </div>
-    </div>
 
     <button id="saveBtn" class="primary" data-i18n="saveToSeafile">Save to Seafile</button>
     <div id="saveStatus" class="status"></div>

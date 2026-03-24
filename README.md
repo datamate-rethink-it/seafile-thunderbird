@@ -73,6 +73,7 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 
 - **Save attachments to Seafile** — click the Seafile button in the message header to save received attachments
 - **Library & folder selection** — choose target library and navigate folders with a collapsible folder picker
+- **Rename before saving** — click any filename to rename it before uploading (name part auto-selected, reset button to restore)
 - **Batch saving** — select multiple attachments at once, with synced "Select all" checkbox
 - **Per-file status** — visual SVG feedback for each file during upload
 - **Duplicate handling** — configurable: rename automatically (default) or overwrite existing files

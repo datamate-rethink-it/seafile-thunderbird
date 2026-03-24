@@ -89,14 +89,62 @@ function getHostLabel(url) {
 function renderAttachments() {
   attachmentListEl.innerHTML = "";
   for (const att of attachments) {
+    // Store custom name for rename support
+    if (!att.customName) att.customName = att.name;
+
     const li = document.createElement("li");
+    const resetSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`;
     li.innerHTML = `
       <input type="checkbox" class="att-checkbox" data-part="${escapeHtml(att.partName)}" checked>
-      <span class="att-name" title="${escapeHtml(att.name)}">${escapeHtml(att.name)}</span>
+      <span class="att-name${att.customName !== att.name ? ' renamed' : ''}" contenteditable="true" data-part="${escapeHtml(att.partName)}" title="${escapeHtml(att.name)}">${escapeHtml(att.customName)}</span>
+      <span class="att-reset${att.customName !== att.name ? ' visible' : ''}" title="Reset to original name">${resetSvg}</span>
       <span class="att-size">${formatSize(att.size)}</span>
       <span class="att-status" data-part-status="${escapeHtml(att.partName)}"></span>
     `;
     li.querySelector(".att-checkbox").addEventListener("change", syncSelectAll);
+
+    // Rename support
+    const nameEl = li.querySelector(".att-name");
+    const resetEl = li.querySelector(".att-reset");
+
+    function updateRenamed(isRenamed) {
+      nameEl.classList.toggle("renamed", isRenamed);
+      resetEl.classList.toggle("visible", isRenamed);
+    }
+
+    nameEl.addEventListener("focus", () => {
+      const text = nameEl.textContent;
+      const dotIndex = text.lastIndexOf(".");
+      if (dotIndex > 0) {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.setStart(nameEl.firstChild, 0);
+        range.setEnd(nameEl.firstChild, dotIndex);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    });
+    nameEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); nameEl.blur(); }
+      if (e.key === "Escape") { att.customName = att.name; nameEl.textContent = att.name; updateRenamed(false); nameEl.blur(); }
+    });
+    nameEl.addEventListener("blur", () => {
+      const newName = nameEl.textContent.trim();
+      if (newName && newName !== att.name) {
+        att.customName = newName;
+        updateRenamed(true);
+      } else {
+        att.customName = att.name;
+        nameEl.textContent = att.name;
+        updateRenamed(false);
+      }
+    });
+    resetEl.addEventListener("click", () => {
+      att.customName = att.name;
+      nameEl.textContent = att.name;
+      updateRenamed(false);
+    });
+
     attachmentListEl.appendChild(li);
   }
 }
@@ -214,7 +262,7 @@ saveBtn.addEventListener("click", async () => {
       await sendMessage("uploadAttachment", {
         messageId,
         partName,
-        fileName: att.name,
+        fileName: att.customName || att.name,
         targetDir: currentPath,
         repoId: currentRepoId,
         accountId: currentAccountId,
