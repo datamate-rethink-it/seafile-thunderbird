@@ -31,10 +31,12 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 *Connected state shows server, user, and authentication method.*
 
 ![Share Attachments settings](docs/screenshots/share-settings.png)
-*Configure target library, upload folder, password protection, and expiration.*
+*Configure target library, upload folder, password protection, and expiration. (Settings have since been reorganized into FileLink and Share Links tabs.)*
 
 ![Save Attachments settings](docs/screenshots/save-settings.png)
 *Set default library and folder for saving received attachments.*
+
+**Note:** Some screenshots may show an earlier UI version. The current version (1.3.0) has four settings tabs: Connection, FileLink, Share Links, and Save Attachments.
 
 </details>
 
@@ -59,7 +61,7 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 - **File selection** — click a file to select it, then configure link options before inserting
 - **File type icons** — color-coded SVG icons for common file types (PDF, images, spreadsheets, archives, audio, video, code, etc.)
 - **Password & expiration** — set password and expiration per link, or use defaults from settings
-- **Password generator** — generate secure 12-character passwords with one click (cryptographically secure)
+- **Password generator** — generate secure random passwords with one click (cryptographically secure, configurable length)
 - **Show password in email** — choose to display the password in the email or show a "sent separately" hint (configurable per link, default in settings)
 - **File filter** — search/filter files by name when folders contain many entries
 - **Existing link detection** — reuse existing share links or create a new one
@@ -79,7 +81,7 @@ Built by [datamate](https://datamate.org), the Seafile partner for Europe.
 - **Username & password** — standard Seafile login
 - **Two-factor authentication (2FA)** — optional TOTP code field for accounts with 2FA enabled
 - **Single Sign-On (SSO)** — login via browser using SAML, OAuth, Keycloak, or any SSO method configured on the server
-- **Auto re-authentication** — expired API tokens are refreshed automatically (username/password login)
+- **Display name** — shows user display name and contact email from Seafile account info
 - **Connection status** — clearly shows server, username, and authentication method (SSO or password)
 - **Disconnect** — one-click disconnect with automatic cleanup
 - **HTTPS validation** — warns when connecting over HTTP to non-localhost servers
