@@ -86,14 +86,20 @@
   "saveAttachmentSettings": {
     "message": "Paramètres de sauvegarde des pièces jointes"
   },
+  "sharingDefaultsHint": {
+    "message": "Définir les valeurs par défaut pour le partage de pièces jointes. Vous pouvez les ajuster pour chaque e-mail."
+  },
+  "savingDefaultsHint": {
+    "message": "Définir les valeurs par défaut pour la sauvegarde de pièces jointes. Vous pouvez les ajuster pour chaque e-mail."
+  },
   "saveTargetLibrary": {
-    "message": "Bibliothèque par défaut"
+    "message": "Bibliothèque cible"
   },
   "sameAsUpload": {
     "message": "-- Identique à la bibliothèque d'envoi --"
   },
   "saveFolder": {
-    "message": "Dossier par défaut"
+    "message": "Dossier cible"
   },
   "saveFolderHint": {
     "message": "Dossier par défaut lors de la sauvegarde des pièces jointes reçues"

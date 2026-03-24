@@ -86,14 +86,20 @@
   "saveAttachmentSettings": {
     "message": "Configuración de guardado de adjuntos"
   },
+  "sharingDefaultsHint": {
+    "message": "Definir valores predeterminados para compartir adjuntos. Puede ajustarlos para cada correo."
+  },
+  "savingDefaultsHint": {
+    "message": "Definir valores predeterminados para guardar adjuntos. Puede ajustarlos para cada correo."
+  },
   "saveTargetLibrary": {
-    "message": "Biblioteca predeterminada"
+    "message": "Biblioteca destino"
   },
   "sameAsUpload": {
     "message": "-- Igual que la biblioteca de subida --"
   },
   "saveFolder": {
-    "message": "Carpeta predeterminada"
+    "message": "Carpeta destino"
   },
   "saveFolderHint": {
     "message": "Carpeta predeterminada al guardar adjuntos recibidos"

@@ -78,6 +78,22 @@ class SeafileAPI {
   }
 
   /**
+   * Get account info (display name, contact email, usage, etc.).
+   * @param {string} server
+   * @param {string} token
+   * @returns {Promise<Object>} Account info with name, email, contact_email, usage, total
+   */
+  async getAccountInfo(server, token) {
+    const resp = await fetch(`${server}/api2/account/info/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!resp.ok) {
+      throw new Error(`Failed to get account info (${resp.status})`);
+    }
+    return await resp.json();
+  }
+
+  /**
    * List all accessible libraries/repos.
    * @param {string} server
    * @param {string} token

@@ -86,14 +86,20 @@
   "saveAttachmentSettings": {
     "message": "Configurações de salvamento de anexos"
   },
+  "sharingDefaultsHint": {
+    "message": "Defina valores padrão para compartilhar anexos. Você pode ajustá-los para cada e-mail."
+  },
+  "savingDefaultsHint": {
+    "message": "Defina valores padrão para salvar anexos. Você pode ajustá-los para cada e-mail."
+  },
   "saveTargetLibrary": {
-    "message": "Biblioteca padrão"
+    "message": "Biblioteca destino"
   },
   "sameAsUpload": {
     "message": "-- Mesma biblioteca de envio --"
   },
   "saveFolder": {
-    "message": "Pasta padrão"
+    "message": "Pasta destino"
   },
   "saveFolderHint": {
     "message": "Pasta padrão ao salvar anexos recebidos"

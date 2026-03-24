@@ -316,6 +316,7 @@
 
   <!-- Tab: Share Attachments -->
   <div class="tab-content" id="tab-sharing">
+    <p class="hint" style="margin: 0 0 12px 0; font-size: 12px;" data-i18n="sharingDefaultsHint">Define default values for sharing attachments. You can adjust these for each email.</p>
     <div class="form-group">
       <label for="repoSelect" data-i18n="targetLibrary">Target Library</label>
       <select id="repoSelect">
@@ -340,7 +341,6 @@
         <input type="checkbox" id="showPasswordInEmail" checked>
         <span data-i18n="showPasswordInEmail">Show password in email</span>
       </label>
-      <span class="hint" data-i18n="showPasswordInEmailHint">Default for new links. Can be changed per link.</span>
     </div>
     <div class="form-group">
       <label for="shareExpireDays" data-i18n="shareExpireDays">Expiration (days)</label>
@@ -357,14 +357,15 @@
 
   <!-- Tab: Save Attachments -->
   <div class="tab-content" id="tab-saving">
+    <p class="hint" style="margin: 0 0 12px 0; font-size: 12px;" data-i18n="savingDefaultsHint">Define default values for saving attachments. You can adjust these for each email.</p>
     <div class="form-group">
-      <label for="saveRepoSelect" data-i18n="saveTargetLibrary">Default Library</label>
+      <label for="saveRepoSelect" data-i18n="saveTargetLibrary">Target Library</label>
       <select id="saveRepoSelect">
         <option value="" data-i18n="sameAsUpload">-- Same as upload library --</option>
       </select>
     </div>
     <div class="form-group">
-      <label data-i18n="saveFolder">Default Folder</label>
+      <label data-i18n="saveFolder">Target Folder</label>
       <div class="folder-picker" id="saveFolderPicker">
         <div class="current-path" id="savePath"><span class="path-text">/</span><span class="toggle-arrow">&#9662;</span></div>
         <ul class="folder-list" id="saveFolderList" data-empty="No subfolders"></ul>

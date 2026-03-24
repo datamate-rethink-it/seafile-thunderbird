@@ -86,14 +86,20 @@
   "saveAttachmentSettings": {
     "message": "Anhänge-Speichern-Standardwerte"
   },
+  "sharingDefaultsHint": {
+    "message": "Standardwerte für das Teilen von Anhängen. Diese können bei jeder E-Mail angepasst werden."
+  },
+  "savingDefaultsHint": {
+    "message": "Standardwerte für das Speichern von Anhängen. Diese können bei jeder E-Mail angepasst werden."
+  },
   "saveTargetLibrary": {
-    "message": "Standard-Bibliothek"
+    "message": "Zielbibliothek"
   },
   "sameAsUpload": {
     "message": "-- Gleich wie Upload-Bibliothek --"
   },
   "saveFolder": {
-    "message": "Standard-Ordner"
+    "message": "Zielordner"
   },
   "saveFolderHint": {
     "message": "Standard-Ordner beim Speichern empfangener Anhänge"

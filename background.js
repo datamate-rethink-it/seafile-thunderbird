@@ -331,6 +331,10 @@ browser.runtime.onMessage.addListener(async (message) => {
         apiToken: status.apiToken || status.api_key,
       };
     }
+    case "getAccountInfo": {
+      const info = await seafile.getAccountInfo(message.serverUrl, message.apiToken);
+      return info;
+    }
     case "listRepos": {
       const config = await getFirstConfiguredAccount() || {};
       const serverUrl = config.serverUrl || message.serverUrl;

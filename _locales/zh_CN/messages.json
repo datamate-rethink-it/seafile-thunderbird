@@ -86,14 +86,20 @@
   "saveAttachmentSettings": {
     "message": "保存附件默认设置"
   },
+  "sharingDefaultsHint": {
+    "message": "定义共享附件的默认值。您可以在每封邮件中调整这些设置。"
+  },
+  "savingDefaultsHint": {
+    "message": "定义保存附件的默认值。您可以在每封邮件中调整这些设置。"
+  },
   "saveTargetLibrary": {
-    "message": "默认资料库"
+    "message": "目标资料库"
   },
   "sameAsUpload": {
     "message": "-- 与上传资料库相同 --"
   },
   "saveFolder": {
-    "message": "默认文件夹"
+    "message": "目标文件夹"
   },
   "saveFolderHint": {
     "message": "保存收到的附件时使用的默认文件夹"

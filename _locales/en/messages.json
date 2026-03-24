@@ -86,14 +86,20 @@
   "saveAttachmentSettings": {
     "message": "Save Attachment Defaults"
   },
+  "sharingDefaultsHint": {
+    "message": "Define default values for sharing attachments. You can adjust these for each email."
+  },
+  "savingDefaultsHint": {
+    "message": "Define default values for saving attachments. You can adjust these for each email."
+  },
   "saveTargetLibrary": {
-    "message": "Default Library"
+    "message": "Target Library"
   },
   "sameAsUpload": {
     "message": "-- Same as upload library --"
   },
   "saveFolder": {
-    "message": "Default Folder"
+    "message": "Target Folder"
   },
   "saveFolderHint": {
     "message": "Default folder when saving received attachments"

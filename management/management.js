@@ -152,7 +152,19 @@ function markConnected(config) {
   loginForm.style.display = "none";
   connectedInfo.style.display = "block";
   connectedServer.textContent = config.serverUrl;
-  connectedUser.textContent = config.username || "";
+
+  // Show display name and contact email if available
+  const name = config.displayName || "";
+  const contact = config.contactEmail || "";
+  const login = config.username || "";
+  if (name && contact && contact !== login) {
+    connectedUser.textContent = `${name} (${contact})`;
+  } else if (name && name !== login) {
+    connectedUser.textContent = `${name} (${login})`;
+  } else {
+    connectedUser.textContent = login;
+  }
+
   if (config.authMethod === "sso") {
     connectedMethod.textContent = browser.i18n.getMessage("connectedViaSSO") || "Connected via SSO";
   } else {
@@ -249,17 +261,39 @@ async function loadConfig() {
   if (config.apiToken) {
     // Already connected - try to load repos
     try {
+      // Fetch display name if not yet stored
+      if (!config.displayName) {
+        try {
+          const info = await sendMessage("getAccountInfo", {
+            serverUrl: config.serverUrl,
+            apiToken: config.apiToken,
+          });
+          config.displayName = info.name || "";
+          config.contactEmail = info.contact_email || "";
+          await browser.storage.local.set({ [accountId]: config });
+        } catch (e) {
+          console.error("Failed to fetch account info:", e);
+        }
+      }
+
       await loadRepos(config);
       enableSettingsTabs();
       markConnected(config);
 
-      // Pre-select saved repos and mark configured
-      if (config.repoId) {
+      // Restore or auto-select library
+      if (config.repoId && repoSelect.querySelector(`option[value="${config.repoId}"]`)) {
         repoSelect.value = config.repoId;
-        await browser.cloudFile.updateAccount(accountId, { configured: true });
+      } else if (repoSelect.options.length > 1) {
+        repoSelect.value = repoSelect.options[1].value;
+        autoSave(repoSelect);
       }
       if (config.saveRepoId) {
         saveRepoSelect.value = config.saveRepoId;
+      }
+
+      // Mark configured
+      if (repoSelect.value) {
+        await browser.cloudFile.updateAccount(accountId, { configured: true });
       }
 
       // Load folder pickers with saved paths
@@ -326,16 +360,49 @@ for (const input of [serverUrlInput, usernameInput, passwordInput, otpInput]) {
  * After successful authentication, load repos and switch to sharing tab.
  * @param {Object} config - Account config with serverUrl, apiToken, etc.
  */
-async function onConnected(config) {
+async function onConnected(newConfig) {
+  // Merge with existing config to preserve saved settings (repoId, paths, etc.)
+  const stored = await browser.storage.local.get(accountId);
+  const config = { ...(stored[accountId] || {}), ...newConfig };
+
+  // Fetch display name and contact email
+  try {
+    const info = await sendMessage("getAccountInfo", {
+      serverUrl: config.serverUrl,
+      apiToken: config.apiToken,
+    });
+    config.displayName = info.name || "";
+    config.contactEmail = info.contact_email || "";
+  } catch (e) {
+    console.error("Failed to fetch account info:", e);
+  }
+
   await browser.storage.local.set({ [accountId]: config });
   await loadRepos(config);
   enableSettingsTabs();
   markConnected(config);
-  switchTab("sharing");
-  if (repoSelect.value) {
-    navigateUploadFolder("/");
-    navigateSaveFolder("/");
+
+  // Restore or auto-select library
+  if (config.repoId && repoSelect.querySelector(`option[value="${config.repoId}"]`)) {
+    repoSelect.value = config.repoId;
+  } else if (repoSelect.options.length > 1) {
+    repoSelect.value = repoSelect.options[1].value;
   }
+  if (config.saveRepoId) {
+    saveRepoSelect.value = config.saveRepoId;
+  }
+
+  // Mark configured and save
+  if (repoSelect.value) {
+    await browser.cloudFile.updateAccount(accountId, { configured: true });
+    autoSave(repoSelect);
+  }
+
+  switchTab("sharing");
+  uploadCurrentPath = config.uploadPath || "/";
+  saveCurrentPath = config.savePath || "/";
+  navigateUploadFolder(uploadCurrentPath);
+  navigateSaveFolder(saveCurrentPath);
 }
 
 /**
