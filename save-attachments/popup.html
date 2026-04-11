@@ -60,7 +60,7 @@
     .att-name:focus {
       outline: none;
       border-color: var(--color-primary);
-      background: #fff;
+      background: var(--color-bg-surface);
     }
     .att-name.renamed {
       color: var(--color-primary);
@@ -71,7 +71,7 @@
       width: 14px;
       height: 14px;
       cursor: pointer;
-      color: #999;
+      color: var(--color-text-hint);
     }
     .att-reset:hover {
       color: var(--color-primary);
@@ -143,7 +143,7 @@
     }
   </style>
 </head>
-<body>
+<body class="popup">
   <h3 data-i18n="saveToSeafile">Save to Seafile</h3>
 
   <div id="accountSelector" class="form-group" style="display:none">

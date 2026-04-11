@@ -45,7 +45,7 @@
       border: none;
       border-bottom: 1px solid var(--color-border-light);
       border-radius: 0;
-      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 8px center;
+      background: var(--color-bg-surface) var(--search-icon) no-repeat 8px center;
       margin: 0;
     }
     .file-list {
@@ -132,7 +132,7 @@
       color: var(--color-text-icon);
     }
     .input-with-btn .gen-btn:hover {
-      background: #e8e8e8;
+      background: var(--color-bg-button-hover);
       color: var(--color-text);
     }
     .input-with-btn .gen-btn svg {
@@ -197,7 +197,7 @@
     }
   </style>
 </head>
-<body>
+<body class="popup">
   <h3 data-i18n="insertSeafileLink">Insert Seafile Link</h3>
 
   <div id="accountSelector" class="form-group" style="display:none">
