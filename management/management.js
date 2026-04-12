@@ -8,25 +8,6 @@
 
 const accountId = new URL(location.href).searchParams.get("accountId");
 
-/**
- * Escape a string for safe insertion into HTML.
- */
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-/**
- * Apply i18n translations to all elements with data-i18n attributes.
- */
-function applyI18n() {
-  for (const el of document.querySelectorAll("[data-i18n]")) {
-    const msg = browser.i18n.getMessage(el.getAttribute("data-i18n"));
-    if (msg) el.textContent = msg;
-  }
-}
-
 const loginForm = document.getElementById("loginForm");
 const connectedInfo = document.getElementById("connectedInfo");
 const connectedServer = document.getElementById("connectedServer");
@@ -724,6 +705,15 @@ disconnectBtn.addEventListener("click", async () => {
   const stored = await browser.storage.local.get(accountId);
   const config = stored[accountId] || {};
 
+  // Revoke token on server (best-effort)
+  if (config.apiToken) {
+    try {
+      await sendMessage("logout");
+    } catch (e) {
+      console.warn("Token revocation failed:", e);
+    }
+  }
+
   // Clear auth data but keep server URL
   const serverUrl = config.serverUrl || "";
   await browser.storage.local.set({ [accountId]: { serverUrl } });
@@ -783,12 +773,4 @@ window.addEventListener("blur", () => {
 
 // Initialize page
 applyI18n();
-// Translate data-empty attributes (CSS content: attr() can't use i18n)
-for (const el of document.querySelectorAll("[data-empty]")) {
-  const key = el.dataset.i18nEmpty;
-  if (key) {
-    const msg = browser.i18n.getMessage(key);
-    if (msg) el.dataset.empty = msg;
-  }
-}
 loadConfig();

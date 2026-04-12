@@ -14,6 +14,7 @@ Built by datamate GmbH. Apache 2.0 license.
 ```
 manifest.json              # WebExtension manifest (Manifest V3)
 background.js              # CloudFile event handlers + message router
+shared.js                  # Shared utility functions (escapeHtml, generatePassword, formatSize, applyI18n, etc.)
 shared.css                 # Shared styles + CSS custom properties (imported by all HTML files)
 api/seafile.js             # Seafile REST API client (SeafileAPI class)
 management/                # Account settings page (tabbed: Connection, FileLink, Share Links, Save Attachments)
@@ -36,11 +37,14 @@ dev/docker-compose.yml     # Local Seafile instance for development
 
 ```bash
 # Package as .xpi
-zip -r seafile-thunderbird.xpi manifest.json background.js shared.css api/ management/ \
+zip -r seafile-thunderbird.xpi manifest.json background.js shared.js shared.css api/ management/ \
   insert-link/ save-attachments/ icons/ _locales/ LICENSE PRIVACY.md
 
-# Load for development
-# Thunderbird → Add-ons & Themes → gear → Debug Add-ons → Load Temporary Add-on → select manifest.json
+# Install for development (build .xpi and install from file)
+# Add-ons & Themes → gear icon → Install Add-on From File → select .xpi
+# IMPORTANT: Do NOT use "Load Temporary Add-on" — the SSO login flow
+# does not work with temporary add-ons. Always package as .xpi and
+# install from file for testing.
 
 # Local Seafile for testing
 cd dev && cp .env.example .env && docker compose up -d
@@ -59,6 +63,7 @@ There is no linter, formatter, test suite, or CI pipeline.
 - **Security**: all user input escaped via `escapeHtml()` before DOM insertion — never use innerHTML with unescaped data
 - **Error handling**: try-catch with descriptive messages, auto re-authentication on 401 via `withReAuth()`
 - **No modules**: scripts are loaded via manifest `background.scripts` or HTML `<script>` tags, not ES modules
+- **Shared utilities**: common functions (`escapeHtml`, `generatePassword`, `formatSize`, `applyI18n`, `getHostLabel`) live in `shared.js` — do not duplicate them in other files
 
 ## Design & CSS
 
@@ -70,10 +75,13 @@ There is no linter, formatter, test suite, or CI pipeline.
 - `--color-primary`, `--color-danger` — action colors
 - `--color-text`, `--color-text-secondary`, `--color-text-hint`, `--color-text-disabled` — text hierarchy
 - `--color-border`, `--color-border-light`, `--color-border-lighter`, `--color-border-subtle` — border hierarchy
-- `--color-bg-input`, `--color-bg-button`, `--color-bg-highlight` — backgrounds
+- `--color-bg-surface`, `--color-bg-input`, `--color-bg-button`, `--color-bg-highlight` — backgrounds
 - `--color-success-*`, `--color-error-*`, `--color-info-*` — status colors
+- `--color-hint-bg`, `--color-hint-border` — hint/defaults boxes
 - `--font-size-base` (13px), `--font-size-small` (12px), `--font-size-hint` (11px) — typography
-- `--radius`, `--focus-shadow`, `--select-arrow` — misc
+- `--radius`, `--focus-shadow`, `--select-arrow`, `--search-icon` — misc
+
+**Dark mode**: fully supported via `@media (prefers-color-scheme: dark)` in `shared.css`. All color variables are overridden for dark mode. Popups use `body.popup` class for dark background; management page inherits from Thunderbird's container. Native form controls use `color-scheme: dark`.
 
 **Layout**: Flexbox only (no CSS Grid). `box-sizing: border-box` on all elements.
 
@@ -97,6 +105,7 @@ Popups communicate with background.js via `browser.runtime.sendMessage({action, 
 ### Authentication & Accounts
 | Action | Input | Returns |
 |--------|-------|---------|
+| `logout` | accountId | {success: true} |
 | `getToken` | serverUrl, username, password, otp? | {token} |
 | `startSSO` | serverUrl | {ssoToken} or {ssoUnavailable} |
 | `checkSSOStatus` | serverUrl, ssoToken | {status, username, apiToken} |
@@ -134,7 +143,7 @@ These are registered with Thunderbird's CloudFile API:
 
 All Seafile server communication goes through this class:
 
-- **Auth**: `getToken()`, `getServerInfo()`, `createSSOLink()`, `checkSSOStatus()`, `getAccountInfo()`
+- **Auth**: `getToken()`, `getServerInfo()`, `createSSOLink()`, `checkSSOStatus()`, `getAccountInfo()`, `logout()`
 - **Libraries**: `listRepos()`, `listDir()`, `dirExists()`, `createDir()`
 - **Files**: `uploadFile()` (with AbortSignal support), `renameFile()`, `deleteFile()`
 - **Share links**: `getUploadLink()`, `getShareLinks()`, `createShareLink()`, `deleteShareLink()`
@@ -146,6 +155,8 @@ Provides `getFileIcon(filename)` which returns an SVG string based on file exten
 ## Key Patterns
 
 - **Re-authentication**: `withReAuth(accountId, config, apiCall)` wraps API calls and retries on 401
+- **Token revocation**: on disconnect, `logout` action calls `POST /api2/logout-device/` to invalidate the token server-side (best-effort, wrapped in try/catch)
+- **SSO reconnect**: management page shows a dedicated reconnect UI when an SSO session expires, allowing re-auth without losing account settings
 - **Password generation**: uses `crypto.getRandomValues()` (WebCrypto API), never Math.random()
 - **Upload metadata**: stored per-file via `saveFileMetadata()` / `popFileMetadata()` for later deletion
 - **Folder picker**: reusable collapsible tree component loaded via `loadFolderPicker()`

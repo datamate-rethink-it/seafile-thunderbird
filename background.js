@@ -5,44 +5,8 @@
 
 const seafile = new SeafileAPI();
 
-/**
- * Escape a string for safe insertion into HTML (no DOM available in background).
- */
-function escapeHtml(str) {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-}
-
 // Track active uploads for abort support: fileId -> AbortController
 const activeUploads = new Map();
-
-/**
- * Generate a random password (crypto-safe).
- * @param {number} length - Password length (default 12)
- * @returns {string}
- */
-function generateRandomPassword(length = 12) {
-  const lower = "abcdefghijkmnpqrstuvwxyz";
-  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-  const digits = "23456789";
-  const special = "!@#$%&*?";
-  const all = lower + upper + digits + special;
-  const rng = new Uint32Array(length);
-  crypto.getRandomValues(rng);
-  const pick = (chars, i) => chars[rng[i] % chars.length];
-  // Ensure at least one of each type
-  const result = [pick(lower, 0), pick(upper, 1), pick(digits, 2), pick(special, 3)];
-  for (let i = result.length; i < length; i++) result.push(pick(all, i));
-  // Shuffle
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = rng[i] % (i + 1);
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  // Alphanumeric at start and end for double-click selection
-  const alnum = lower + upper + digits;
-  result[0] = pick(alnum, 0);
-  result[result.length - 1] = pick(alnum, length - 1);
-  return result.join("");
-}
 
 /**
  * Resolve the effective password for a FileLink upload based on config.
@@ -51,7 +15,7 @@ function generateRandomPassword(length = 12) {
  */
 function resolveFileLinkPassword(config) {
   const mode = config.fileLinkPasswordMode || "none";
-  if (mode === "random") return generateRandomPassword(config.fileLinkPasswordLength || 12);
+  if (mode === "random") return generatePassword(config.fileLinkPasswordLength || 12);
   if (mode === "custom") return config.fileLinkCustomPassword || "";
   return "";
 }
@@ -373,6 +337,11 @@ async function resolveAccount(accountId) {
 
 browser.runtime.onMessage.addListener(async (message) => {
   switch (message.action) {
+    case "logout": {
+      const config = await resolveAccount(message.accountId);
+      await seafile.logout(config.serverUrl, config.apiToken);
+      return { success: true };
+    }
     case "getToken": {
       const token = await seafile.getToken(
         message.serverUrl, message.username, message.password, message.otp

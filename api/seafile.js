@@ -347,6 +347,21 @@ class SeafileAPI {
     return await resp.json();
   }
 
+  /**
+   * Revoke the current API token (logout).
+   * @param {string} server
+   * @param {string} token
+   */
+  async logout(server, token) {
+    const resp = await fetch(`${server}/api2/logout-device/`, {
+      method: "POST",
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!resp.ok && resp.status !== 401) {
+      throw new Error(`Failed to logout (${resp.status})`);
+    }
+  }
+
   async dirExists(server, token, repoId, path) {
     const resp = await fetch(
       `${server}/api2/repos/${repoId}/dir/?p=${encodeURIComponent(path)}`,

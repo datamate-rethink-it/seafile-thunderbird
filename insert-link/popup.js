@@ -2,24 +2,6 @@
  * Popup for inserting Seafile file links into compose emails.
  */
 
-/**
- * Escape a string for safe insertion into HTML.
- */
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-/**
- * Generate a cryptographically secure random integer in [0, max).
- */
-function secureRandomInt(max) {
-  const array = new Uint32Array(1);
-  crypto.getRandomValues(array);
-  return array[0] % max;
-}
-
 const loadingEl = document.getElementById("loading");
 const notConfiguredEl = document.getElementById("notConfigured");
 const browseView = document.getElementById("browseView");
@@ -74,33 +56,6 @@ async function sendMessage(action, data = {}) {
 }
 
 /**
- * Format file size for display.
- */
-function formatSize(bytes) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-/**
- * Apply i18n translations.
- */
-function applyI18n() {
-  for (const el of document.querySelectorAll("[data-i18n]")) {
-    const msg = browser.i18n.getMessage(el.getAttribute("data-i18n"));
-    if (msg) el.textContent = msg;
-  }
-  for (const el of document.querySelectorAll("[data-i18n-empty]")) {
-    const msg = browser.i18n.getMessage(el.dataset.i18nEmpty);
-    if (msg) el.dataset.empty = msg;
-  }
-  for (const el of document.querySelectorAll("[data-i18n-placeholder]")) {
-    const msg = browser.i18n.getMessage(el.dataset.i18nPlaceholder);
-    if (msg) el.placeholder = msg;
-  }
-}
-
-/**
  * Show a status message.
  */
 function showStatus(message, type) {
@@ -121,13 +76,6 @@ function resolveSharePassword(config) {
   if (mode === "random") return generatePassword(config.sharePasswordLength || 12);
   if (mode === "custom") return config.shareCustomPassword || "";
   return "";
-}
-
-/**
- * Extract hostname from a URL for display.
- */
-function getHostLabel(url) {
-  try { return new URL(url).hostname; } catch { return url; }
 }
 
 /**
@@ -345,46 +293,6 @@ async function loadRepos() {
     repoSelectEl.value = defaultRepoId;
   }
   currentRepoId = repoSelectEl.value;
-}
-
-/**
- * Generate a random password (12 chars, mixed case + digits + special).
- */
-function generatePassword(length = 12) {
-  const lower = "abcdefghijkmnpqrstuvwxyz";
-  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-  const digits = "23456789";
-  const special = "!@#$%&*?";
-  const all = lower + upper + digits + special;
-
-  // Ensure at least one of each type
-  const required = [
-    lower[secureRandomInt(lower.length)],
-    upper[secureRandomInt(upper.length)],
-    digits[secureRandomInt(digits.length)],
-    special[secureRandomInt(special.length)],
-  ];
-  const rest = [];
-  for (let i = required.length; i < length; i++) {
-    rest.push(all[secureRandomInt(all.length)]);
-  }
-  // Combine and shuffle the middle part, keep alphanumeric at start and end
-  const middle = [...required, ...rest];
-  for (let i = middle.length - 1; i > 0; i--) {
-    const j = secureRandomInt(i + 1);
-    [middle[i], middle[j]] = [middle[j], middle[i]];
-  }
-  // Ensure first and last chars are alphanumeric (for double-click selection)
-  const alnum = lower + upper + digits;
-  middle[0] = alnum[secureRandomInt(alnum.length)];
-  middle[middle.length - 1] = alnum[secureRandomInt(alnum.length)];
-  // Make sure we still have at least one special char in the middle
-  const hasSpecial = middle.some(c => special.includes(c));
-  if (!hasSpecial) {
-    const pos = 1 + secureRandomInt(middle.length - 2);
-    middle[pos] = special[secureRandomInt(special.length)];
-  }
-  return middle.join("");
 }
 
 // --- Event handlers ---

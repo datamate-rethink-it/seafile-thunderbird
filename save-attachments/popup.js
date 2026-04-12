@@ -2,15 +2,6 @@
  * Popup for saving email attachments to Seafile.
  */
 
-/**
- * Escape a string for safe insertion into HTML.
- */
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
-}
-
 const loadingEl = document.getElementById("loading");
 const noAttachmentsEl = document.getElementById("noAttachments");
 const notConfiguredEl = document.getElementById("notConfigured");
@@ -46,41 +37,11 @@ async function sendMessage(action, data = {}) {
 }
 
 /**
- * Format file size for display.
- */
-function formatSize(bytes) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-/**
- * Apply i18n translations.
- */
-function applyI18n() {
-  for (const el of document.querySelectorAll("[data-i18n]")) {
-    const msg = browser.i18n.getMessage(el.getAttribute("data-i18n"));
-    if (msg) el.textContent = msg;
-  }
-  for (const el of document.querySelectorAll("[data-i18n-empty]")) {
-    const msg = browser.i18n.getMessage(el.dataset.i18nEmpty);
-    if (msg) el.dataset.empty = msg;
-  }
-}
-
-/**
  * Show a status message.
  */
 function showStatus(message, isError) {
   saveStatus.textContent = message;
   saveStatus.className = `status ${isError ? "error" : "success"}`;
-}
-
-/**
- * Extract hostname from a URL for display.
- */
-function getHostLabel(url) {
-  try { return new URL(url).hostname; } catch { return url; }
 }
 
 /**
