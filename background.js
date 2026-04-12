@@ -88,11 +88,8 @@ async function withReAuth(accountId, config, apiCall) {
  * @param {Object} metadata - { path, shareLinkToken }
  */
 async function saveFileMetadata(accountId, fileId, metadata) {
-  const key = `${accountId}_files`;
-  const stored = await browser.storage.local.get(key);
-  const files = stored[key] || {};
-  files[fileId] = metadata;
-  await browser.storage.local.set({ [key]: files });
+  const key = `${accountId}_file_${fileId}`;
+  await browser.storage.local.set({ [key]: metadata });
 }
 
 /**
@@ -102,13 +99,11 @@ async function saveFileMetadata(accountId, fileId, metadata) {
  * @returns {Promise<Object|null>}
  */
 async function popFileMetadata(accountId, fileId) {
-  const key = `${accountId}_files`;
+  const key = `${accountId}_file_${fileId}`;
   const stored = await browser.storage.local.get(key);
-  const files = stored[key] || {};
-  const metadata = files[fileId] || null;
+  const metadata = stored[key] || null;
   if (metadata) {
-    delete files[fileId];
-    await browser.storage.local.set({ [key]: files });
+    await browser.storage.local.remove(key);
   }
   return metadata;
 }
@@ -288,8 +283,10 @@ browser.cloudFile.onFileUploadAbort.addListener((account, fileId, tab) => {
  * Handle account deletion - clean up stored data.
  */
 browser.cloudFile.onAccountDeleted.addListener(async (accountId) => {
-  await browser.storage.local.remove(accountId);
-  await browser.storage.local.remove(`${accountId}_files`);
+  const all = await browser.storage.local.get(null);
+  const prefix = `${accountId}_file_`;
+  const keysToRemove = Object.keys(all).filter(k => k.startsWith(prefix));
+  await browser.storage.local.remove([accountId, ...keysToRemove]);
 });
 
 // --- Message Handler for Management Page and Save-Attachments Popup ---
