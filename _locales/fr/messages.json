@@ -235,5 +235,11 @@
   },
   "httpWarning": {
     "message": "Avertissement : Connexion en HTTP. Vos identifiants pourraient être transmis en clair."
+  },
+  "sessionExpired": {
+    "message": "Session expirée. Veuillez vous reconnecter."
+  },
+  "usePasswordInstead": {
+    "message": "Utiliser le mot de passe à la place"
   }
 }

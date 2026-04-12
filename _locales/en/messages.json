@@ -235,5 +235,11 @@
   },
   "httpWarning": {
     "message": "Warning: Connecting over HTTP. Your credentials may be transmitted in plaintext."
+  },
+  "sessionExpired": {
+    "message": "Session expired. Please reconnect."
+  },
+  "usePasswordInstead": {
+    "message": "Use password instead"
   }
 }

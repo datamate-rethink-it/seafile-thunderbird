@@ -235,5 +235,11 @@
   },
   "httpWarning": {
     "message": "Aviso: Conexão por HTTP. Suas credenciais podem ser transmitidas em texto simples."
+  },
+  "sessionExpired": {
+    "message": "Sessão expirada. Por favor, reconecte-se."
+  },
+  "usePasswordInstead": {
+    "message": "Usar senha em vez disso"
   }
 }

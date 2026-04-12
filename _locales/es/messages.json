@@ -235,5 +235,11 @@
   },
   "httpWarning": {
     "message": "Advertencia: Conexión por HTTP. Sus credenciales podrían transmitirse en texto plano."
+  },
+  "sessionExpired": {
+    "message": "Sesión expirada. Por favor, vuelva a conectarse."
+  },
+  "usePasswordInstead": {
+    "message": "Usar contraseña en su lugar"
   }
 }

@@ -235,5 +235,11 @@
   },
   "httpWarning": {
     "message": "Warnung: Verbindung über HTTP. Ihre Zugangsdaten könnten unverschlüsselt übertragen werden."
+  },
+  "sessionExpired": {
+    "message": "Sitzung abgelaufen. Bitte erneut verbinden."
+  },
+  "usePasswordInstead": {
+    "message": "Stattdessen mit Passwort anmelden"
   }
 }

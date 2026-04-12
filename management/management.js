@@ -58,6 +58,11 @@ const fileLinkCustomPasswordInput = document.getElementById("fileLinkCustomPassw
 const fileLinkExpireDaysInput = document.getElementById("fileLinkExpireDays");
 const ssoBtn = document.getElementById("ssoBtn");
 const ssoStatus = document.getElementById("ssoStatus");
+const ssoReconnect = document.getElementById("ssoReconnect");
+const ssoReconnectServer = document.getElementById("ssoReconnectServer");
+const ssoReconnectBtn = document.getElementById("ssoReconnectBtn");
+const ssoReconnectStatus = document.getElementById("ssoReconnectStatus");
+const ssoReconnectPollStatus = document.getElementById("ssoReconnectPollStatus");
 const uploadFolderPicker = document.getElementById("uploadFolderPicker");
 const saveFolderPicker = document.getElementById("saveFolderPicker");
 
@@ -318,8 +323,15 @@ async function loadConfig() {
       navigateUploadFolder(uploadCurrentPath);
       navigateSaveFolder(saveCurrentPath);
     } catch (e) {
-      // Token might be expired
-      showStatus(connectStatus, "Session expired. Please reconnect.", true);
+      // Token expired — show appropriate reconnect UI
+      if (config.authMethod === "sso") {
+        loginForm.style.display = "none";
+        ssoReconnect.style.display = "block";
+        ssoReconnectServer.textContent = config.serverUrl;
+        showStatus(ssoReconnectStatus, browser.i18n.getMessage("sessionExpired") || "Session expired. Please reconnect.", true);
+      } else {
+        showStatus(connectStatus, browser.i18n.getMessage("sessionExpired") || "Session expired. Please reconnect.", true);
+      }
     }
   }
 }
@@ -514,6 +526,76 @@ ssoBtn.addEventListener("click", async () => {
   } catch (e) {
     showStatus(ssoStatus, `SSO failed: ${e.message}`, true);
     ssoBtn.disabled = false;
+  }
+});
+
+/**
+ * Handle SSO reconnect button click (session expired with SSO).
+ */
+ssoReconnectBtn.addEventListener("click", async () => {
+  const stored = await browser.storage.local.get(accountId);
+  const config = stored[accountId];
+  if (!config || !config.serverUrl) return;
+
+  const serverUrl = config.serverUrl;
+  ssoReconnectBtn.disabled = true;
+  ssoReconnectPollStatus.className = "status";
+
+  try {
+    const result = await sendMessage("startSSO", { serverUrl });
+
+    if (result.ssoUnavailable) {
+      showStatus(ssoReconnectPollStatus, browser.i18n.getMessage("ssoUnavailable") || "SSO via local browser is not enabled on this server.", "info");
+      ssoReconnectBtn.disabled = false;
+      return;
+    }
+
+    showStatus(ssoReconnectPollStatus, browser.i18n.getMessage("ssoWaiting") || "Waiting for authentication in browser...", "info");
+
+    let elapsed = 0;
+    ssoPollingInterval = setInterval(async () => {
+      elapsed += 3;
+      if (elapsed > 300) {
+        clearInterval(ssoPollingInterval);
+        ssoPollingInterval = null;
+        showStatus(ssoReconnectPollStatus, browser.i18n.getMessage("ssoTimeout") || "SSO login timed out. Please try again.", true);
+        ssoReconnectBtn.disabled = false;
+        return;
+      }
+      try {
+        const status = await sendMessage("checkSSOStatus", { serverUrl, ssoToken: result.ssoToken });
+        if (status.status === "success" && status.apiToken) {
+          clearInterval(ssoPollingInterval);
+          ssoPollingInterval = null;
+          ssoReconnect.style.display = "none";
+          const newConfig = { serverUrl, username: status.username, apiToken: status.apiToken, authMethod: "sso" };
+          await onConnected(newConfig);
+        } else if (status.status === "error") {
+          clearInterval(ssoPollingInterval);
+          ssoPollingInterval = null;
+          showStatus(ssoReconnectPollStatus, browser.i18n.getMessage("ssoError") || "SSO login failed. Please try again.", true);
+          ssoReconnectBtn.disabled = false;
+        }
+      } catch (e) {
+        console.error("SSO reconnect poll error:", e);
+      }
+    }, 3000);
+  } catch (e) {
+    showStatus(ssoReconnectPollStatus, `SSO failed: ${e.message}`, true);
+    ssoReconnectBtn.disabled = false;
+  }
+});
+
+/**
+ * Switch from SSO reconnect view to full login form.
+ */
+document.getElementById("ssoSwitchLogin").addEventListener("click", (e) => {
+  e.preventDefault();
+  ssoReconnect.style.display = "none";
+  loginForm.style.display = "block";
+  if (ssoPollingInterval) {
+    clearInterval(ssoPollingInterval);
+    ssoPollingInterval = null;
   }
 });
 

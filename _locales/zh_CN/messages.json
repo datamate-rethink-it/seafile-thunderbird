@@ -235,5 +235,11 @@
   },
   "httpWarning": {
     "message": "警告：使用 HTTP 连接。您的凭据可能以明文传输。"
+  },
+  "sessionExpired": {
+    "message": "会话已过期，请重新连接。"
+  },
+  "usePasswordInstead": {
+    "message": "改用密码登录"
   }
 }
