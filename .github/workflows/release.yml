@@ -45,6 +45,22 @@ jobs:
           fi
           echo "All JSON files valid."
 
+      - name: Check for empty translations
+        run: |
+          ERRORS=0
+          for f in _locales/*/messages.json; do
+            EMPTY=$(jq -r 'to_entries[] | select(.value.message == "") | .key' "$f")
+            if [ -n "$EMPTY" ]; then
+              echo "::error::$f has empty translations: $(echo $EMPTY | tr '\n' ', ')"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+
+          if [ "$ERRORS" -gt 0 ]; then
+            exit 1
+          fi
+          echo "No empty translations found."
+
       - name: Check i18n key consistency
         run: |
           REFERENCE="_locales/en/messages.json"
@@ -163,7 +179,44 @@ jobs:
           echo "XPI_FILE=seafile-thunderbird-${VERSION}.xpi" >> "$GITHUB_ENV"
           echo "Built $XPI_FILE ($(du -h "seafile-thunderbird-${VERSION}.xpi" | cut -f1))"
 
+      - name: Verify .xpi contents
+        run: |
+          ERRORS=0
+
+          # Check for files that should NOT be in the xpi
+          UNWANTED=$(zipinfo -1 "$XPI_FILE" | grep -E '^\.|\.xpi$|\.git|\.env|credentials|\.key$|\.pem$' || true)
+          if [ -n "$UNWANTED" ]; then
+            echo "::error::Unexpected files in .xpi: $(echo $UNWANTED | tr '\n' ', ')"
+            ERRORS=$((ERRORS + 1))
+          fi
+
+          # Check that key files ARE in the xpi
+          for f in manifest.json background.js shared.js shared.css api/seafile.js; do
+            if ! zipinfo -1 "$XPI_FILE" | grep -q "^${f}$"; then
+              echo "::error::Missing from .xpi: $f"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+
+          if [ "$ERRORS" -gt 0 ]; then
+            exit 1
+          fi
+          echo "XPI contents verified."
+
+      - name: Generate checksum
+        run: |
+          SHA256=$(sha256sum "$XPI_FILE" | cut -d' ' -f1)
+          echo "SHA256=$SHA256" >> "$GITHUB_ENV"
+          echo "SHA256: $SHA256"
+
       - name: Upload .xpi to release
-        run: gh release upload "${GITHUB_REF#refs/tags/}" "$XPI_FILE" --clobber
+        run: |
+          gh release upload "${GITHUB_REF#refs/tags/}" "$XPI_FILE" --clobber
+          # Append checksum to release notes
+          EXISTING=$(gh release view "${GITHUB_REF#refs/tags/}" --json body -q .body)
+          gh release edit "${GITHUB_REF#refs/tags/}" --notes "${EXISTING}
+
+          ---
+          **SHA256:** \`${SHA256}\`"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
