@@ -241,5 +241,14 @@
   },
   "usePasswordInstead": {
     "message": "Use password instead"
+  },
+  "errorQuotaExceeded": {
+    "message": "Storage quota exceeded. Free up space on the Seafile server or contact your administrator."
+  },
+  "errorFileTooLarge": {
+    "message": "The file is too large to upload."
+  },
+  "errorNetworkError": {
+    "message": "Could not connect to Seafile server. Please check your network connection and server URL."
   }
 }

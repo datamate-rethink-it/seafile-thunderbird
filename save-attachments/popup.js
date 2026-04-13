@@ -232,6 +232,14 @@ saveBtn.addEventListener("click", async () => {
       cb.disabled = true;
     } catch (e) {
       statusEl.innerHTML = STATUS_ICONS.error;
+      const li = cb.closest("li");
+      let errEl = li.querySelector(".att-error");
+      if (!errEl) {
+        errEl = document.createElement("div");
+        errEl.className = "att-error";
+        li.appendChild(errEl);
+      }
+      errEl.textContent = e.message;
       errorCount++;
       console.error(`Failed to upload ${att.name}:`, e);
     }

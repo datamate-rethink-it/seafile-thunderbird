@@ -241,5 +241,14 @@
   },
   "usePasswordInstead": {
     "message": "Stattdessen mit Passwort anmelden"
+  },
+  "errorQuotaExceeded": {
+    "message": "Speicherkontingent überschritten. Bitte Speicherplatz auf dem Seafile-Server freigeben oder den Administrator kontaktieren."
+  },
+  "errorFileTooLarge": {
+    "message": "Die Datei ist zu groß zum Hochladen."
+  },
+  "errorNetworkError": {
+    "message": "Verbindung zum Seafile-Server fehlgeschlagen. Bitte Netzwerkverbindung und Server-URL prüfen."
   }
 }

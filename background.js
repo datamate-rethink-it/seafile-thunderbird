@@ -56,10 +56,9 @@ async function getAccountConfig(accountId) {
  * @returns {Promise<string>} New API token
  */
 async function reAuthenticate(accountId, config) {
-  const msg = config.authMethod === "sso"
-    ? "Session expired. Please reconnect via SSO in the Seafile account settings."
-    : "Session expired. Please reconnect in the Seafile account settings.";
-  throw new Error(msg);
+  throw new Error(
+    browser.i18n.getMessage("sessionExpired") || "Session expired. Please reconnect."
+  );
 }
 
 /**
@@ -194,8 +193,10 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab) => {
     if (abortController.signal.aborted) {
       return { aborted: true };
     }
-    showNotification(e.message);
-    return { error: true };
+    if (e instanceof TypeError) {
+      return { error: browser.i18n.getMessage("errorNetworkError") || "Could not connect to Seafile server." };
+    }
+    return { error: e.message };
   } finally {
     activeUploads.delete(fileInfo.id);
   }
@@ -408,29 +409,36 @@ browser.runtime.onMessage.addListener(async (message) => {
       return attachments.filter(a => a.contentType !== "text/x-moz-deleted");
     }
     case "uploadAttachment": {
-      const config = await resolveAccount(message.accountId);
-      const file = await browser.messages.getAttachmentFile(
-        message.messageId, message.partName
-      );
-      const repoId = message.repoId || config.repoId;
-      const targetDir = message.targetDir || config.uploadPath;
-      // Ensure target directory exists
-      const exists = await seafile.dirExists(
-        config.serverUrl, config.apiToken, repoId, targetDir
-      );
-      if (!exists) {
-        await seafile.createDir(
+      try {
+        const config = await resolveAccount(message.accountId);
+        const file = await browser.messages.getAttachmentFile(
+          message.messageId, message.partName
+        );
+        const repoId = message.repoId || config.repoId;
+        const targetDir = message.targetDir || config.uploadPath;
+        // Ensure target directory exists
+        const exists = await seafile.dirExists(
           config.serverUrl, config.apiToken, repoId, targetDir
         );
+        if (!exists) {
+          await seafile.createDir(
+            config.serverUrl, config.apiToken, repoId, targetDir
+          );
+        }
+        const uploadLink = await seafile.getUploadLink(
+          config.serverUrl, config.apiToken, repoId, targetDir
+        );
+        const replace = !!config.saveReplaceExisting;
+        await seafile.uploadFile(
+          uploadLink, config.apiToken, file, message.fileName, targetDir, null, replace
+        );
+        return { success: true };
+      } catch (e) {
+        if (e instanceof TypeError) {
+          throw new Error(browser.i18n.getMessage("errorNetworkError") || "Could not connect to Seafile server.");
+        }
+        throw e;
       }
-      const uploadLink = await seafile.getUploadLink(
-        config.serverUrl, config.apiToken, repoId, targetDir
-      );
-      const replace = !!config.saveReplaceExisting;
-      await seafile.uploadFile(
-        uploadLink, config.apiToken, file, message.fileName, targetDir, null, replace
-      );
-      return { success: true };
     }
     case "getAccountConfig": {
       if (message.accountId) {

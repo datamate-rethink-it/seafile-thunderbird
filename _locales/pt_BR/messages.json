@@ -241,5 +241,14 @@
   },
   "usePasswordInstead": {
     "message": "Usar senha em vez disso"
+  },
+  "errorQuotaExceeded": {
+    "message": "Cota de armazenamento excedida. Libere espaço no servidor Seafile ou entre em contato com o administrador."
+  },
+  "errorFileTooLarge": {
+    "message": "O arquivo é grande demais para ser enviado."
+  },
+  "errorNetworkError": {
+    "message": "Não foi possível conectar ao servidor Seafile. Verifique sua conexão de rede e a URL do servidor."
   }
 }
