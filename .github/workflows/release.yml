@@ -51,6 +51,7 @@ jobs:
           REF_KEYS=$(jq -r 'keys[]' "$REFERENCE" | sort)
           ERRORS=0
 
+          # Check all locale files have the same keys as English
           for f in _locales/*/messages.json; do
             [ "$f" = "$REFERENCE" ] && continue
             LANG_KEYS=$(jq -r 'keys[]' "$f" | sort)
@@ -66,6 +67,26 @@ jobs:
               echo "::warning::$f has extra keys: $(echo $EXTRA | tr '\n' ', ')"
             fi
           done
+
+          # Collect all i18n keys used in code
+          JS_KEYS=$({ grep -rohP 'getMessage\(\s*"\K[^"]+' *.js api/*.js management/*.js insert-link/*.js save-attachments/*.js; grep -ohP '\bi\(\s*"\K[^"]+' background.js; } 2>/dev/null | sort -u)
+          HTML_KEYS=$(grep -rohP 'data-i18n(?:-placeholder|-title|-empty)?="\K[^"]+' management/*.html insert-link/*.html save-attachments/*.html 2>/dev/null | sort -u)
+          # manifest.json __MSG_key__ references
+          MANIFEST_KEYS=$(grep -ohP '__MSG_\K[^_]+(?=__)' manifest.json | sort -u)
+          CODE_KEYS=$(echo -e "${JS_KEYS}\n${HTML_KEYS}\n${MANIFEST_KEYS}" | sort -u)
+
+          # Check for keys used in code but missing from en/messages.json
+          MISSING_FROM_LOCALE=$(comm -23 <(echo "$CODE_KEYS") <(echo "$REF_KEYS"))
+          if [ -n "$MISSING_FROM_LOCALE" ]; then
+            echo "::error::Keys used in code but missing from locale files: $(echo $MISSING_FROM_LOCALE | tr '\n' ', ')"
+            ERRORS=$((ERRORS + 1))
+          fi
+
+          # Check for keys in en/messages.json but unused in code
+          UNUSED=$(comm -13 <(echo "$CODE_KEYS") <(echo "$REF_KEYS"))
+          if [ -n "$UNUSED" ]; then
+            echo "::warning::Keys in locale files but unused in code: $(echo $UNUSED | tr '\n' ', ')"
+          fi
 
           if [ "$ERRORS" -gt 0 ]; then
             exit 1

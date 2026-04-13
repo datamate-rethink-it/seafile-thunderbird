@@ -58,7 +58,7 @@ function renderAttachments() {
     li.innerHTML = `
       <input type="checkbox" class="att-checkbox" data-part="${escapeHtml(att.partName)}" checked>
       <span class="att-name${att.customName !== att.name ? ' renamed' : ''}" contenteditable="true" data-part="${escapeHtml(att.partName)}" title="${escapeHtml(att.name)}">${escapeHtml(att.customName)}</span>
-      <span class="att-reset${att.customName !== att.name ? ' visible' : ''}" title="Reset to original name">${resetSvg}</span>
+      <span class="att-reset${att.customName !== att.name ? ' visible' : ''}" title="${escapeHtml(browser.i18n.getMessage("resetFileName") || "Reset to original name")}">${resetSvg}</span>
       <span class="att-size">${formatSize(att.size)}</span>
       <span class="att-status" data-part-status="${escapeHtml(att.partName)}"></span>
     `;

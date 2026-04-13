@@ -8,9 +8,6 @@
   "serviceName": {
     "message": "Seafile"
   },
-  "serverConnection": {
-    "message": "Conexão com o servidor"
-  },
   "serverUrl": {
     "message": "URL do servidor"
   },
@@ -53,9 +50,6 @@
   "connecting": {
     "message": "Conectando..."
   },
-  "connected": {
-    "message": "Conectado"
-  },
   "connectedAs": {
     "message": "Conectado como"
   },
@@ -68,9 +62,6 @@
   "disconnect": {
     "message": "Desconectar"
   },
-  "uploadSettings": {
-    "message": "Configurações de envio"
-  },
   "targetLibrary": {
     "message": "Biblioteca destino"
   },
@@ -82,9 +73,6 @@
   },
   "uploadFolder": {
     "message": "Pasta de envio"
-  },
-  "saveAttachmentSettings": {
-    "message": "Configurações de salvamento de anexos"
   },
   "sharingDefaultsHint": {
     "message": "Defina valores padrão para links de compartilhamento. Você pode ajustá-los para cada link."
@@ -100,12 +88,6 @@
   },
   "saveFolder": {
     "message": "Pasta destino"
-  },
-  "saveFolderHint": {
-    "message": "Pasta padrão ao salvar anexos recebidos"
-  },
-  "shareLinkOptions": {
-    "message": "Opções do link compartilhado"
   },
   "sharePassword": {
     "message": "Proteção por senha"
@@ -149,15 +131,6 @@
   "tabSaving": {
     "message": "Salvar anexos"
   },
-  "seafileAccount": {
-    "message": "Conta"
-  },
-  "save": {
-    "message": "Salvar"
-  },
-  "saved": {
-    "message": "Salvo"
-  },
   "insertSeafileLink": {
     "message": "Inserir link do Seafile"
   },
@@ -191,9 +164,6 @@
   "showPasswordInEmail": {
     "message": "Mostrar senha no e-mail (se definida)"
   },
-  "showPasswordInEmailHint": {
-    "message": "Padrão para novos links. Pode ser alterado por link."
-  },
   "skipLinkOptions": {
     "message": "Pular diálogo de opções (sempre aplicar esses padrões)"
   },
@@ -224,9 +194,6 @@
   "savePartialError": {
     "message": "Alguns arquivos não puderam ser enviados."
   },
-  "errorSelectLibrary": {
-    "message": "Por favor, selecione uma biblioteca destino."
-  },
   "errorNotConnected": {
     "message": "Conta Seafile não conectada. Configure sua conexão em Configurações → Redação → Anexos."
   },
@@ -253,5 +220,38 @@
   },
   "errorTooManyFiles": {
     "message": "O número de arquivos nesta biblioteca excede o limite do servidor."
+  },
+  "errorFillAllFields": {
+    "message": "Por favor, preencha todos os campos."
+  },
+  "generatePassword": {
+    "message": "Gerar senha"
+  },
+  "resetFileName": {
+    "message": "Redefinir para nome original"
+  },
+  "emailLinkedFile": {
+    "message": "Vinculei um arquivo a este e-mail:"
+  },
+  "emailSize": {
+    "message": "Tamanho:"
+  },
+  "emailLink": {
+    "message": "Link:"
+  },
+  "emailPassword": {
+    "message": "Senha:"
+  },
+  "emailPasswordProtected": {
+    "message": "Protegido por senha (a senha será enviada separadamente)"
+  },
+  "emailExpires": {
+    "message": "Expira:"
+  },
+  "emailExpiresInDays": {
+    "message": "Expira em $1 dias"
+  },
+  "emailLearnMore": {
+    "message": "Saiba mais sobre"
   }
 }

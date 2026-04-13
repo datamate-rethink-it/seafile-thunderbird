@@ -421,7 +421,7 @@ connectBtn.addEventListener("click", async () => {
   const otp = otpInput.value.trim();
 
   if (!serverUrl || !username || !password) {
-    showStatus(connectStatus, "Please fill in all fields.", true);
+    showStatus(connectStatus, browser.i18n.getMessage("errorFillAllFields") || "Please fill in all fields.", true);
     return;
   }
 

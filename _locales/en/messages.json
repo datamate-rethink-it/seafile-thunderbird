@@ -8,9 +8,6 @@
   "serviceName": {
     "message": "Seafile"
   },
-  "serverConnection": {
-    "message": "Server Connection"
-  },
   "serverUrl": {
     "message": "Server URL"
   },
@@ -53,9 +50,6 @@
   "connecting": {
     "message": "Connecting..."
   },
-  "connected": {
-    "message": "Connected"
-  },
   "connectedAs": {
     "message": "Connected as"
   },
@@ -68,9 +62,6 @@
   "disconnect": {
     "message": "Disconnect"
   },
-  "uploadSettings": {
-    "message": "Upload Settings"
-  },
   "targetLibrary": {
     "message": "Target Library"
   },
@@ -82,9 +73,6 @@
   },
   "uploadFolder": {
     "message": "Upload Folder"
-  },
-  "saveAttachmentSettings": {
-    "message": "Save Attachment Defaults"
   },
   "sharingDefaultsHint": {
     "message": "Define default values for share links. You can adjust these for each link."
@@ -100,12 +88,6 @@
   },
   "saveFolder": {
     "message": "Target Folder"
-  },
-  "saveFolderHint": {
-    "message": "Default folder when saving received attachments"
-  },
-  "shareLinkOptions": {
-    "message": "Share Link Options"
   },
   "sharePassword": {
     "message": "Password Protection"
@@ -149,15 +131,6 @@
   "tabSaving": {
     "message": "Save Attachments"
   },
-  "seafileAccount": {
-    "message": "Account"
-  },
-  "save": {
-    "message": "Save"
-  },
-  "saved": {
-    "message": "Saved"
-  },
   "insertSeafileLink": {
     "message": "Insert Seafile Link"
   },
@@ -191,9 +164,6 @@
   "showPasswordInEmail": {
     "message": "Show password in email (if set)"
   },
-  "showPasswordInEmailHint": {
-    "message": "Default for new links. Can be changed per link."
-  },
   "skipLinkOptions": {
     "message": "Skip options dialog (always apply these defaults)"
   },
@@ -224,9 +194,6 @@
   "savePartialError": {
     "message": "Some files failed to upload."
   },
-  "errorSelectLibrary": {
-    "message": "Please select a target library."
-  },
   "errorNotConnected": {
     "message": "Seafile account not connected. Please set up your connection in Settings → Composition → Attachments."
   },
@@ -253,5 +220,38 @@
   },
   "errorTooManyFiles": {
     "message": "The number of files in this library exceeds the server limit."
+  },
+  "errorFillAllFields": {
+    "message": "Please fill in all fields."
+  },
+  "generatePassword": {
+    "message": "Generate password"
+  },
+  "resetFileName": {
+    "message": "Reset to original name"
+  },
+  "emailLinkedFile": {
+    "message": "I've linked a file to this email:"
+  },
+  "emailSize": {
+    "message": "Size:"
+  },
+  "emailLink": {
+    "message": "Link:"
+  },
+  "emailPassword": {
+    "message": "Password:"
+  },
+  "emailPasswordProtected": {
+    "message": "Password protected (password will be sent separately)"
+  },
+  "emailExpires": {
+    "message": "Expires:"
+  },
+  "emailExpiresInDays": {
+    "message": "Expires in $1 days"
+  },
+  "emailLearnMore": {
+    "message": "Learn more about"
   }
 }

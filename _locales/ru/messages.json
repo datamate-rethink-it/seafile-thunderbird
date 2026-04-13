@@ -8,9 +8,6 @@
   "serviceName": {
     "message": "Seafile"
   },
-  "serverConnection": {
-    "message": "Подключение к серверу"
-  },
   "serverUrl": {
     "message": "URL сервера"
   },
@@ -53,9 +50,6 @@
   "connecting": {
     "message": "Подключение..."
   },
-  "connected": {
-    "message": "Подключено"
-  },
   "connectedAs": {
     "message": "Подключено как"
   },
@@ -68,9 +62,6 @@
   "disconnect": {
     "message": "Отключиться"
   },
-  "uploadSettings": {
-    "message": "Настройки загрузки"
-  },
   "targetLibrary": {
     "message": "Целевая библиотека"
   },
@@ -82,9 +73,6 @@
   },
   "uploadFolder": {
     "message": "Папка загрузки"
-  },
-  "saveAttachmentSettings": {
-    "message": "Настройки сохранения вложений"
   },
   "sharingDefaultsHint": {
     "message": "Задайте значения по умолчанию для ссылок. Их можно изменить для каждой ссылки."
@@ -100,12 +88,6 @@
   },
   "saveFolder": {
     "message": "Целевая папка"
-  },
-  "saveFolderHint": {
-    "message": "Папка по умолчанию при сохранении полученных вложений"
-  },
-  "shareLinkOptions": {
-    "message": "Параметры ссылки"
   },
   "sharePassword": {
     "message": "Защита паролем"
@@ -149,15 +131,6 @@
   "tabSaving": {
     "message": "Сохранение вложений"
   },
-  "seafileAccount": {
-    "message": "Аккаунт"
-  },
-  "save": {
-    "message": "Сохранить"
-  },
-  "saved": {
-    "message": "Сохранено"
-  },
   "insertSeafileLink": {
     "message": "Вставить ссылку Seafile"
   },
@@ -191,9 +164,6 @@
   "showPasswordInEmail": {
     "message": "Показать пароль в письме (если задан)"
   },
-  "showPasswordInEmailHint": {
-    "message": "Значение по умолчанию для новых ссылок. Можно изменить для каждой ссылки."
-  },
   "skipLinkOptions": {
     "message": "Пропустить диалог (всегда применять эти значения)"
   },
@@ -224,9 +194,6 @@
   "savePartialError": {
     "message": "Некоторые файлы не удалось загрузить."
   },
-  "errorSelectLibrary": {
-    "message": "Выберите целевую библиотеку."
-  },
   "errorNotConnected": {
     "message": "Учётная запись Seafile не подключена. Настройте подключение в Настройки → Составление → Вложения."
   },
@@ -253,5 +220,38 @@
   },
   "errorTooManyFiles": {
     "message": "Количество файлов в этой библиотеке превышает лимит сервера."
+  },
+  "errorFillAllFields": {
+    "message": "Пожалуйста, заполните все поля."
+  },
+  "generatePassword": {
+    "message": "Сгенерировать пароль"
+  },
+  "resetFileName": {
+    "message": "Сбросить к исходному имени"
+  },
+  "emailLinkedFile": {
+    "message": "К этому письму прикреплён файл:"
+  },
+  "emailSize": {
+    "message": "Размер:"
+  },
+  "emailLink": {
+    "message": "Ссылка:"
+  },
+  "emailPassword": {
+    "message": "Пароль:"
+  },
+  "emailPasswordProtected": {
+    "message": "Защищено паролем (пароль будет отправлен отдельно)"
+  },
+  "emailExpires": {
+    "message": "Истекает:"
+  },
+  "emailExpiresInDays": {
+    "message": "Истекает через $1 дн."
+  },
+  "emailLearnMore": {
+    "message": "Узнать больше о"
   }
 }

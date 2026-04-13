@@ -8,9 +8,6 @@
   "serviceName": {
     "message": "Seafile"
   },
-  "serverConnection": {
-    "message": "Serververbindung"
-  },
   "serverUrl": {
     "message": "Server-URL"
   },
@@ -53,9 +50,6 @@
   "connecting": {
     "message": "Verbinde..."
   },
-  "connected": {
-    "message": "Verbunden"
-  },
   "connectedAs": {
     "message": "Verbunden als"
   },
@@ -68,9 +62,6 @@
   "disconnect": {
     "message": "Trennen"
   },
-  "uploadSettings": {
-    "message": "Upload-Einstellungen"
-  },
   "targetLibrary": {
     "message": "Zielbibliothek"
   },
@@ -82,9 +73,6 @@
   },
   "uploadFolder": {
     "message": "Upload-Ordner"
-  },
-  "saveAttachmentSettings": {
-    "message": "Anhänge-Speichern-Standardwerte"
   },
   "sharingDefaultsHint": {
     "message": "Standardwerte für Freigabelinks. Diese können bei jedem Link angepasst werden."
@@ -100,12 +88,6 @@
   },
   "saveFolder": {
     "message": "Zielordner"
-  },
-  "saveFolderHint": {
-    "message": "Standard-Ordner beim Speichern empfangener Anhänge"
-  },
-  "shareLinkOptions": {
-    "message": "Freigabelink-Optionen"
   },
   "sharePassword": {
     "message": "Passwortschutz"
@@ -149,15 +131,6 @@
   "tabSaving": {
     "message": "Anhänge speichern"
   },
-  "seafileAccount": {
-    "message": "Konto"
-  },
-  "save": {
-    "message": "Speichern"
-  },
-  "saved": {
-    "message": "Gespeichert"
-  },
   "insertSeafileLink": {
     "message": "Seafile-Link einfügen"
   },
@@ -191,9 +164,6 @@
   "showPasswordInEmail": {
     "message": "Passwort in E-Mail anzeigen (falls gesetzt)"
   },
-  "showPasswordInEmailHint": {
-    "message": "Standardwert für neue Links. Kann pro Link geändert werden."
-  },
   "skipLinkOptions": {
     "message": "Optionsdialog überspringen (immer diese Standardwerte verwenden)"
   },
@@ -224,9 +194,6 @@
   "savePartialError": {
     "message": "Einige Dateien konnten nicht hochgeladen werden."
   },
-  "errorSelectLibrary": {
-    "message": "Bitte eine Zielbibliothek auswählen."
-  },
   "errorNotConnected": {
     "message": "Seafile-Konto nicht verbunden. Bitte unter Einstellungen → Verfassen → Anhänge konfigurieren."
   },
@@ -253,5 +220,38 @@
   },
   "errorTooManyFiles": {
     "message": "Die Anzahl der Dateien in dieser Bibliothek überschreitet das Serverlimit."
+  },
+  "errorFillAllFields": {
+    "message": "Bitte alle Felder ausfüllen."
+  },
+  "generatePassword": {
+    "message": "Passwort generieren"
+  },
+  "resetFileName": {
+    "message": "Auf Originalnamen zurücksetzen"
+  },
+  "emailLinkedFile": {
+    "message": "Ich habe eine Datei mit dieser E-Mail verknüpft:"
+  },
+  "emailSize": {
+    "message": "Größe:"
+  },
+  "emailLink": {
+    "message": "Link:"
+  },
+  "emailPassword": {
+    "message": "Passwort:"
+  },
+  "emailPasswordProtected": {
+    "message": "Passwortgeschützt (Passwort wird separat gesendet)"
+  },
+  "emailExpires": {
+    "message": "Ablauf:"
+  },
+  "emailExpiresInDays": {
+    "message": "Läuft ab in $1 Tagen"
+  },
+  "emailLearnMore": {
+    "message": "Mehr erfahren über"
   }
 }

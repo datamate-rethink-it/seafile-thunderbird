@@ -8,9 +8,6 @@
   "serviceName": {
     "message": "Seafile"
   },
-  "serverConnection": {
-    "message": "服务器连接"
-  },
   "serverUrl": {
     "message": "服务器 URL"
   },
@@ -53,9 +50,6 @@
   "connecting": {
     "message": "连接中..."
   },
-  "connected": {
-    "message": "已连接"
-  },
   "connectedAs": {
     "message": "已连接为"
   },
@@ -68,9 +62,6 @@
   "disconnect": {
     "message": "断开连接"
   },
-  "uploadSettings": {
-    "message": "上传设置"
-  },
   "targetLibrary": {
     "message": "目标资料库"
   },
@@ -82,9 +73,6 @@
   },
   "uploadFolder": {
     "message": "上传文件夹"
-  },
-  "saveAttachmentSettings": {
-    "message": "保存附件默认设置"
   },
   "sharingDefaultsHint": {
     "message": "定义共享链接的默认值。您可以在每个链接中调整这些设置。"
@@ -100,12 +88,6 @@
   },
   "saveFolder": {
     "message": "目标文件夹"
-  },
-  "saveFolderHint": {
-    "message": "保存收到的附件时使用的默认文件夹"
-  },
-  "shareLinkOptions": {
-    "message": "共享链接选项"
   },
   "sharePassword": {
     "message": "密码保护"
@@ -149,15 +131,6 @@
   "tabSaving": {
     "message": "保存附件"
   },
-  "seafileAccount": {
-    "message": "账户"
-  },
-  "save": {
-    "message": "保存"
-  },
-  "saved": {
-    "message": "已保存"
-  },
   "insertSeafileLink": {
     "message": "插入 Seafile 链接"
   },
@@ -191,9 +164,6 @@
   "showPasswordInEmail": {
     "message": "在邮件中显示密码（如已设置）"
   },
-  "showPasswordInEmailHint": {
-    "message": "新链接的默认值，可按链接单独修改。"
-  },
   "skipLinkOptions": {
     "message": "跳过选项对话框（始终使用这些默认值）"
   },
@@ -224,9 +194,6 @@
   "savePartialError": {
     "message": "部分文件上传失败。"
   },
-  "errorSelectLibrary": {
-    "message": "请选择一个目标资料库。"
-  },
   "errorNotConnected": {
     "message": "Seafile 账户未连接。请在 设置 → 编写 → 附件 中配置连接。"
   },
@@ -253,5 +220,38 @@
   },
   "errorTooManyFiles": {
     "message": "此资料库中的文件数量超出服务器限制。"
+  },
+  "errorFillAllFields": {
+    "message": "请填写所有字段。"
+  },
+  "generatePassword": {
+    "message": "生成密码"
+  },
+  "resetFileName": {
+    "message": "重置为原始名称"
+  },
+  "emailLinkedFile": {
+    "message": "我已将一个文件链接到此邮件："
+  },
+  "emailSize": {
+    "message": "大小："
+  },
+  "emailLink": {
+    "message": "链接："
+  },
+  "emailPassword": {
+    "message": "密码："
+  },
+  "emailPasswordProtected": {
+    "message": "已设置密码保护（密码将另行发送）"
+  },
+  "emailExpires": {
+    "message": "过期："
+  },
+  "emailExpiresInDays": {
+    "message": "将在 $1 天后过期"
+  },
+  "emailLearnMore": {
+    "message": "了解更多关于"
   }
 }
