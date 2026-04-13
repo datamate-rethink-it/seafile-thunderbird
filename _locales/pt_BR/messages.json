@@ -250,5 +250,8 @@
   },
   "errorNetworkError": {
     "message": "Não foi possível conectar ao servidor Seafile. Verifique sua conexão de rede e a URL do servidor."
+  },
+  "errorTooManyFiles": {
+    "message": "O número de arquivos nesta biblioteca excede o limite do servidor."
   }
 }

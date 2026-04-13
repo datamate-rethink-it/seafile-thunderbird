@@ -250,5 +250,8 @@
   },
   "errorNetworkError": {
     "message": "无法连接到 Seafile 服务器。请检查网络连接和服务器 URL。"
+  },
+  "errorTooManyFiles": {
+    "message": "此资料库中的文件数量超出服务器限制。"
   }
 }

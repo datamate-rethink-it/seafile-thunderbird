@@ -170,7 +170,19 @@ When viewing an email with attachments, click the **Save to Seafile** button in 
 
 ## Building
 
-To create an `.xpi` file for distribution:
+### Automated (recommended)
+
+Releases are built automatically via GitHub Actions. To create a new release:
+
+1. Bump the version in `manifest.json`
+2. Commit and push
+3. Tag with `git tag v<version>` and push with `git push --tags`
+4. Create a release on GitHub (`gh release create v<version> --title "v<version>"`)
+5. The workflow builds the `.xpi` and attaches it to the release
+
+The workflow validates before building: version must match the tag, all JSON files must be valid, all locale files must have consistent keys, and all files referenced in `manifest.json` must exist.
+
+### Manual
 
 ```bash
 zip -r seafile-thunderbird.xpi manifest.json background.js shared.js shared.css api/ management/ insert-link/ save-attachments/ icons/ _locales/ LICENSE PRIVACY.md
@@ -200,6 +212,8 @@ zip -r seafile-thunderbird.xpi manifest.json background.js shared.js shared.css 
 ├── _locales/                  # Translations (en, de, fr, zh_CN, es, ru, pt_BR)
 ├── docs/
 │   └── screenshots/           # Screenshots for README
+├── .github/
+│   └── workflows/release.yml  # CI: validate + build .xpi on tag push
 ├── dev/
 │   └── docker-compose.yml     # Local Seafile for development
 ├── PRIVACY.md                 # Privacy policy

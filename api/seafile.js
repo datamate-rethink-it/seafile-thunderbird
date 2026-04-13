@@ -5,7 +5,7 @@ class SeafileAPI {
 
   /**
    * Extract a user-friendly error message from a failed API response.
-   * Handles known Seafile status codes (443 = quota, 442 = file too large)
+   * Handles known Seafile status codes (442 = file too large, 443 = quota, 447 = too many files)
    * and tries to parse server error messages from the response body.
    * @param {number} status - HTTP status code
    * @param {string} text - Response body text
@@ -18,6 +18,9 @@ class SeafileAPI {
     }
     if (status === 442) {
       return browser.i18n.getMessage("errorFileTooLarge") || "File is too large.";
+    }
+    if (status === 447) {
+      return browser.i18n.getMessage("errorTooManyFiles") || "Too many files in this library.";
     }
     try {
       const json = JSON.parse(text);

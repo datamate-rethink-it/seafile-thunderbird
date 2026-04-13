@@ -24,6 +24,7 @@ icons/                     # PNG icons + file-icons.js (shared SVG icons for fil
 _locales/{en,de,fr,es,pt_BR,ru,zh_CN}/  # i18n translations (WebExtension format)
 docs/screenshots/          # Screenshots for README
 dev/docker-compose.yml     # Local Seafile instance for development
+.github/workflows/release.yml  # CI: validate + build .xpi on tag push
 ```
 
 ## Architecture
@@ -52,7 +53,19 @@ cd dev && cp .env.example .env && docker compose up -d
 # → http://127.0.0.1:8080
 ```
 
-There is no linter, formatter, test suite, or CI pipeline.
+There is no linter, formatter, or test suite.
+
+### CI: Release Workflow
+
+`.github/workflows/release.yml` runs on tag push (`v*`). It validates the build and uploads the `.xpi` to the GitHub release. Quality checks (all must pass before the .xpi is built):
+
+1. **Version match** — manifest.json version must match the git tag
+2. **JSON validation** — manifest.json and all messages.json must be valid JSON
+3. **i18n key consistency** — all locale files must have the same keys as `en/messages.json`
+4. **Manifest file references** — all files referenced in manifest.json must exist
+5. **No secrets** — no `.env`, credentials, or key files in the package
+
+Release process: bump version in `manifest.json`, commit, tag with `git tag v<version>`, push with `git push --tags`, create release on GitHub. The workflow builds and attaches the `.xpi` automatically.
 
 ## Code Conventions
 
@@ -166,7 +179,7 @@ If verification is not possible, explicitly state that the claim is unverified. 
 
 ## Key Patterns
 
-- **API error extraction**: `SeafileAPI._extractErrorMessage(status, text, fallback)` handles known Seafile status codes (443 = quota exceeded, 442 = file too large), parses server error messages from JSON responses (`error_msg`, `error`, `detail` fields), and falls back to `"fallback (status)"`. Use this in all SeafileAPI methods that throw on `!resp.ok`.
+- **API error extraction**: `SeafileAPI._extractErrorMessage(status, text, fallback)` handles known Seafile status codes (442 = file too large, 443 = quota exceeded, 447 = too many files in library), parses server error messages from JSON responses (`error_msg`, `error`, `detail` fields), and falls back to `"fallback (status)"`. Use this in all SeafileAPI methods that throw on `!resp.ok`.
 - **Re-authentication**: `withReAuth(accountId, config, apiCall)` wraps API calls and retries on 401
 - **Token revocation**: on disconnect, `logout` action calls `POST /api2/logout-device/` to invalidate the token server-side (best-effort, wrapped in try/catch)
 - **SSO reconnect**: management page shows a dedicated reconnect UI when an SSO session expires, allowing re-auth without losing account settings
