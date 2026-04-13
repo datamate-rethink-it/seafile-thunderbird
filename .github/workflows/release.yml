@@ -209,12 +209,21 @@ jobs:
           echo "SHA256=$SHA256" >> "$GITHUB_ENV"
           echo "SHA256: $SHA256"
 
-      - name: Upload .xpi to release
+      - name: Create release and upload .xpi
         run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "$XPI_FILE" --clobber
+          TAG="${GITHUB_REF#refs/tags/}"
+
+          # Create release if it doesn't exist yet
+          if ! gh release view "$TAG" > /dev/null 2>&1; then
+            gh release create "$TAG" --title "$TAG" --generate-notes
+          fi
+
+          # Upload .xpi
+          gh release upload "$TAG" "$XPI_FILE" --clobber
+
           # Append checksum to release notes
-          EXISTING=$(gh release view "${GITHUB_REF#refs/tags/}" --json body -q .body)
-          gh release edit "${GITHUB_REF#refs/tags/}" --notes "${EXISTING}
+          EXISTING=$(gh release view "$TAG" --json body -q .body)
+          gh release edit "$TAG" --notes "${EXISTING}
 
           ---
           **SHA256:** \`${SHA256}\`"
