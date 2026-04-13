@@ -61,13 +61,16 @@ There is no linter, formatter, or test suite.
 
 1. **Version match** — manifest.json version must match the git tag
 2. **JSON validation** — manifest.json and all messages.json must be valid JSON
-3. **i18n key consistency** — all locale files must have the same keys as `en/messages.json`; keys used in code but missing from locales cause an error; unused keys cause a warning
-4. **Manifest file references** — all files referenced in manifest.json must exist
-5. **No secrets** — no `.env`, credentials, or key files in the package
+3. **Empty translations** — no locale key may have an empty `message` value
+4. **i18n key consistency** — all locale files must have the same keys as `en/messages.json`; keys used in code but missing from locales cause an error; unused keys cause a warning
+5. **Manifest file references** — all files referenced in manifest.json must exist
+6. **No secrets** — no `.env`, credentials, or key files in the package
+7. **XPI verification** — after build, checks that key files are present and no unwanted files are included
+8. **SHA256 checksum** — generated and appended to release notes
 
 **Note on i18n detection**: the workflow detects `browser.i18n.getMessage("key")` calls in JS, `data-i18n` attributes in HTML, and `__MSG_key__` in manifest.json. The email template in `background.js` uses a local shorthand `i("key", fallback)` — the workflow has a specific grep for this pattern.
 
-Release process: bump version in `manifest.json`, commit, tag with `git tag v<version>`, push with `git push --tags`, create release on GitHub. The workflow builds and attaches the `.xpi` automatically.
+Release process: bump version in `manifest.json`, commit, tag with `git tag v<version>`, push with `git push --tags`. The workflow creates the GitHub release, builds and attaches the `.xpi`, and appends the SHA256 checksum automatically. You can also create the release manually before pushing the tag — the workflow detects existing releases.
 
 ## Code Conventions
 
