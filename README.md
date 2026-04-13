@@ -245,6 +245,25 @@ docker compose up -d
 
 The local Seafile instance will be available at `http://127.0.0.1:8080`.
 
+### Rebranding (White-Label)
+
+To create a branded version of this extension (e.g. "Speicherbox" instead of "Seafile"), use the rebranding script:
+
+```bash
+python3 dev/rebrand.py \
+  --name "Speicherbox" \
+  --url "https://www.speicherbox.ch" \
+  --id "speicherbox@speicherbox.ch" \
+  --placeholder-url "https://cloud.speicherbox.ch" \
+  --icons-dir path/to/icons/
+```
+
+This replaces all user-visible branding (extension name, locale strings, email template, notification title, service info, placeholder URL, extension ID) while keeping all code, API paths, and class names unchanged. The `--dry-run` flag shows what would be changed without modifying files.
+
+Custom icons should be placed in a directory with these files: `icon-16.png`, `icon-32.png`, `icon-64.png`, `seafile-logo.svg`.
+
+After rebranding, build the `.xpi` as described in the [Building](#building) section.
+
 ## Roadmap
 
 - [ ] Publish on [addons.thunderbird.net](https://addons.thunderbird.net)
