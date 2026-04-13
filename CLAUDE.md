@@ -61,7 +61,7 @@ There is no linter, formatter, test suite, or CI pipeline.
 - **Naming**: camelCase for functions/variables, PascalCase for classes, kebab-case for HTML element IDs
 - **JSDoc**: all functions have JSDoc comments with @param/@returns
 - **Security**: all user input escaped via `escapeHtml()` before DOM insertion — never use innerHTML with unescaped data
-- **Error handling**: try-catch with descriptive messages, auto re-authentication on 401 via `withReAuth()`
+- **Error handling**: try-catch with descriptive messages, auto re-authentication on 401 via `withReAuth()`. All API error responses in `SeafileAPI` must use `this._extractErrorMessage(status, text, fallback)` to extract server error messages — never throw raw status codes. Network errors (`TypeError` from `fetch`) must be caught and replaced with the `errorNetworkError` i18n message.
 - **No modules**: scripts are loaded via manifest `background.scripts` or HTML `<script>` tags, not ES modules
 - **Shared utilities**: common functions (`escapeHtml`, `generatePassword`, `formatSize`, `applyI18n`, `getHostLabel`) live in `shared.js` — do not duplicate them in other files
 
@@ -143,6 +143,7 @@ These are registered with Thunderbird's CloudFile API:
 
 All Seafile server communication goes through this class:
 
+- **Error handling**: `_extractErrorMessage(status, text, fallback)` — central helper for all API errors
 - **Auth**: `getToken()`, `getServerInfo()`, `createSSOLink()`, `checkSSOStatus()`, `getAccountInfo()`, `logout()`
 - **Libraries**: `listRepos()`, `listDir()`, `dirExists()`, `createDir()`
 - **Files**: `uploadFile()` (with AbortSignal support), `renameFile()`, `deleteFile()`
@@ -152,8 +153,19 @@ All Seafile server communication goes through this class:
 
 Provides `getFileIcon(filename)` which returns an SVG string based on file extension. Maps 50+ extensions to 10 icon types (file, text, image, spreadsheet, presentation, archive, audio, video, code, pdf). Also provides `STATUS_ICONS` (pending, success, error) for upload feedback.
 
+## External Behavior: Never Guess, Always Verify
+
+When reasoning about how **Seafile Server** or **Thunderbird** behaves (API responses, error codes, status codes, UI behavior, etc.), **never guess or assume**. Always verify by:
+
+1. **Reading the actual source code** (Seafile server repo, Thunderbird source, or WebExtension API docs)
+2. **Testing against a running instance** (e.g. the local dev container)
+3. **Checking official API documentation**
+
+If verification is not possible, explicitly state that the claim is unverified. Do not present assumptions as facts.
+
 ## Key Patterns
 
+- **API error extraction**: `SeafileAPI._extractErrorMessage(status, text, fallback)` handles known Seafile status codes (443 = quota exceeded, 442 = file too large), parses server error messages from JSON responses (`error_msg`, `error`, `detail` fields), and falls back to `"fallback (status)"`. Use this in all SeafileAPI methods that throw on `!resp.ok`.
 - **Re-authentication**: `withReAuth(accountId, config, apiCall)` wraps API calls and retries on 401
 - **Token revocation**: on disconnect, `logout` action calls `POST /api2/logout-device/` to invalidate the token server-side (best-effort, wrapped in try/catch)
 - **SSO reconnect**: management page shows a dedicated reconnect UI when an SSO session expires, allowing re-auth without losing account settings
