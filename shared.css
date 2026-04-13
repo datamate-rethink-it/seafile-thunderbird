@@ -276,6 +276,11 @@ button.danger:hover {
   display: block;
 }
 
+.folder-picker .folder-list.loading {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 .folder-picker .folder-list:empty::after {
   content: attr(data-empty);
   display: block;

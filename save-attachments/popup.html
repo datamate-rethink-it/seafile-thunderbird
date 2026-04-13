@@ -126,9 +126,64 @@
       color: var(--color-text-hint);
     }
 
-    /* Folder picker: extra bottom margin in popup */
-    .folder-picker {
+    /* Folder path display */
+    .current-path {
+      font-size: var(--font-size-small);
+      color: var(--color-text-secondary);
+      background: var(--color-bg-input);
+      padding: 5px 8px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
+
+    /* Folder browser box */
+    .folder-browser {
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
       margin-bottom: 12px;
+    }
+    .folder-browser .folder-filter {
+      width: 100%;
+      padding: 5px 8px 5px 28px;
+      font-size: var(--font-size-base);
+      border: none;
+      border-bottom: 1px solid var(--color-border-light);
+      border-radius: 0;
+      background: var(--color-bg-surface) var(--search-icon) no-repeat 8px center;
+      margin: 0;
+      box-sizing: border-box;
+      outline: none;
+      appearance: none;
+    }
+    .folder-browser .folder-filter:focus {
+      box-shadow: none;
+      border-bottom-color: var(--color-border-light);
+    }
+    .folder-browser .folder-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      height: 120px;
+      overflow-y: auto;
+      transition: opacity 0.1s ease;
+    }
+    .folder-browser .folder-list.loading {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+    .folder-browser .folder-list li {
+      padding: 4px 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--font-size-small);
+    }
+    .folder-browser .folder-list li:hover {
+      background: var(--color-bg-highlight);
     }
 
     /* Buttons & status */
@@ -162,13 +217,17 @@
   <div id="notConfigured" class="empty-msg" style="display:none" data-i18n="notConfigured">No Seafile account configured.</div>
 
   <div id="content" style="display:none">
-    <div class="form-group">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
       <label for="repoSelect" data-i18n="targetLibrary">Target Library</label>
+      <a href="#" id="resetDefaults" style="display:none;font-size:var(--font-size-hint);color:var(--color-text-hint);" data-i18n="resetToDefaults">Reset to defaults</a>
+    </div>
+    <div class="form-group" style="margin-top:0">
       <select id="repoSelect"></select>
     </div>
     <label data-i18n="targetFolder">Target folder</label>
-    <div class="folder-picker" id="folderPicker">
-      <div class="current-path" id="currentPath"><span class="path-text">/</span><span class="toggle-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="#999"/></svg></span></div>
+    <div class="current-path" id="currentPath"><span class="path-text">/</span></div>
+    <div class="folder-browser" id="folderPicker">
+      <input type="text" id="folderFilter" class="folder-filter" data-i18n-placeholder="filterFiles" placeholder="Filter by name...">
       <ul class="folder-list" id="folderList" data-empty="No subfolders" data-i18n-empty="noSubfolders"></ul>
     </div>
 

@@ -42,7 +42,8 @@ let existingLink = null;
 
 const fileFilterInput = document.getElementById("fileFilter");
 const LAST_ACCOUNT_KEY = "lastAccountId_insert";
-const FILE_FILTER_THRESHOLD = 8;
+const LAST_REPO_KEY = "lastInsertRepoId";
+const LAST_PATH_KEY = "lastInsertPath";
 
 /**
  * Send a message to the background script.
@@ -82,6 +83,7 @@ function resolveSharePassword(config) {
  * Show the browse view.
  */
 function showBrowseView() {
+  document.body.style.minHeight = "";
   detailView.classList.remove("active");
   browseView.style.display = "block";
   clearStatus();
@@ -110,6 +112,9 @@ async function showDetailView(file, filePath) {
     showPasswordInEmailInput.checked = accountConfig.showPasswordInEmail !== false;
     updatePasswordCheckboxVisibility();
   }
+
+  // Lock body height to prevent popup resize flicker
+  document.body.style.minHeight = `${document.body.offsetHeight}px`;
 
   // Switch views
   browseView.style.display = "none";
@@ -195,6 +200,9 @@ async function navigateToFolder(path) {
   currentPathEl.textContent = path;
   fileFilterInput.value = "";
 
+  // Dim the list while loading
+  fileListEl.classList.add("loading");
+
   try {
     const entries = await sendMessage("listDir", {
       path,
@@ -203,7 +211,6 @@ async function navigateToFolder(path) {
       accountId: currentAccountId,
     });
 
-    // Build new list content before replacing (avoids height flicker)
     const fragment = document.createDocumentFragment();
 
     // Parent directory link
@@ -246,15 +253,13 @@ async function navigateToFolder(path) {
       fragment.appendChild(li);
     }
 
-    // Replace list content in one operation
-    fileListEl.innerHTML = "";
-    fileListEl.appendChild(fragment);
-
-    // Show/hide filter input
-    fileFilterInput.style.display = entries.length > FILE_FILTER_THRESHOLD ? "block" : "none";
+    fileListEl.replaceChildren(fragment);
+    await browser.storage.local.set({ [LAST_PATH_KEY]: currentPath });
   } catch (e) {
     console.error("Failed to list directory:", e);
     showStatus(`Error: ${e.message}`, "error");
+  } finally {
+    fileListEl.classList.remove("loading");
   }
 }
 
@@ -304,16 +309,22 @@ generatePasswordBtn.addEventListener("click", () => {
 
 linkPasswordInput.addEventListener("input", updatePasswordCheckboxVisibility);
 
+const passwordHint = document.getElementById("passwordHint");
+
 function updatePasswordCheckboxVisibility() {
-  showPasswordLabel.style.display = linkPasswordInput.value.trim() ? "flex" : "none";
+  const hasPassword = !!linkPasswordInput.value.trim();
+  showPasswordLabel.style.display = hasPassword ? "flex" : "none";
+  passwordHint.style.display = hasPassword ? "block" : "none";
 }
 
 repoSelectEl.addEventListener("change", () => {
   currentRepoId = repoSelectEl.value;
+  browser.storage.local.set({ [LAST_REPO_KEY]: currentRepoId });
   navigateToFolder("/");
 });
 
 backBtn.addEventListener("click", showBrowseView);
+
 
 insertBtn.addEventListener("click", () => {
   const password = linkPasswordInput.value.trim();
@@ -365,7 +376,18 @@ async function loadForAccount(accountId) {
   }
 
   await loadRepos();
-  await navigateToFolder("/");
+
+  // Use last selection if available, otherwise defaults
+  const stored = await browser.storage.local.get([LAST_REPO_KEY, LAST_PATH_KEY]);
+  const lastRepoId = stored[LAST_REPO_KEY];
+  const lastPath = stored[LAST_PATH_KEY];
+
+  if (lastRepoId && repoSelectEl.querySelector(`option[value="${lastRepoId}"]`)) {
+    repoSelectEl.value = lastRepoId;
+    currentRepoId = lastRepoId;
+  }
+
+  await navigateToFolder(lastPath || "/");
 }
 
 /**
@@ -411,6 +433,7 @@ async function init() {
 
     await loadForAccount(selectedAccountId);
     await browser.storage.local.set({ [LAST_ACCOUNT_KEY]: selectedAccountId });
+    fileFilterInput.focus();
   } catch (e) {
     loadingEl.style.display = "none";
     showStatus(`Error: ${e.message}`, "error");

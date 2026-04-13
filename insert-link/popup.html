@@ -7,7 +7,6 @@
     body {
       padding: 12px;
       width: 380px;
-      min-height: 100px;
     }
     h3 {
       margin-bottom: 10px;
@@ -47,14 +46,23 @@
       border-radius: 0;
       background: var(--color-bg-surface) var(--search-icon) no-repeat 8px center;
       margin: 0;
+      outline: none;
+    }
+    .file-browser #fileFilter:focus {
+      box-shadow: none;
+      border-bottom-color: var(--color-border-light);
     }
     .file-list {
       list-style: none;
       padding: 0;
       margin: 0;
-      min-height: 120px;
-      max-height: 250px;
+      height: 250px;
       overflow-y: auto;
+      transition: opacity 0.1s ease;
+    }
+    .file-list.loading {
+      opacity: 0.3;
+      pointer-events: none;
     }
     .file-list:empty::after {
       content: attr(data-empty);
@@ -216,7 +224,7 @@
     <label data-i18n="targetFolder">Target folder</label>
     <div class="current-path" id="currentPath">/</div>
     <div class="file-browser">
-      <input type="text" id="fileFilter" style="display:none" data-i18n-placeholder="filterFiles" placeholder="Filter files by name...">
+      <input type="text" id="fileFilter" data-i18n-placeholder="filterFiles" placeholder="Filter by name...">
       <ul class="file-list" id="fileList" data-empty="Empty folder" data-i18n-empty="emptyFolder"></ul>
     </div>
   </div>
@@ -253,6 +261,7 @@
           <input type="checkbox" id="showPasswordInEmail">
           <span data-i18n="showPasswordInEmail">Show password in email</span>
         </label>
+        <span class="hint" id="passwordHint" style="display:none" data-i18n="passwordShareHint">If unchecked, share the password separately with the recipient.</span>
       </div>
       <div class="form-group">
         <label for="linkExpireDays" data-i18n="shareExpireDays">Expiration (days)</label>

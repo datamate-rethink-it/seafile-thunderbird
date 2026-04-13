@@ -24,6 +24,9 @@ let accountConfig = null;
 let currentAccountId = null;
 
 const LAST_ACCOUNT_KEY = "lastAccountId_save";
+const LAST_REPO_KEY = "lastSaveRepoId";
+const LAST_PATH_KEY = "lastSavePath";
+const resetDefaultsEl = document.getElementById("resetDefaults");
 
 /**
  * Send a message to the background script.
@@ -47,10 +50,29 @@ function showStatus(message, isError) {
 /**
  * Render the attachment list.
  */
+/**
+ * Generate a fallback filename for attachments without a name.
+ * @param {Object} att - Attachment object with contentType and partName
+ * @returns {string} Fallback filename
+ */
+function fallbackFileName(att) {
+  const extMap = {
+    "text/plain": ".txt", "text/html": ".html", "text/csv": ".csv",
+    "image/png": ".png", "image/jpeg": ".jpg", "image/gif": ".gif", "image/webp": ".webp",
+    "application/pdf": ".pdf", "application/zip": ".zip",
+    "application/octet-stream": ".bin",
+  };
+  const ext = extMap[att.contentType] || "";
+  return `attachment-${att.partName.replace(/\./g, "-")}${ext}`;
+}
+
 function renderAttachments() {
   attachmentListEl.innerHTML = "";
   for (const att of attachments) {
-    // Store custom name for rename support
+    // Generate fallback name for attachments without a filename
+    if (!att.name || att.name.trim() === "") {
+      att.name = fallbackFileName(att);
+    }
     if (!att.customName) att.customName = att.name;
 
     const li = document.createElement("li");
@@ -147,18 +169,22 @@ async function loadRepos() {
 async function navigateToFolder(path) {
   currentPath = path;
   currentPathEl.querySelector(".path-text").textContent = path;
+  folderFilterInput.value = "";
 
-  folderListEl.innerHTML = "";
+  // Dim the list while loading
+  folderListEl.classList.add("loading");
+
   try {
     const dirs = await sendMessage("listDir", { path, repoId: currentRepoId, accountId: currentAccountId });
 
-    // Add parent directory link if not at root
+    const fragment = document.createDocumentFragment();
+
     if (path !== "/") {
       const parentLi = document.createElement("li");
       const parentPath = path.substring(0, path.lastIndexOf("/")) || "/";
       parentLi.innerHTML = `<span class="folder-icon">${FILE_ICONS.folderUp}</span> ..`;
       parentLi.addEventListener("click", () => navigateToFolder(parentPath));
-      folderListEl.appendChild(parentLi);
+      fragment.appendChild(parentLi);
     }
 
     for (const dir of dirs) {
@@ -166,10 +192,17 @@ async function navigateToFolder(path) {
       const dirPath = path === "/" ? `/${dir.name}` : `${path}/${dir.name}`;
       li.innerHTML = `<span class="folder-icon">${FILE_ICONS.folder}</span> ${escapeHtml(dir.name)}`;
       li.addEventListener("click", () => navigateToFolder(dirPath));
-      folderListEl.appendChild(li);
+      fragment.appendChild(li);
     }
+
+    folderListEl.replaceChildren(fragment);
+    // Remember last used path
+    await browser.storage.local.set({ [LAST_PATH_KEY]: currentPath });
+    updateResetLink();
   } catch (e) {
     console.error("Failed to list directory:", e);
+  } finally {
+    folderListEl.classList.remove("loading");
   }
 }
 
@@ -178,18 +211,41 @@ async function navigateToFolder(path) {
  */
 repoSelectEl.addEventListener("change", () => {
   currentRepoId = repoSelectEl.value;
+  browser.storage.local.set({ [LAST_REPO_KEY]: currentRepoId });
   navigateToFolder("/");
 });
 
-// Folder picker toggle + close on outside click
 const folderPicker = document.getElementById("folderPicker");
-currentPathEl.addEventListener("click", () => {
-  folderPicker.classList.toggle("open");
-});
-document.addEventListener("mousedown", (e) => {
-  if (!folderPicker.contains(e.target)) {
-    folderPicker.classList.remove("open");
+const folderFilterInput = document.getElementById("folderFilter");
+
+/**
+ * Filter the folder list by name.
+ */
+folderFilterInput.addEventListener("input", () => {
+  const query = folderFilterInput.value.toLowerCase().trim();
+  for (const li of folderListEl.children) {
+    const text = li.textContent.trim().toLowerCase();
+    if (text === "..") {
+      li.style.display = "";
+      continue;
+    }
+    li.style.display = text.includes(query) ? "" : "none";
   }
+});
+
+/**
+ * Reset to configured defaults.
+ */
+resetDefaultsEl.addEventListener("click", async (e) => {
+  e.preventDefault();
+  const defaultRepoId = accountConfig.saveRepoId || accountConfig.repoId;
+  const defaultPath = accountConfig.savePath || "/";
+  if (defaultRepoId) {
+    repoSelectEl.value = defaultRepoId;
+    currentRepoId = defaultRepoId;
+  }
+  await browser.storage.local.remove([LAST_REPO_KEY, LAST_PATH_KEY]);
+  await navigateToFolder(defaultPath);
 });
 
 /**
@@ -220,10 +276,14 @@ saveBtn.addEventListener("click", async () => {
     statusEl.innerHTML = STATUS_ICONS.pending;
 
     try {
+      const fileName = (att.customName || att.name || "").trim();
+      if (!fileName || fileName === ".") {
+        throw new Error("Invalid filename");
+      }
       await sendMessage("uploadAttachment", {
         messageId,
         partName,
-        fileName: att.customName || att.name,
+        fileName,
         targetDir: currentPath,
         repoId: currentRepoId,
         accountId: currentAccountId,
@@ -259,6 +319,16 @@ saveBtn.addEventListener("click", async () => {
 /**
  * Load data for a specific account.
  */
+/**
+ * Check if current selection differs from defaults and show/hide reset link.
+ */
+function updateResetLink() {
+  const defaultRepoId = accountConfig.saveRepoId || accountConfig.repoId;
+  const defaultPath = accountConfig.savePath || "/";
+  const differs = currentRepoId !== defaultRepoId || currentPath !== defaultPath;
+  resetDefaultsEl.style.display = differs ? "inline" : "none";
+}
+
 async function loadForAccount(accountId) {
   currentAccountId = accountId;
   accountConfig = await sendMessage("getAccountConfig", { accountId });
@@ -268,9 +338,19 @@ async function loadForAccount(accountId) {
     return;
   }
 
-  // Load libraries and navigate to default path
   await loadRepos();
-  currentPath = accountConfig.savePath || "/";
+
+  // Use last selection if available, otherwise defaults
+  const stored = await browser.storage.local.get([LAST_REPO_KEY, LAST_PATH_KEY]);
+  const lastRepoId = stored[LAST_REPO_KEY];
+  const lastPath = stored[LAST_PATH_KEY];
+
+  if (lastRepoId && repoSelectEl.querySelector(`option[value="${lastRepoId}"]`)) {
+    repoSelectEl.value = lastRepoId;
+    currentRepoId = lastRepoId;
+  }
+
+  currentPath = lastPath || accountConfig.savePath || "/";
   await navigateToFolder(currentPath);
 }
 
@@ -345,6 +425,7 @@ async function init() {
     // Load account data
     await loadForAccount(selectedAccountId);
     await browser.storage.local.set({ [LAST_ACCOUNT_KEY]: selectedAccountId });
+    folderFilterInput.focus();
   } catch (e) {
     loadingEl.style.display = "none";
     showStatus(`Error: ${e.message}`, true);
