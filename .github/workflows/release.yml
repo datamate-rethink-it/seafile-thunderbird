@@ -215,17 +215,22 @@ jobs:
 
           # Create release if it doesn't exist yet
           if ! gh release view "$TAG" > /dev/null 2>&1; then
-            gh release create "$TAG" --title "$TAG" --generate-notes
+            gh release create "$TAG" --title "$TAG" --generate-notes --latest
           fi
+
+          # Ensure release is not a draft
+          gh release edit "$TAG" --draft=false
 
           # Upload .xpi
           gh release upload "$TAG" "$XPI_FILE" --clobber
 
-          # Append checksum to release notes
+          # Append checksum (only if not already present)
           EXISTING=$(gh release view "$TAG" --json body -q .body)
-          gh release edit "$TAG" --notes "${EXISTING}
+          if ! echo "$EXISTING" | grep -q "$SHA256"; then
+            gh release edit "$TAG" --notes "${EXISTING}
 
           ---
           **SHA256:** \`${SHA256}\`"
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
