@@ -22,6 +22,7 @@ insert-link/               # Compose toolbar popup: browse Seafile files, insert
 save-attachments/          # Message display toolbar popup: save received attachments to Seafile
 icons/                     # PNG icons + file-icons.js (shared SVG icons for file types + status)
 _locales/{en,de,fr,es,pt_BR,ru,zh_CN}/  # i18n translations (WebExtension format)
+docs/screenshots/          # Screenshots for README
 dev/docker-compose.yml     # Local Seafile instance for development
 ```
 

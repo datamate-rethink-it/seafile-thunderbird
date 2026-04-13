@@ -173,7 +173,7 @@ When viewing an email with attachments, click the **Save to Seafile** button in 
 To create an `.xpi` file for distribution:
 
 ```bash
-zip -r seafile-thunderbird.xpi manifest.json background.js shared.css api/ management/ insert-link/ save-attachments/ icons/ _locales/ LICENSE PRIVACY.md
+zip -r seafile-thunderbird.xpi manifest.json background.js shared.js shared.css api/ management/ insert-link/ save-attachments/ icons/ _locales/ LICENSE PRIVACY.md
 ```
 
 ## Project Structure
@@ -181,6 +181,7 @@ zip -r seafile-thunderbird.xpi manifest.json background.js shared.css api/ manag
 ```
 ├── manifest.json              # WebExtension manifest (Manifest V3)
 ├── background.js              # CloudFile event handlers + message router
+├── shared.js                  # Shared utility functions (escapeHtml, generatePassword, etc.)
 ├── shared.css                 # Shared styles + CSS custom properties
 ├── api/
 │   └── seafile.js             # Seafile API client
@@ -197,6 +198,8 @@ zip -r seafile-thunderbird.xpi manifest.json background.js shared.css api/ manag
 │   ├── file-icons.js          # Shared SVG file type + status icons
 │   └── *.png, *.svg           # Seafile logo icons
 ├── _locales/                  # Translations (en, de, fr, zh_CN, es, ru, pt_BR)
+├── docs/
+│   └── screenshots/           # Screenshots for README
 ├── dev/
 │   └── docker-compose.yml     # Local Seafile for development
 ├── PRIVACY.md                 # Privacy policy
