@@ -138,7 +138,7 @@
     "message": "Leerer Ordner"
   },
   "filterFiles": {
-    "message": "Dateien nach Name filtern..."
+    "message": "Nach Name filtern..."
   },
   "noSubfolders": {
     "message": "Keine Unterordner"
@@ -162,7 +162,7 @@
     "message": "Link eingefügt!"
   },
   "showPasswordInEmail": {
-    "message": "Passwort in E-Mail anzeigen (falls gesetzt)"
+    "message": "Passwort in E-Mail anzeigen"
   },
   "skipLinkOptions": {
     "message": "Optionsdialog überspringen (immer diese Standardwerte verwenden)"
@@ -253,5 +253,11 @@
   },
   "emailLearnMore": {
     "message": "Mehr erfahren über"
+  },
+  "passwordShareHint": {
+    "message": "Falls deaktiviert, muss das Passwort dem Empfänger separat mitgeteilt werden."
+  },
+  "resetToDefaults": {
+    "message": "Auf Standard zurücksetzen"
   }
 }

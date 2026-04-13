@@ -162,7 +162,7 @@
     "message": "Lien inséré !"
   },
   "showPasswordInEmail": {
-    "message": "Afficher le mot de passe dans l'e-mail (si défini)"
+    "message": "Afficher le mot de passe dans l'e-mail"
   },
   "skipLinkOptions": {
     "message": "Ignorer le dialogue d'options (toujours appliquer ces paramètres)"
@@ -253,5 +253,11 @@
   },
   "emailLearnMore": {
     "message": "En savoir plus sur"
+  },
+  "passwordShareHint": {
+    "message": "Si décoché, partagez le mot de passe séparément avec le destinataire."
+  },
+  "resetToDefaults": {
+    "message": "Réinitialiser"
   }
 }

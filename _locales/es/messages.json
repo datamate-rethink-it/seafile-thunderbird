@@ -162,7 +162,7 @@
     "message": "¡Enlace insertado!"
   },
   "showPasswordInEmail": {
-    "message": "Mostrar contraseña en el correo (si se establece)"
+    "message": "Mostrar contraseña en el correo"
   },
   "skipLinkOptions": {
     "message": "Omitir diálogo de opciones (usar siempre estos valores)"
@@ -253,5 +253,11 @@
   },
   "emailLearnMore": {
     "message": "Más información sobre"
+  },
+  "passwordShareHint": {
+    "message": "Si no se marca, comparta la contraseña por separado con el destinatario."
+  },
+  "resetToDefaults": {
+    "message": "Restablecer valores"
   }
 }

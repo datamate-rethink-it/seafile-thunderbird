@@ -138,7 +138,7 @@
     "message": "空文件夹"
   },
   "filterFiles": {
-    "message": "按名称筛选文件..."
+    "message": "按名称筛选..."
   },
   "noSubfolders": {
     "message": "没有子文件夹"
@@ -162,7 +162,7 @@
     "message": "链接已插入！"
   },
   "showPasswordInEmail": {
-    "message": "在邮件中显示密码（如已设置）"
+    "message": "在邮件中显示密码"
   },
   "skipLinkOptions": {
     "message": "跳过选项对话框（始终使用这些默认值）"
@@ -253,5 +253,11 @@
   },
   "emailLearnMore": {
     "message": "了解更多关于"
+  },
+  "passwordShareHint": {
+    "message": "如未勾选，请另行将密码告知收件人。"
+  },
+  "resetToDefaults": {
+    "message": "重置为默认"
   }
 }

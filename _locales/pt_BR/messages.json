@@ -162,7 +162,7 @@
     "message": "Link inserido!"
   },
   "showPasswordInEmail": {
-    "message": "Mostrar senha no e-mail (se definida)"
+    "message": "Mostrar senha no e-mail"
   },
   "skipLinkOptions": {
     "message": "Pular diálogo de opções (sempre aplicar esses padrões)"
@@ -253,5 +253,11 @@
   },
   "emailLearnMore": {
     "message": "Saiba mais sobre"
+  },
+  "passwordShareHint": {
+    "message": "Se desmarcado, compartilhe a senha separadamente com o destinatário."
+  },
+  "resetToDefaults": {
+    "message": "Redefinir padrões"
   }
 }

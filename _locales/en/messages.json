@@ -138,7 +138,7 @@
     "message": "Empty folder"
   },
   "filterFiles": {
-    "message": "Filter files by name..."
+    "message": "Filter by name..."
   },
   "noSubfolders": {
     "message": "No subfolders"
@@ -162,7 +162,7 @@
     "message": "Link inserted!"
   },
   "showPasswordInEmail": {
-    "message": "Show password in email (if set)"
+    "message": "Show password in email"
   },
   "skipLinkOptions": {
     "message": "Skip options dialog (always apply these defaults)"
@@ -253,5 +253,11 @@
   },
   "emailLearnMore": {
     "message": "Learn more about"
+  },
+  "passwordShareHint": {
+    "message": "If unchecked, share the password separately with the recipient."
+  },
+  "resetToDefaults": {
+    "message": "Reset to defaults"
   }
 }

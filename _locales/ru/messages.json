@@ -162,7 +162,7 @@
     "message": "Ссылка вставлена!"
   },
   "showPasswordInEmail": {
-    "message": "Показать пароль в письме (если задан)"
+    "message": "Показать пароль в письме"
   },
   "skipLinkOptions": {
     "message": "Пропустить диалог (всегда применять эти значения)"
@@ -253,5 +253,11 @@
   },
   "emailLearnMore": {
     "message": "Узнать больше о"
+  },
+  "passwordShareHint": {
+    "message": "Если не отмечено, передайте пароль получателю отдельно."
+  },
+  "resetToDefaults": {
+    "message": "Сбросить"
   }
 }
